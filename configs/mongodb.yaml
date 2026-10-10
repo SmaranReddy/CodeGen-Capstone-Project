@@ -1,0 +1,18 @@
+# MongoDB connection settings.
+#
+# SECRETS DO NOT GO HERE. The real URI is read from the environment
+# (see .env.example → copy to .env, which is gitignored).
+#
+# This file only documents which environment variables are used and
+# provides non-secret defaults.
+
+# Environment variables read by the code:
+#   MONGODB_URI        e.g. mongodb://localhost:27017  (or your Atlas URI)
+#   MONGODB_DB         database name, default: codegen_capstone
+#   MONGODB_TIMEOUT_MS connection/read timeout, default: 5000
+
+defaults:
+  db: codegen_capstone
+  timeout_ms: 5000
+  # Collections used by the Week 1 dataset validation
+  source_collection_prefix: spider_

@@ -1,0 +1,45 @@
+# Configuration for the 68-example NL -> MQL model comparison.
+# Reuses the Week-1 dataset, conversion artifacts and official Spider comparator.
+# Secrets (API keys, Mongo URI) come from the environment; never put them here.
+
+dataset: data/processed/nl_mql_dataset.jsonl
+output_dir: outputs/evaluation_68
+pilot_db: codegen_capstone_pilot
+
+execution:
+  timeout_ms: 600000
+  allow_disk_use: true
+  max_result_rows: 200000
+
+generation:
+  temperature: 0
+  top_p: 1.0
+  seed: 42
+  max_new_tokens: 1024
+  retries_transport: 2          # retries only for transport/provider errors, never for wrong answers
+
+models:
+  qwen:
+    role: baseline
+    id: Qwen/Qwen2.5-Coder-3B-Instruct
+    revision: main
+    backend: transformers       # transformers | ollama
+    quantization: none          # none | 4bit | 8bit (transformers backend)
+    device: auto                # auto | cpu | cuda
+    ollama_model: qwen2.5-coder:7b
+    ollama_base_url: http://localhost:11434
+  frontier:
+    role: frontier
+    id: null                    # e.g. gpt-4.1-2025-04-14, claude-..., gemini-...
+    backend: openai             # openai-compatible chat completions
+    base_url: null              # e.g. https://api.openai.com/v1
+    api_key_env: FRONTIER_API_KEY
+    temperature: 0
+
+pricing:                        # USD per 1K tokens, for cost estimation only
+  qwen:
+    input_per_1k: 0.0
+    output_per_1k: 0.0
+  frontier:
+    input_per_1k: null
+    output_per_1k: null

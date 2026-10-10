@@ -1,0 +1,88 @@
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# --- Virtual environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Testing / linting / typing ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Datasets (never commit data files; keep README placeholders) ---
+data/raw/**/*
+!data/raw/**/
+!data/raw/**/README.md
+data/interim/**/*
+!data/interim/**/
+!data/interim/**/README.md
+data/processed/**/*
+!data/processed/**/
+!data/processed/**/README.md
+*.csv
+*.jsonl
+*.parquet
+*.arrow
+*.db
+*.sqlite
+
+# --- Model files (never commit models) ---
+pretrained_models/
+hf_cache/
+*.bin
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+.cache/
+
+# --- Outputs / logs ---
+outputs/
+logs/
+*.log
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Local model weights ---
+models/

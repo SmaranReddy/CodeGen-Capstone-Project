@@ -1,0 +1,21 @@
+# Dataset and run configuration.
+# Paths are relative to the project root unless absolute.
+# MongoDB connection settings live in .env (environment variables), NOT here.
+
+paths:
+  raw_spider2: data/raw/spider2
+  interim: data/interim
+  processed: data/processed
+  outputs: outputs
+
+dataset:
+  # Week 1 target subset
+  source: spider2-lite
+  # Filled in once the task definition is finalized (see docs/)
+  query_types: []   # e.g. [filter, projection, sort, limit, group_by, join, ...]
+  max_examples: null  # null = no limit; useful for quick iteration
+
+validation:
+  # How MQL results are compared (details in docs/validation_notes.md)
+  comparison: execution   # execution | string | none
+  timeout_ms: 5000
