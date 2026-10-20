@@ -18,7 +18,10 @@ Outputs:
   data/interim/spider1/dataset_summary.json  counts / attrition / evidence levels
 
 Usage: python scripts/spider1/build_dataset.py
+       # expanded benchmark: every pool item, outputs kept apart from the 279-item release
+       python scripts/spider1/build_dataset.py --items data/interim/spider1/pool.jsonl            --out data/processed/spider1_nl_mql_expanded.jsonl            --status-dir data/interim/spider1/expanded            --adjudication data/interim/spider1/adjudication.json data/interim/spider1/expanded/adjudication.json
 """
+import argparse
 import hashlib
 import json
 import sys
@@ -28,25 +31,38 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import spider1_kit as K  # noqa: E402
 from testsuite_check import check_item  # noqa: E402
-from validate_gold import GOLD_DIR, load_gold, validate  # noqa: E402
+from validate_gold import load_gold, load_issues, validate  # noqa: E402
 
 OUT = K.ROOT / "data/processed/spider1_nl_mql.jsonl"
 ADJ = K.INTERIM / "adjudication.json"
 EXCLUDE_KINDS = {"annotation_mismatch", "cannot_convert"}
 
 
-def load_issues():
-    out = {}
-    for p in GOLD_DIR.glob("*.issues.json"):
-        out.update(json.loads(p.read_text(encoding="utf-8")))
-    return out
+def load_adjudication(paths):
+    adj = {}
+    for p in map(Path, paths):
+        if not p.exists():
+            continue
+        entries = json.loads(p.read_text(encoding="utf-8"))
+        dup = set(adj) & set(entries)
+        if dup:
+            raise ValueError(f"adjudication recorded twice ({p}): {sorted(dup)}")
+        adj.update(entries)
+    return adj
 
 
 def main():
-    sample = K.read_jsonl(K.INTERIM / "sample.jsonl")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--items", default=str(K.INTERIM / "sample.jsonl"))
+    ap.add_argument("--out", default=str(OUT))
+    ap.add_argument("--status-dir", default=str(K.INTERIM))
+    ap.add_argument("--adjudication", nargs="+", default=[str(ADJ)])
+    args = ap.parse_args()
+    out_path, status_dir = Path(args.out), Path(args.status_dir)
+    sample = K.read_jsonl(args.items)
     variants = json.loads((K.INTERIM / "testsuite_variants.json").read_text(encoding="utf-8"))
     issues = load_issues()
-    adj = json.loads(ADJ.read_text(encoding="utf-8")) if ADJ.exists() else {}
+    adj = load_adjudication(args.adjudication)
     client = K.mongo_client()
     mdb = client[K.ATLAS_DB]
     existing = set(mdb.list_collection_names())
@@ -98,8 +114,8 @@ def main():
                 })
     finally:
         client.close()
-    K.write_jsonl(OUT, dataset)
-    K.write_jsonl(K.INTERIM / "status.jsonl", status)
+    K.write_jsonl(out_path, dataset)
+    K.write_jsonl(status_dir / "status.jsonl", status)
     uniq = {(d["db_id"], d["question"]) for d in dataset}
     summary = {
         "sample_size": len(sample),
@@ -111,9 +127,9 @@ def main():
         "by_db": dict(sorted(Counter(d["db_id"] for d in dataset).items())),
         "evidence": dict(Counter(d["evidence"] for d in dataset)),
         "flagged_kept": dict(Counter(f for d in dataset for f in d["flags"])),
-        "dataset_sha256": hashlib.sha256(OUT.read_bytes()).hexdigest(),
+        "dataset_sha256": hashlib.sha256(out_path.read_bytes()).hexdigest(),
     }
-    (K.INTERIM / "dataset_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (status_dir / "dataset_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
 
 

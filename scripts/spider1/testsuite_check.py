@@ -5,7 +5,7 @@ variant SQLite and the gold MQL on Atlas `codegen_spider1_ts<k>`, then compare w
 same `exec_match`. A variant whose ORDER BY ... LIMIT cutoff falls in a tie, or whose
 tie structure cannot be verified, is recorded as `inconclusive` (not pass, not fail).
 
-Usage: python scripts/spider1/testsuite_check.py [--db DB] [--ids ...] [--out PATH]
+Usage: python scripts/spider1/testsuite_check.py [--db DB] [--ids ...] [--out PATH] [--items PATH]
 """
 import argparse
 import json
@@ -54,9 +54,10 @@ def main():
     ap.add_argument("--db")
     ap.add_argument("--ids", nargs="*")
     ap.add_argument("--out")
+    ap.add_argument("--items", default=str(K.INTERIM / "sample.jsonl"))
     args = ap.parse_args()
     variants = json.loads((K.INTERIM / "testsuite_variants.json").read_text(encoding="utf-8"))
-    sample = K.read_jsonl(K.INTERIM / "sample.jsonl")
+    sample = K.read_jsonl(args.items)
     if args.db:
         sample = [s for s in sample if s["db_id"] == args.db]
     if args.ids:

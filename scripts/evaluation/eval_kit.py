@@ -150,8 +150,53 @@ def referenced_collections(obj):
     return refs
 
 
+UNION_WITH_KEYS = {"coll", "pipeline"}
+
+
+def union_with_targets(obj):
+    """Targets of every `$unionWith` at any depth -> (targets: set, error: str|None).
+
+    Short form `{"$unionWith": "<coll>"}` must name a non-blank collection; long form must be
+    `{"coll": "<coll>", "pipeline"?: [...]}` (no `db` or other keys, no collection-less form).
+    """
+    targets = set()
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k == "$unionWith":
+                if isinstance(v, str):
+                    if not v.strip():
+                        return targets, "empty $unionWith target"
+                    targets.add(v)
+                elif isinstance(v, dict):
+                    coll = v.get("coll")
+                    if not isinstance(coll, str) or not coll.strip():
+                        return targets, "$unionWith without a collection name"
+                    if set(v) - UNION_WITH_KEYS:
+                        return targets, f"unsupported $unionWith keys {sorted(set(v) - UNION_WITH_KEYS)}"
+                    if "pipeline" in v and not isinstance(v["pipeline"], list):
+                        return targets, "$unionWith 'pipeline' must be a list"
+                    targets.add(coll)
+                else:
+                    return targets, f"malformed $unionWith ({type(v).__name__})"
+            sub, err = union_with_targets(v)
+            targets |= sub
+            if err:
+                return targets, err
+    elif isinstance(obj, list):
+        for item in obj:
+            sub, err = union_with_targets(item)
+            targets |= sub
+            if err:
+                return targets, err
+    return targets, None
+
+
 def validate_mql(pred, allowed):
     """Structural validation of a model output against the read-only contract.
+
+    Malformed `$unionWith` is always rejected. When `allowed` is non-empty, the target
+    collection and every `from`/`coll`/`$unionWith` reference must be in it (an empty
+    `allowed` disables the reference checks, as before).
 
     Returns (ok: bool, reason: str, parsed: dict|None).
     """
@@ -179,8 +224,11 @@ def validate_mql(pred, allowed):
     for name, _ in iter_stages(pipeline):
         if name in FORBIDDEN_STAGES:
             return False, f"forbidden stage {name}", None
+    union_targets, union_err = union_with_targets(pipeline)
+    if union_err:
+        return False, union_err, None
     if allowed:
-        bad = referenced_collections(pipeline) - allowed
+        bad = (referenced_collections(pipeline) | union_targets) - allowed
         if bad:
             return False, f"references collections outside the example: {sorted(bad)}", None
     return True, "ok", {"method": method, "collection": coll, "pipeline": pipeline}

@@ -1,6 +1,8 @@
 """Validate hand-authored gold MQL against the gold SQL result (dev database on Atlas).
 
-Gold MQL lives in data/interim/spider1/gold_mql/<db_id>.json as
+Gold MQL lives in data/interim/spider1/gold_mql/<db_id>.json (the original 300-item sample)
+and data/interim/spider1/gold_mql_expansion/<db_id>.json (the 193 pool items added by the
+expansion); load_gold merges both and refuses an id present in both. Format:
     {"<id>": {"collection": "<db_id>__<table>", "pipeline": [...], "notes": "..."}}
 
 For each entry: structural read-only check -> run on Atlas `codegen_spider1` ->
@@ -9,6 +11,7 @@ exec_match against the gold SQL rows from sample.jsonl (order/tie aware).
 Usage:
     python scripts/spider1/validate_gold.py --db concert_singer [--show]
     python scripts/spider1/validate_gold.py --all [--out data/interim/spider1/gold_validation.jsonl]
+    python scripts/spider1/validate_gold.py --items data/interim/spider1/pool.jsonl --db wta_1
 """
 import argparse
 import json
@@ -19,6 +22,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import spider1_kit as K  # noqa: E402
 
 GOLD_DIR = K.INTERIM / "gold_mql"
+GOLD_EXP_DIR = K.INTERIM / "gold_mql_expansion"
+GOLD_DIRS = (GOLD_DIR, GOLD_EXP_DIR)
 FORBIDDEN = {"$out", "$merge", "$where", "$function", "$accumulator", "$documents",
              }
 
@@ -78,8 +83,29 @@ def validate(mdb, item, entry, existing):
 
 
 def load_gold(db_id):
-    p = GOLD_DIR / f"{db_id}.json"
-    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+    out = {}
+    for d in GOLD_DIRS:
+        p = d / f"{db_id}.json"
+        if not p.exists():
+            continue
+        entries = json.loads(p.read_text(encoding="utf-8"))
+        dup = set(out) & set(entries)
+        if dup:
+            raise ValueError(f"gold MQL ids authored twice ({p}): {sorted(dup)}")
+        out.update(entries)
+    return out
+
+
+def load_issues():
+    out = {}
+    for d in GOLD_DIRS:
+        for p in d.glob("*.issues.json"):
+            entries = json.loads(p.read_text(encoding="utf-8"))
+            dup = set(out) & set(entries)
+            if dup:
+                raise ValueError(f"issues recorded twice ({p}): {sorted(dup)}")
+            out.update(entries)
+    return out
 
 
 def main():
@@ -89,9 +115,11 @@ def main():
     ap.add_argument("--ids", nargs="*")
     ap.add_argument("--show", action="store_true", help="print gold vs pred rows on failure")
     ap.add_argument("--out")
+    ap.add_argument("--items", default=str(K.INTERIM / "sample.jsonl"),
+                    help="candidate items (default: the frozen 300 sample; pool.jsonl for the expansion)")
     args = ap.parse_args()
 
-    sample = K.read_jsonl(K.INTERIM / "sample.jsonl")
+    sample = K.read_jsonl(args.items)
     if args.db:
         sample = [s for s in sample if s["db_id"] == args.db]
     if args.ids:

@@ -15,9 +15,12 @@ College capstone project exploring open-source LLMs for code generation, with an
   frontier model). Same prompt, same examples, same Atlas execution and the same comparator
   for every model.
   - Both Qwen models were evaluated on all 279 examples.
-  - gpt-oss-120b was intentionally stopped after 211/279. That comparison is partial;
-    the paired results use the same 211 ids.
+  - All three models were evaluated on all 279 (gpt-oss-120b was resumed on 2026-10-15 for
+    the last 68). Strict execution accuracy: Qwen-3B 132/279 = 47.3%, Qwen-7B 181/279 = 64.9%,
+    gpt-oss-120b 232/279 = 83.2%.
   - See `docs/spider1_model_comparison.md` and `outputs/evaluation_spider1/`.
+  - Week 2 verification: every verdict reproduced by re-executing the saved MQL on Atlas.
+    See `docs/week2_report.md` (`python scripts/spider1/rescore.py [--reexecute]`).
 
 ```powershell
 python scripts/spider1/build_dataset.py                     # re-validate + write dataset
@@ -60,6 +63,7 @@ Raw Spider 2.0-Lite files live in `data/raw/spider2/` and are **never modified**
 | `data/raw/` | Original Spider 2.0-Lite and Spider 1.0 files (read-only, never modified) |
 | `data/interim/` | Intermediate converted/transformed data |
 | `data/processed/` | Final validated NL → MongoDB/MQL dataset |
+| `data/splits/` | Database-disjoint train/validation/test split of the 279 Spider 1.0 examples (retrospective; see `docs/week2_report.md` §9.2) |
 | `src/data/` | Dataset loading and preparation utilities |
 | `src/conversion/` | Logic for adapting Spider examples to MongoDB/MQL |
 | `src/validation/` | Logic for validating/executing MQL against MongoDB |

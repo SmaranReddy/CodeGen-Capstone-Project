@@ -10,6 +10,10 @@ Usage:
   python scripts/spider1/run_eval.py --provider reference            # harness self-check
   python scripts/spider1/run_eval.py --provider qwen [--limit 10] [--ids ...]
   python scripts/spider1/run_eval.py --provider frontier
+  python scripts/spider1/run_eval.py --config configs/evaluation_spider1_expanded.yaml       --provider qwen --label qwen2.5-coder-3b          # expanded benchmark (separate output dir)
+
+Every record keeps the raw output, the validated MQL, the execution status, the actual
+result rows (up to MAX_SAVED_ROWS), the expected rows and the verdict.
 """
 import argparse
 import json
@@ -25,11 +29,35 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "evaluation"))
 import prompt_spider1 as P  # noqa: E402
 import spider1_kit as K  # noqa: E402
-from eval_kit import validate_mql  # noqa: E402
+from eval_kit import FORBIDDEN_STAGES, validate_mql  # noqa: E402
 from providers import build_provider  # noqa: E402
 from run_nl_mql_eval import parse_output  # noqa: E402
 
 CONFIG = K.ROOT / "configs/evaluation_spider1.yaml"
+MAX_SAVED_ROWS = 1000  # gold results have <= 1000 rows by construction
+
+
+def forbidden_anywhere(obj):
+    """Forbidden operators at ANY depth ($function/$where inside expressions, $out inside
+    $lookup/$unionWith sub-pipelines); validate_mql only walks top-level and $facet stages."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in FORBIDDEN_STAGES:
+                return k
+            hit = forbidden_anywhere(v)
+            if hit:
+                return hit
+    elif isinstance(obj, list):
+        for v in obj:
+            hit = forbidden_anywhere(v)
+            if hit:
+                return hit
+    return None
+
+
+def is_timeout(exc):
+    from pymongo.errors import ExecutionTimeout, NetworkTimeout
+    return isinstance(exc, (ExecutionTimeout, NetworkTimeout)) or getattr(exc, "code", None) == 50
 
 
 class ReferenceSpider1:
@@ -74,44 +102,67 @@ def run_one(mdb, provider, ex, gen, exec_cfg, allowed):
            "quota_wait_s": out.get("quota_wait_s"),
            "server_time_s": out.get("server_time_s"), "thought_tokens": out.get("thought_tokens"),
            "input_tokens": out.get("input_tokens"), "output_tokens": out.get("output_tokens"),
-           "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S")}
-    res = {"correct": False, "category": None, "reason": None, "executed": False}
-    rec["result"] = res
+           "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+           "expected_columns": ex.get("gold_columns"), "expected_rows": ex["gold_rows"]}
     if out.get("error"):
-        res.update(category="provider_error", reason=out["error"])
+        rec["result"] = {"correct": False, "category": "provider_error", "reason": out["error"],
+                         "executed": False}
         return rec
-    parsed, perr = parse_output(out.get("text"))
+    res, extra = score_output(mdb, out.get("text"), ex, exec_cfg, allowed)
+    rec["result"] = res
+    rec.update(extra)
+    return rec
+
+
+def score_output(mdb, text, ex, exec_cfg, allowed):
+    """Raw model text -> parse -> read-only validation -> Atlas execution -> exec_match.
+
+    Shared by run_one (live runs) and rescore.py (re-execution of saved predictions).
+    Returns (result dict, extra record fields: `mql`, and on a mismatch the prediction preview).
+    """
+    res = {"correct": False, "category": None, "reason": None, "executed": False}
+    extra = {}
+    parsed, perr = parse_output(text)
     if parsed is None:
         res.update(category="format_error", reason=perr)
-        return rec
+        return res, extra
     if isinstance(parsed, dict) and "method" not in parsed:
         parsed = {"method": "aggregate", **parsed}
+    if isinstance(parsed, dict) and parsed.get("method") == "aggregate" and parsed.get("pipeline") == []:
+        # an empty pipeline is valid read-only MQL (returns every document); validate_mql
+        # requires a non-empty list, so run its exact no-op equivalent
+        parsed = {**parsed, "pipeline": [{"$match": {}}]}
     ok, why, norm = validate_mql(parsed, allowed)
+    if ok and forbidden_anywhere(norm["pipeline"]):
+        ok, why = False, f"forbidden operator {forbidden_anywhere(norm['pipeline'])} (nested)"
     if not ok:
         res.update(category="invalid_mql", reason=why)
-        return rec
-    rec["mql"] = {"collection": norm["collection"], "pipeline": norm["pipeline"]}
+        return res, extra
+    extra["mql"] = {"collection": norm["collection"], "pipeline": norm["pipeline"]}
     try:
         docs = list(mdb[norm["collection"]].aggregate(
             norm["pipeline"], maxTimeMS=exec_cfg["timeout_ms"], allowDiskUse=True))
     except Exception as e:  # noqa: BLE001
-        res.update(category="execution_error", reason=f"{type(e).__name__}: {str(e)[:300]}")
-        return rec
+        res.update(category="timeout" if is_timeout(e) else "execution_error",
+                   reason=f"{type(e).__name__}: {str(e)[:300]}")
+        return res, extra
     res["executed"] = True
     res["n_rows"] = len(docs)
     if len(docs) > exec_cfg["max_result_rows"]:
         res.update(category="execution_error", reason="result too large")
-        return rec
+        return res, extra
     cols, rows = K.docs_to_rows(docs)
     match, why = K.exec_match(rows, ex["gold_rows"], ex.get("tie_blocks"), ex["order_by"])
     res["reason"] = why
+    extra["pred_columns"] = cols
+    extra["pred_rows"] = [list(r) for r in rows[:MAX_SAVED_ROWS]]
+    extra["pred_rows_truncated"] = len(rows) > MAX_SAVED_ROWS
     if match:
         res.update(correct=True, category="correct")
     else:
         res["category"] = classify_mismatch(rows, ex)
-        rec["pred_columns"] = cols
-        rec["pred_preview"] = [list(r) for r in rows[:10]]
-    return rec
+        extra["pred_preview"] = [list(r) for r in rows[:10]]
+    return res, extra
 
 
 def summarize(records, price, label, model_id):
@@ -150,10 +201,11 @@ def main():
     ap.add_argument("--limit", type=int)
     ap.add_argument("--fresh", action="store_true")
     ap.add_argument("--dataset")
+    ap.add_argument("--config", default=str(CONFIG))
     a = ap.parse_args()
     from dotenv import load_dotenv
     load_dotenv(K.ROOT / ".env")  # ANTHROPIC_API_KEY / MONGODB_URI; never printed
-    cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    cfg = yaml.safe_load(Path(a.config).read_text(encoding="utf-8"))
     dataset = a.dataset or cfg["dataset"]
     rows = K.read_jsonl(K.ROOT / dataset)
     if a.ids:

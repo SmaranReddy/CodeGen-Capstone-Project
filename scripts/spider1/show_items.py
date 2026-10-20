@@ -17,6 +17,7 @@ def main():
     ap.add_argument("db_id")
     ap.add_argument("--ids", nargs="*")
     ap.add_argument("--no-schema", action="store_true")
+    ap.add_argument("--items", default=str(K.INTERIM / "sample.jsonl"))
     a = ap.parse_args()
     if not a.no_schema:
         man = json.loads((K.INTERIM / "atlas_collections.json").read_text(encoding="utf-8"))
@@ -38,7 +39,7 @@ def main():
         for x, y in tj["foreign_keys"]:
             print(f"   {tabs[cols[x][0]]}.{cols[x][1]} -> {tabs[cols[y][0]]}.{cols[y][1]}")
     print("\n# items")
-    for r in K.read_jsonl(K.INTERIM / "sample.jsonl"):
+    for r in K.read_jsonl(a.items):
         if r["db_id"] != a.db_id or (a.ids and r["id"] not in a.ids):
             continue
         print(f"\n{r['id']} [{r['hardness']}] order_by={r['order_by']} limit={r['limit']} rows={r['n_rows']}")

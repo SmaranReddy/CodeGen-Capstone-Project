@@ -11,7 +11,8 @@ Then a seed-42 sample of N (default 300), stratified proportionally by official 
 The sample is frozen: items that later fail conversion are reported as attrition and
 never replaced by easier items.
 
-Usage: python scripts/spider1/build_pool.py [--n 300] [--seed 42]
+Usage: python scripts/spider1/build_pool.py [--n 300] [--seed 42] [--out-dir DIR]
+(--out-dir defaults to data/interim/spider1; point it elsewhere to re-derive without overwriting)
 """
 import argparse
 import hashlib
@@ -35,6 +36,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--out-dir", default=str(K.INTERIM))
     args = ap.parse_args()
 
     dev = K.load_json(K.SPIDER / "dev.json")
@@ -91,7 +93,8 @@ def main():
         sample += rng.sample(items, quotas[h])
     sample.sort(key=lambda r: r["dev_index"])
 
-    out = K.INTERIM
+    out = Path(args.out_dir)
+    out.mkdir(parents=True, exist_ok=True)
     K.write_jsonl(out / "pool.jsonl", pool)
     K.write_jsonl(out / "sample.jsonl", sample)
     dev_sha = hashlib.sha256((K.SPIDER / "dev.json").read_bytes()).hexdigest()

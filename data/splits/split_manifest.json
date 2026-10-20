@@ -1,0 +1,1867 @@
+{
+  "dataset": "Spider 1.0 dev -> MQL (validated)",
+  "source": {
+    "path": "data/processed/spider1_nl_mql.jsonl",
+    "sha256": "e727b7591556ae46f92efff603652dbfe7087443109cb42b2101ba8204bdf7b0",
+    "n_examples": 279,
+    "n_databases": 20
+  },
+  "seed": 20261015,
+  "methodology": {
+    "type": "database-disjoint (grouped by db_id)",
+    "script": "scripts/spider1/make_splits.py",
+    "command": "python scripts/spider1/make_splits.py --write --seed 20261015 --draws 10000",
+    "target_fractions": {
+      "train": 0.7,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "target_counts": {
+      "train": 195,
+      "validation": 42,
+      "test": 42
+    },
+    "draws": 10000,
+    "procedure": "dbs = sorted(distinct db_id); rng = random.Random(seed); for each draw: rng.shuffle(dbs), assign dbs in shuffled order to validation while its count < target, then to test while its count < target, else train; keep the draw minimising (|n_val-target|+|n_test-target|, hardness L1 deviation), ties -> earliest draw",
+    "chosen_draw": 1003,
+    "count_deviation": 0,
+    "hardness_deviation": 0.233573594864,
+    "selection_inputs": "db_id and official Spider hardness only; no model outputs or scores",
+    "file_format": "source JSONL lines copied byte-for-byte (CRLF kept), source order kept"
+  },
+  "database_disjoint": true,
+  "partition_counts": {
+    "train": 195,
+    "validation": 42,
+    "test": 42
+  },
+  "database_assignments": {
+    "battle_death": {
+      "partition": "validation",
+      "n_examples": 8
+    },
+    "car_1": {
+      "partition": "train",
+      "n_examples": 28
+    },
+    "concert_singer": {
+      "partition": "train",
+      "n_examples": 11
+    },
+    "course_teach": {
+      "partition": "validation",
+      "n_examples": 7
+    },
+    "cre_Doc_Template_Mgt": {
+      "partition": "train",
+      "n_examples": 20
+    },
+    "dog_kennels": {
+      "partition": "train",
+      "n_examples": 26
+    },
+    "employee_hire_evaluation": {
+      "partition": "test",
+      "n_examples": 13
+    },
+    "flight_2": {
+      "partition": "train",
+      "n_examples": 8
+    },
+    "museum_visit": {
+      "partition": "validation",
+      "n_examples": 10
+    },
+    "network_1": {
+      "partition": "validation",
+      "n_examples": 16
+    },
+    "orchestra": {
+      "partition": "train",
+      "n_examples": 11
+    },
+    "pets_1": {
+      "partition": "test",
+      "n_examples": 14
+    },
+    "poker_player": {
+      "partition": "train",
+      "n_examples": 13
+    },
+    "real_estate_properties": {
+      "partition": "validation",
+      "n_examples": 1
+    },
+    "singer": {
+      "partition": "train",
+      "n_examples": 8
+    },
+    "student_transcripts_tracking": {
+      "partition": "train",
+      "n_examples": 18
+    },
+    "tvshow": {
+      "partition": "test",
+      "n_examples": 15
+    },
+    "voter_1": {
+      "partition": "train",
+      "n_examples": 7
+    },
+    "world_1": {
+      "partition": "train",
+      "n_examples": 34
+    },
+    "wta_1": {
+      "partition": "train",
+      "n_examples": 11
+    }
+  },
+  "partitions": {
+    "train": {
+      "file": "data/splits/train.jsonl",
+      "sha256": "f3d11ceff4027893875b995fb0aad9d6df23a1a1520cf1a1af9ad5a0f21931e9",
+      "n_examples": 195,
+      "fraction": 0.6989,
+      "databases": [
+        "car_1",
+        "concert_singer",
+        "cre_Doc_Template_Mgt",
+        "dog_kennels",
+        "flight_2",
+        "orchestra",
+        "poker_player",
+        "singer",
+        "student_transcripts_tracking",
+        "voter_1",
+        "world_1",
+        "wta_1"
+      ],
+      "hardness": {
+        "easy": 50,
+        "medium": 89,
+        "hard": 27,
+        "extra": 29
+      },
+      "ids": [
+        "spider1_dev_0000",
+        "spider1_dev_0002",
+        "spider1_dev_0004",
+        "spider1_dev_0012",
+        "spider1_dev_0017",
+        "spider1_dev_0018",
+        "spider1_dev_0020",
+        "spider1_dev_0022",
+        "spider1_dev_0033",
+        "spider1_dev_0039",
+        "spider1_dev_0041",
+        "spider1_dev_0087",
+        "spider1_dev_0089",
+        "spider1_dev_0091",
+        "spider1_dev_0093",
+        "spider1_dev_0099",
+        "spider1_dev_0101",
+        "spider1_dev_0103",
+        "spider1_dev_0105",
+        "spider1_dev_0109",
+        "spider1_dev_0111",
+        "spider1_dev_0113",
+        "spider1_dev_0115",
+        "spider1_dev_0121",
+        "spider1_dev_0123",
+        "spider1_dev_0127",
+        "spider1_dev_0137",
+        "spider1_dev_0141",
+        "spider1_dev_0145",
+        "spider1_dev_0147",
+        "spider1_dev_0149",
+        "spider1_dev_0151",
+        "spider1_dev_0153",
+        "spider1_dev_0157",
+        "spider1_dev_0163",
+        "spider1_dev_0167",
+        "spider1_dev_0168",
+        "spider1_dev_0171",
+        "spider1_dev_0173",
+        "spider1_dev_0179",
+        "spider1_dev_0181",
+        "spider1_dev_0187",
+        "spider1_dev_0191",
+        "spider1_dev_0193",
+        "spider1_dev_0195",
+        "spider1_dev_0199",
+        "spider1_dev_0245",
+        "spider1_dev_0297",
+        "spider1_dev_0299",
+        "spider1_dev_0301",
+        "spider1_dev_0303",
+        "spider1_dev_0305",
+        "spider1_dev_0307",
+        "spider1_dev_0309",
+        "spider1_dev_0315",
+        "spider1_dev_0317",
+        "spider1_dev_0319",
+        "spider1_dev_0323",
+        "spider1_dev_0325",
+        "spider1_dev_0327",
+        "spider1_dev_0339",
+        "spider1_dev_0341",
+        "spider1_dev_0347",
+        "spider1_dev_0349",
+        "spider1_dev_0353",
+        "spider1_dev_0355",
+        "spider1_dev_0357",
+        "spider1_dev_0429",
+        "spider1_dev_0435",
+        "spider1_dev_0437",
+        "spider1_dev_0439",
+        "spider1_dev_0447",
+        "spider1_dev_0451",
+        "spider1_dev_0457",
+        "spider1_dev_0461",
+        "spider1_dev_0467",
+        "spider1_dev_0477",
+        "spider1_dev_0489",
+        "spider1_dev_0507",
+        "spider1_dev_0509",
+        "spider1_dev_0511",
+        "spider1_dev_0515",
+        "spider1_dev_0519",
+        "spider1_dev_0521",
+        "spider1_dev_0523",
+        "spider1_dev_0525",
+        "spider1_dev_0535",
+        "spider1_dev_0539",
+        "spider1_dev_0545",
+        "spider1_dev_0551",
+        "spider1_dev_0559",
+        "spider1_dev_0561",
+        "spider1_dev_0565",
+        "spider1_dev_0571",
+        "spider1_dev_0579",
+        "spider1_dev_0581",
+        "spider1_dev_0649",
+        "spider1_dev_0651",
+        "spider1_dev_0657",
+        "spider1_dev_0661",
+        "spider1_dev_0663",
+        "spider1_dev_0665",
+        "spider1_dev_0667",
+        "spider1_dev_0669",
+        "spider1_dev_0671",
+        "spider1_dev_0673",
+        "spider1_dev_0675",
+        "spider1_dev_0677",
+        "spider1_dev_0681",
+        "spider1_dev_0689",
+        "spider1_dev_0690",
+        "spider1_dev_0691",
+        "spider1_dev_0693",
+        "spider1_dev_0694",
+        "spider1_dev_0699",
+        "spider1_dev_0700",
+        "spider1_dev_0702",
+        "spider1_dev_0708",
+        "spider1_dev_0710",
+        "spider1_dev_0714",
+        "spider1_dev_0716",
+        "spider1_dev_0718",
+        "spider1_dev_0722",
+        "spider1_dev_0724",
+        "spider1_dev_0730",
+        "spider1_dev_0736",
+        "spider1_dev_0738",
+        "spider1_dev_0746",
+        "spider1_dev_0748",
+        "spider1_dev_0750",
+        "spider1_dev_0756",
+        "spider1_dev_0758",
+        "spider1_dev_0760",
+        "spider1_dev_0762",
+        "spider1_dev_0766",
+        "spider1_dev_0768",
+        "spider1_dev_0770",
+        "spider1_dev_0772",
+        "spider1_dev_0776",
+        "spider1_dev_0777",
+        "spider1_dev_0782",
+        "spider1_dev_0784",
+        "spider1_dev_0790",
+        "spider1_dev_0792",
+        "spider1_dev_0794",
+        "spider1_dev_0796",
+        "spider1_dev_0798",
+        "spider1_dev_0800",
+        "spider1_dev_0814",
+        "spider1_dev_0816",
+        "spider1_dev_0824",
+        "spider1_dev_0826",
+        "spider1_dev_0828",
+        "spider1_dev_0830",
+        "spider1_dev_0832",
+        "spider1_dev_0836",
+        "spider1_dev_0838",
+        "spider1_dev_0840",
+        "spider1_dev_0848",
+        "spider1_dev_0852",
+        "spider1_dev_0856",
+        "spider1_dev_0918",
+        "spider1_dev_0922",
+        "spider1_dev_0924",
+        "spider1_dev_0926",
+        "spider1_dev_0928",
+        "spider1_dev_0934",
+        "spider1_dev_0936",
+        "spider1_dev_0938",
+        "spider1_dev_0950",
+        "spider1_dev_0952",
+        "spider1_dev_0956",
+        "spider1_dev_0958",
+        "spider1_dev_0962",
+        "spider1_dev_0966",
+        "spider1_dev_0968",
+        "spider1_dev_0972",
+        "spider1_dev_0974",
+        "spider1_dev_0976",
+        "spider1_dev_0980",
+        "spider1_dev_0982",
+        "spider1_dev_0984",
+        "spider1_dev_0986",
+        "spider1_dev_0990",
+        "spider1_dev_0992",
+        "spider1_dev_0994",
+        "spider1_dev_0998",
+        "spider1_dev_1000",
+        "spider1_dev_1002",
+        "spider1_dev_1004",
+        "spider1_dev_1006",
+        "spider1_dev_1010",
+        "spider1_dev_1014",
+        "spider1_dev_1016",
+        "spider1_dev_1026"
+      ]
+    },
+    "validation": {
+      "file": "data/splits/validation.jsonl",
+      "sha256": "fb91242f9be70671487e2ac27c3508ec8e2dfe69d338d1eccf72ae581cb9ec8f",
+      "n_examples": 42,
+      "fraction": 0.1505,
+      "databases": [
+        "battle_death",
+        "course_teach",
+        "museum_visit",
+        "network_1",
+        "real_estate_properties"
+      ],
+      "hardness": {
+        "easy": 11,
+        "medium": 18,
+        "hard": 8,
+        "extra": 5
+      },
+      "ids": [
+        "spider1_dev_0381",
+        "spider1_dev_0389",
+        "spider1_dev_0391",
+        "spider1_dev_0403",
+        "spider1_dev_0405",
+        "spider1_dev_0407",
+        "spider1_dev_0409",
+        "spider1_dev_0411",
+        "spider1_dev_0412",
+        "spider1_dev_0413",
+        "spider1_dev_0415",
+        "spider1_dev_0416",
+        "spider1_dev_0418",
+        "spider1_dev_0420",
+        "spider1_dev_0425",
+        "spider1_dev_0426",
+        "spider1_dev_0427",
+        "spider1_dev_0491",
+        "spider1_dev_0494",
+        "spider1_dev_0495",
+        "spider1_dev_0496",
+        "spider1_dev_0497",
+        "spider1_dev_0503",
+        "spider1_dev_0504",
+        "spider1_dev_0506",
+        "spider1_dev_0862",
+        "spider1_dev_0864",
+        "spider1_dev_0866",
+        "spider1_dev_0868",
+        "spider1_dev_0872",
+        "spider1_dev_0876",
+        "spider1_dev_0880",
+        "spider1_dev_0882",
+        "spider1_dev_0888",
+        "spider1_dev_0890",
+        "spider1_dev_0894",
+        "spider1_dev_0896",
+        "spider1_dev_0898",
+        "spider1_dev_0902",
+        "spider1_dev_0904",
+        "spider1_dev_0912",
+        "spider1_dev_1033"
+      ]
+    },
+    "test": {
+      "file": "data/splits/test.jsonl",
+      "sha256": "f4ef8043e856b6dc92f1bcf58ae4930ed9b9d35d5e595a28d4c561b1c85a82a3",
+      "n_examples": 42,
+      "fraction": 0.1505,
+      "databases": [
+        "employee_hire_evaluation",
+        "pets_1",
+        "tvshow"
+      ],
+      "hardness": {
+        "easy": 10,
+        "medium": 19,
+        "hard": 9,
+        "extra": 4
+      },
+      "ids": [
+        "spider1_dev_0049",
+        "spider1_dev_0051",
+        "spider1_dev_0053",
+        "spider1_dev_0055",
+        "spider1_dev_0057",
+        "spider1_dev_0061",
+        "spider1_dev_0063",
+        "spider1_dev_0067",
+        "spider1_dev_0069",
+        "spider1_dev_0071",
+        "spider1_dev_0073",
+        "spider1_dev_0077",
+        "spider1_dev_0079",
+        "spider1_dev_0083",
+        "spider1_dev_0259",
+        "spider1_dev_0261",
+        "spider1_dev_0263",
+        "spider1_dev_0267",
+        "spider1_dev_0269",
+        "spider1_dev_0273",
+        "spider1_dev_0275",
+        "spider1_dev_0277",
+        "spider1_dev_0279",
+        "spider1_dev_0281",
+        "spider1_dev_0283",
+        "spider1_dev_0289",
+        "spider1_dev_0295",
+        "spider1_dev_0587",
+        "spider1_dev_0593",
+        "spider1_dev_0595",
+        "spider1_dev_0599",
+        "spider1_dev_0603",
+        "spider1_dev_0607",
+        "spider1_dev_0609",
+        "spider1_dev_0615",
+        "spider1_dev_0619",
+        "spider1_dev_0621",
+        "spider1_dev_0623",
+        "spider1_dev_0627",
+        "spider1_dev_0635",
+        "spider1_dev_0639",
+        "spider1_dev_0643"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "spider1_dev_0000",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0002",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0004",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0012",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0017",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0018",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0020",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0022",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0033",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0039",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0041",
+      "db_id": "concert_singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0049",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0051",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0053",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0055",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0057",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0061",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0063",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0067",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0069",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0071",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0073",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0077",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0079",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0083",
+      "db_id": "pets_1",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0087",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0089",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0091",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0093",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0099",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0101",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0103",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0105",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0109",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0111",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0113",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0115",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0121",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0123",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0127",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0137",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0141",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0145",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0147",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0149",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0151",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0153",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0157",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0163",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0167",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0168",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0171",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0173",
+      "db_id": "car_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0179",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0181",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0187",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0191",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0193",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0195",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0199",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0245",
+      "db_id": "flight_2",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0259",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0261",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0263",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0267",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0269",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0273",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0275",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0277",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0279",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0281",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0283",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0289",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0295",
+      "db_id": "employee_hire_evaluation",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0297",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0299",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0301",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0303",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0305",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0307",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0309",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0315",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0317",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0319",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0323",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0325",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0327",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0339",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0341",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0347",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0349",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0353",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0355",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0357",
+      "db_id": "cre_Doc_Template_Mgt",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0381",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0389",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0391",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0403",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0405",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0407",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0409",
+      "db_id": "course_teach",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0411",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0412",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0413",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0415",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0416",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0418",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0420",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0425",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0426",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0427",
+      "db_id": "museum_visit",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0429",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0435",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0437",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0439",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0447",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0451",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0457",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0461",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0467",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0477",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0489",
+      "db_id": "wta_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0491",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0494",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0495",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0496",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0497",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0503",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0504",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0506",
+      "db_id": "battle_death",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0507",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0509",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0511",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0515",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0519",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0521",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0523",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0525",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0535",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0539",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0545",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0551",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0559",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0561",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0565",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0571",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0579",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0581",
+      "db_id": "student_transcripts_tracking",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0587",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0593",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0595",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0599",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0603",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0607",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0609",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0615",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0619",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0621",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0623",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0627",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0635",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0639",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0643",
+      "db_id": "tvshow",
+      "partition": "test"
+    },
+    {
+      "id": "spider1_dev_0649",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0651",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0657",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0661",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0663",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0665",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0667",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0669",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0671",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0673",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0675",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0677",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0681",
+      "db_id": "poker_player",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0689",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0690",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0691",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0693",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0694",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0699",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0700",
+      "db_id": "voter_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0702",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0708",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0710",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0714",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0716",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0718",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0722",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0724",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0730",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0736",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0738",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0746",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0748",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0750",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0756",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0758",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0760",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0762",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0766",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0768",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0770",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0772",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0776",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0777",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0782",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0784",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0790",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0792",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0794",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0796",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0798",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0800",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0814",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0816",
+      "db_id": "world_1",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0824",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0826",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0828",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0830",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0832",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0836",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0838",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0840",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0848",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0852",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0856",
+      "db_id": "orchestra",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0862",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0864",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0866",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0868",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0872",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0876",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0880",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0882",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0888",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0890",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0894",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0896",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0898",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0902",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0904",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0912",
+      "db_id": "network_1",
+      "partition": "validation"
+    },
+    {
+      "id": "spider1_dev_0918",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0922",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0924",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0926",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0928",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0934",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0936",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0938",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0950",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0952",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0956",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0958",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0962",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0966",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0968",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0972",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0974",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0976",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0980",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0982",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0984",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0986",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0990",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0992",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0994",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_0998",
+      "db_id": "dog_kennels",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1000",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1002",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1004",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1006",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1010",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1014",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1016",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1026",
+      "db_id": "singer",
+      "partition": "train"
+    },
+    {
+      "id": "spider1_dev_1033",
+      "db_id": "real_estate_properties",
+      "partition": "validation"
+    }
+  ],
+  "retrospective_evaluation_note": "Retrospective split: Qwen2.5-Coder-3B (132/279), Qwen2.5-Coder-7B (181/279) and gpt-oss-120b (232/279) were evaluated on all 279 examples BEFORE this split existed. No model was trained or tuned on any partition, but previously reported results are not an untouched held-out evaluation, and per-partition scores of those runs must not be presented as one. The split is for future training/tuning/selection work."
+}

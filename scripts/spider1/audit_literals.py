@@ -2,6 +2,7 @@
 
 Structural constants (0, 1, -1, booleans, null, short format strings) and field/collection
 names are ignored; everything else is reported for manual review.
+Covers gold_mql/ and gold_mql_expansion/.
 Usage: python scripts/spider1/audit_literals.py
 """
 import json
@@ -11,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import spider1_kit as K  # noqa: E402
-from validate_gold import GOLD_DIR  # noqa: E402
+from validate_gold import GOLD_DIRS  # noqa: E402
 
 IGNORE_NUM = {0, 1, -1, 2, 10, 15, 100}
 
@@ -36,11 +37,11 @@ def literals(o, out, key=None):
 
 
 def main():
-    sample = {r["id"]: r for r in K.read_jsonl(K.INTERIM / "sample.jsonl")}
+    sample = {r["id"]: r for r in K.read_jsonl(K.INTERIM / "pool.jsonl")}  # superset of sample.jsonl
     man = json.loads((K.INTERIM / "atlas_collections.json").read_text(encoding="utf-8"))
     fields = {f for v in man.values() for f in v["fields"]}
     n = 0
-    for p in sorted(GOLD_DIR.glob("*.json")):
+    for p in sorted(p for d in GOLD_DIRS for p in d.glob("*.json")):
         if p.name.endswith(".issues.json"):
             continue
         for iid, e in json.loads(p.read_text(encoding="utf-8")).items():

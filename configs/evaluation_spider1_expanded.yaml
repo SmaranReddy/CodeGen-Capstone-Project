@@ -1,0 +1,68 @@
+# EXPANDED Spider 1.0 dev -> MQL benchmark (455 items from the 493-item eligible pool; see
+# docs/spider1_expanded_benchmark.md). Scoring needs no gold MQL: model MQL is executed on Atlas and
+# compared with the gold-SQL result on SQLite. Everything below `dataset`/`output_dir` is copied
+# verbatim from configs/evaluation_spider1.yaml so v1 predictions are reusable only when the
+# model/generation blocks are identical (checked by scripts/spider1/seed_expanded.py).
+# Secrets (GROQ_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY, MONGODB_URI) come from .env; never put them here.
+dataset: data/processed/spider1_nl_mql_expanded.jsonl
+output_dir: outputs/evaluation_spider1_expanded
+atlas_db: codegen_spider1
+
+execution:
+  timeout_ms: 30000
+  max_result_rows: 100000
+
+generation:            # applied where the backend supports it
+  temperature: 0
+  top_p: 1.0
+  seed: 42
+  max_new_tokens: 1024
+
+models:
+  qwen:
+    role: baseline
+    id: Qwen/Qwen2.5-Coder-3B-Instruct (GGUF q4_k_m, HF rev f74adce6)
+    backend: llamacpp
+    gguf_path: models/qwen2.5-coder-3b-instruct-q4_k_m.gguf
+    gguf_sha256: 724fb256bec1ff062b2f65e4569e871ad2e95ab2a3989723d1769c54294730b7
+    n_ctx: 8192
+  qwen7b:                  # secondary size point (same family, same settings)
+    role: baseline
+    id: Qwen/Qwen2.5-Coder-7B-Instruct (GGUF q4_k_m, HF rev 13fb94bf)
+    backend: llamacpp
+    gguf_path: models/qwen2.5-coder-7b-instruct-q4_k_m.gguf
+    n_ctx: 8192
+  frontier:
+    role: frontier
+    id: gemini-3.8-flash   # chosen by the project owner (GEMINI_MODEL in .env)
+    backend: gemini
+    api_key_env: GEMINI_API_KEY
+    max_tokens: 16000      # thinking at model default; thought tokens counted as output
+  frontier_groq:           # frontier run actually used: GROQ_MODEL in .env (project owner's choice)
+    role: frontier
+    id: openai/gpt-oss-120b
+    backend: openai          # OpenAI-compatible endpoint
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+    max_tokens: 8192         # reasoning + answer; reasoning_effort left at provider default
+    quota_wait_max_s: 1800   # free tier: sleep through the refilling 200K tokens/day bucket
+  frontier_g36:            # free-tier fallback probe (gemini-3.8-flash free tier = 20 req/day)
+    role: frontier
+    id: gemini-3.6-flash
+    backend: gemini
+    api_key_env: GEMINI_API_KEY
+    max_tokens: 16000
+  frontier_claude:         # alternative (not run: no Anthropic key available)
+    role: frontier
+    id: claude-opus-5-5
+    backend: anthropic
+    effort: medium
+    max_tokens: 16000
+
+pricing:               # USD per 1K tokens; list prices fetched 2026-10-10; all runs used free tiers ($0)
+  qwen: {input_per_1k: 0.0, output_per_1k: 0.0}
+  qwen7b: {input_per_1k: 0.0, output_per_1k: 0.0}
+  frontier: {input_per_1k: 0.00075, output_per_1k: 0.00375}   # output includes thinking tokens
+  frontier_groq: {input_per_1k: null, output_per_1k: null}   # Groq free tier ($0); paid price not verified
+  frontier_g36: {input_per_1k: null, output_per_1k: null}   # free tier used; paid price not verified
+  frontier_claude: {input_per_1k: 0.004, output_per_1k: 0.020}
