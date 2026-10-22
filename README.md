@@ -33,6 +33,23 @@ python scripts/spider1/error_analysis.py qwen2.5-coder-3b qwen2.5-coder-7b gpt-o
 python -m pytest tests -q
 ```
 
+## Week 3: RAG baseline (expanded 455 benchmark)
+
+Retrieval-augmented Qwen2.5-Coder-3B, piloted on the **validation** partition only. The test
+partition is untouched. See `docs/week3_rag_report.md`.
+
+```powershell
+python scripts/spider1/make_splits_expanded.py         # verify database-disjoint 318/72/65 split
+python scripts/rag/build_corpus.py --check             # corpus rebuilds byte-for-byte (Atlas read-only)
+python scripts/rag/retrieval_eval.py                   # offline retriever selection (no model calls)
+python scripts/rag/run_rag_eval.py --experiment zs_rerun      # then random_k3, hybrid_k3, hybrid_k3_g3, hybrid_k3_fk
+python scripts/rag/run_rag_eval.py --experiment hybrid_k3 --partition train   # pre-registered train runs: see report §12
+python scripts/rag/rescore_rag.py                      # re-execute saved RAG outputs (no model calls)
+python scripts/rag/rag_report.py                       # outputs/rag_week3/report.{json,md}
+python scripts/rag/rag_report.py --partition train     # outputs/rag_week3/report_train.{json,md}
+python -m pytest -q
+```
+
 ## Baseline Model
 
 - **Qwen-2.5-Coder-Instruct** (zero-shot baseline initially; fine-tuning later)

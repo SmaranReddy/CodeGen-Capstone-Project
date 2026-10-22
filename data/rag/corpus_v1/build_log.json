@@ -1,0 +1,157 @@
+{
+ "built_at": "2026-10-20T22:46:53",
+ "rejected": [
+  {
+   "id": "spider1_dev_0024",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0035",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0037",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0041",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0115",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0121",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0167",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0168",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0171",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0241",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0367",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0369",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0451",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0521",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0537",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0561",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0575",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0579",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0581",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0649",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0700",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0701",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0742",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0748",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0756",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0758",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0772",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0774",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0775",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0777",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0778",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0784",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0816",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0832",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0850",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0950",
+   "why": "no verified correct prediction"
+  },
+  {
+   "id": "spider1_dev_0974",
+   "why": "flagged ambiguous"
+  },
+  {
+   "id": "spider1_dev_0998",
+   "why": "no verified correct prediction"
+  }
+ ]
+}

@@ -1,0 +1,379 @@
+# Week 3 RAG corpus: MongoDB aggregation guide cards (source file; built into data/rag/corpus_v1).
+#
+# Every card is a short paraphrase of the official MongoDB manual (pages listed in `sources`,
+# fetched 2026-10-20; the manual selector showed "9.0 (Current)"; the Atlas cluster runs 8.0.34,
+# and only behaviour documented for both is used). Every card carries an EXECUTABLE example that
+# scripts/rag/build_corpus.py runs on Atlas (read-only aggregate) at build time:
+#   * `collection: null` -> db.aggregate with an inline `$documents` input; the result must equal
+#     `expected` exactly (after the benchmark's own exec_match);
+#   * `collection: <train-db collection>` -> the result must exec_match `check_sql` run on the
+#     read-only SQLite copy of that TRAIN database.
+# Only TRAIN-partition databases may appear (enforced by the leakage checks).
+# `patterns` use the vocabulary in scripts/rag/patterns.py.
+version: guides-v1
+retrieved: "2026-10-20"
+cards:
+  - id: guide_sql_mapping
+    title: SQL clause to aggregation stage mapping
+    patterns: [select, where, group_by, having, order_by, limit, join, union]
+    operators: [$match, $group, $project, $sort, $limit, $lookup, $unionWith]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/sql-aggregation-comparison/
+    text: >-
+      WHERE -> $match (before $group); GROUP BY -> $group; HAVING -> $match after $group;
+      SELECT -> $project; ORDER BY -> $sort; LIMIT -> $limit; COUNT(*)/SUM() -> $sum inside
+      $group; join -> $lookup; UNION ALL -> $unionWith. Stages run in array order, so keep the
+      SQL logical order: filter, join, group, filter groups, sort, limit, project.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"c": "A", "p": 5}, {"c": "A", "p": 7}, {"c": "B", "p": 1}]}
+        - {"$match": {"p": {"$gt": 2}}}
+        - {"$group": {"_id": "$c", "total": {"$sum": "$p"}}}
+        - {"$project": {"_id": 0, "c": "$_id", "total": 1}}
+      expected: [{"c": "A", "total": 12}]
+
+  - id: guide_count_rows
+    title: Counting rows (COUNT(*))
+    patterns: [count]
+    operators: [$count, $match]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/count/
+    text: >-
+      {"$count": "<name>"} returns one document {<name>: n}; it is equivalent to
+      {"$group": {"_id": null, "<name>": {"$sum": 1}}} followed by {"$project": {"_id": 0}}.
+      Caveat: if no document reaches $count it returns NO document, while SQL COUNT(*) returns
+      0 (see the zero-count card).
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"age": 30}, {"age": 45}, {"age": 52}]}
+        - {"$match": {"age": {"$gt": 40}}}
+        - {"$count": "n"}
+      expected: [{"n": 2}]
+
+  - id: guide_count_zero
+    title: Count that may be zero
+    patterns: [count]
+    operators: [$facet, $count, $ifNull, $arrayElemAt]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/count/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/facet/
+    text: >-
+      When a filter may match nothing, wrap the count in $facet and default to 0, so one row is
+      always returned like SQL COUNT(*).
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"age": 30}, {"age": 45}]}
+        - {"$facet": {"c": [{"$match": {"age": {"$gt": 60}}}, {"$count": "n"}]}}
+        - {"$project": {"n": {"$ifNull": [{"$arrayElemAt": ["$c.n", 0]}, 0]}}}
+      expected: [{"n": 0}]
+
+  - id: guide_group_by
+    title: GROUP BY with aggregates per group
+    patterns: [group_by, count, aggregate]
+    operators: [$group, $sum, $avg, $project]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/
+    text: >-
+      {"$group": {"_id": "$<key>", "<out>": {<accumulator>: <expr>}}}; count with {"$sum": 1}.
+      Accumulators include $sum, $avg, $min, $max, $first, $last, $push, $addToSet. $group
+      does not order its output. Rename the key with $project ("<key>": "$_id", "_id": 0) and
+      return only the requested columns. Group on several keys with "_id": {"a": "$a", "b": "$b"}.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"country": "France", "age": 20}, {"country": "France", "age": 30}, {"country": "Spain", "age": 50}]}
+        - {"$group": {"_id": "$country", "n": {"$sum": 1}, "avg_age": {"$avg": "$age"}}}
+        - {"$project": {"_id": 0, "country": "$_id", "n": 1, "avg_age": 1}}
+      expected: [{"country": "France", "n": 2, "avg_age": 25.0}, {"country": "Spain", "n": 1, "avg_age": 50.0}]
+
+  - id: guide_aggregate_all
+    title: Aggregates over all rows (AVG/MIN/MAX/SUM)
+    patterns: [aggregate]
+    operators: [$group, $avg, $min, $max, $sum]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/
+    text: >-
+      Use "_id": null to aggregate the whole input into one document, then drop _id. $sum and
+      $avg ignore non-numeric values, so numbers stored as strings must be converted first
+      (see the text-number card).
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"x": 2}, {"x": 4}, {"x": 9}]}
+        - {"$group": {"_id": null, "avg": {"$avg": "$x"}, "mn": {"$min": "$x"}, "mx": {"$max": "$x"}}}
+        - {"$project": {"_id": 0}}
+      expected: [{"avg": 5.0, "mn": 2, "mx": 9}]
+
+  - id: guide_count_distinct
+    title: COUNT(DISTINCT x) and DISTINCT values
+    patterns: [count_distinct, distinct]
+    operators: [$group, $count, $addToSet, $size]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/size/
+    text: >-
+      SELECT DISTINCT x -> {"$group": {"_id": "$x"}} then {"$project": {"_id": 0, "x": "$_id"}}.
+      COUNT(DISTINCT x) -> group by x then {"$count": "n"}, or collect {"$addToSet": "$x"} and
+      take {"$size": ...}. $addToSet keeps unique values in undefined order.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"x": "a"}, {"x": "b"}, {"x": "a"}]}
+        - {"$group": {"_id": null, "vals": {"$addToSet": "$x"}}}
+        - {"$project": {"_id": 0, "n": {"$size": "$vals"}}}
+      expected: [{"n": 2}]
+
+  - id: guide_having
+    title: HAVING (filter on a group aggregate)
+    patterns: [having, group_by]
+    operators: [$group, $match]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/sql-aggregation-comparison/
+    text: >-
+      HAVING becomes a $match placed AFTER the $group, on the accumulated field name, e.g.
+      {"$match": {"n": {"$gte": 2}}}.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"k": "a"}, {"k": "a"}, {"k": "b"}]}
+        - {"$group": {"_id": "$k", "n": {"$sum": 1}}}
+        - {"$match": {"n": {"$gte": 2}}}
+        - {"$project": {"_id": 0, "k": "$_id"}}
+      expected: [{"k": "a"}]
+
+  - id: guide_superlative
+    title: Top-1 / superlatives (ORDER BY ... LIMIT 1)
+    patterns: [order_by, limit]
+    operators: [$sort, $limit]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/sort/
+    text: >-
+      "highest/oldest/most" -> {"$sort": {"f": -1}}, {"$limit": 1}; "lowest/youngest/least" ->
+      {"$sort": {"f": 1}}, {"$limit": 1}. "Which X has the most Y" -> $group with a count,
+      sort by the count descending, limit 1, then project only X. $sort is not stable for equal
+      keys. Missing fields sort as null (before numbers).
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"name": "a", "age": 30}, {"name": "b", "age": 52}, {"name": "c", "age": 41}]}
+        - {"$sort": {"age": -1}}
+        - {"$limit": 1}
+        - {"$project": {"_id": 0, "name": 1}}
+      expected: [{"name": "b"}]
+
+  - id: guide_text_numbers
+    title: Numbers stored as strings
+    patterns: [text_number, order_by, aggregate, where]
+    operators: [$toDouble, $toInt, $convert, $expr]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/toDouble/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/convert/
+      - https://www.mongodb.com/docs/manual/reference/bson-type-comparison-order/
+    text: >-
+      Strings compare and sort lexicographically ("10" < "9"), and all strings sort after all
+      numbers. For numeric comparison, sorting or arithmetic on a string field, convert it:
+      {"$toDouble": "$f"} (null/missing -> null; unconvertible strings raise an error, so use
+      {"$convert": {"input": "$f", "to": "double", "onError": null}} when values may be dirty).
+      An equality test against a string field must use a string literal ("2014", not 2014).
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"y": "9"}, {"y": "10"}, {"y": "2014"}]}
+        - {"$match": {"$expr": {"$gt": [{"$toDouble": "$y"}, 9]}}}
+        - {"$sort": {"y": 1}}
+        - {"$project": {"_id": 0, "y": 1}}
+      expected: [{"y": "10"}, {"y": "2014"}]
+
+  - id: guide_join_lookup
+    title: Joins with $lookup + $unwind
+    patterns: [join]
+    operators: [$lookup, $unwind]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/unwind/
+    text: >-
+      {"$lookup": {"from": "<coll>", "localField": "<a>", "foreignField": "<b>", "as": "j"}} is a
+      left outer join that adds an array j. {"$unwind": "$j"} then makes one row per match and
+      DROPS rows with no match (preserveNullAndEmptyArrays defaults to false), i.e. an SQL inner
+      join. Joined fields are read as "$j.<field>". Equality matching is type-sensitive: check
+      both fields have the same observed type.
+    example:
+      collection: concert_singer__singer_in_concert
+      pipeline:
+        - {"$lookup": {"from": "concert_singer__concert", "localField": "concert_ID", "foreignField": "concert_ID", "as": "c"}}
+        - {"$unwind": "$c"}
+        - {"$group": {"_id": "$c.concert_Name", "n": {"$sum": 1}}}
+        - {"$project": {"_id": 0, "name": "$_id", "n": 1}}
+      check_sql: >-
+        SELECT T2.concert_Name, count(*) FROM singer_in_concert AS T1 JOIN concert AS T2
+        ON T1.concert_ID = T2.concert_ID GROUP BY T2.concert_Name
+      check_db: concert_singer
+
+  - id: guide_join_type_mismatch
+    title: Joining a string key to a number key
+    patterns: [join, text_number]
+    operators: [$lookup, $expr, $toString, $eq]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/convert/
+    text: >-
+      If the join keys have different observed types (e.g. string "2" vs int 2), localField/
+      foreignField finds nothing. Use the let/pipeline form and convert one side:
+      {"$lookup": {"from": "<coll>", "let": {"k": "$<a>"}, "pipeline": [{"$match": {"$expr":
+      {"$eq": [{"$toString": "$<b>"}, "$$k"]}}}], "as": "j"}}. Variables are "$$name" and need
+      $expr inside $match.
+    example:
+      collection: concert_singer__singer_in_concert
+      pipeline:
+        - {"$lookup": {"from": "concert_singer__singer", "let": {"sid": "$Singer_ID"}, "pipeline": [{"$match": {"$expr": {"$eq": [{"$toString": "$Singer_ID"}, "$$sid"]}}}], "as": "s"}}
+        - {"$unwind": "$s"}
+        - {"$group": {"_id": "$s.Name"}}
+        - {"$project": {"_id": 0, "name": "$_id"}}
+      check_sql: >-
+        SELECT DISTINCT T2.Name FROM singer_in_concert AS T1 JOIN singer AS T2
+        ON T1.Singer_ID = T2.Singer_ID
+      check_db: concert_singer
+
+  - id: guide_anti_join
+    title: NOT IN / EXCEPT / "never" (anti-join)
+    patterns: [anti_join]
+    operators: [$lookup, $match, $size]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/
+    text: >-
+      Rows of A with no matching row in B: $lookup B into "j", then {"$match": {"j": {"$size":
+      0}}} (an unmatched $lookup leaves an empty array). Put extra conditions on B inside the
+      $lookup pipeline. For EXCEPT on a value, apply the same idea to the distinct values.
+    example:
+      collection: concert_singer__stadium
+      pipeline:
+        - {"$lookup": {"from": "concert_singer__concert", "let": {"sid": {"$toString": "$Stadium_ID"}}, "pipeline": [{"$match": {"$expr": {"$eq": ["$Stadium_ID", "$$sid"]}}}], "as": "j"}}
+        - {"$match": {"j": {"$size": 0}}}
+        - {"$project": {"_id": 0, "Name": 1}}
+      check_sql: >-
+        SELECT Name FROM stadium WHERE Stadium_ID NOT IN (SELECT Stadium_ID FROM concert)
+      check_db: concert_singer
+
+  - id: guide_intersect
+    title: INTERSECT / "both A and B"
+    patterns: [intersect, group_by]
+    operators: [$group, $max, $cond, $match]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/setIntersection/
+    text: >-
+      Values that satisfy condition A in some row AND condition B in some row: group by the
+      value and record each condition with {"$max": {"$cond": [<cond>, 1, 0]}}, then $match both
+      flags = 1. ($setIntersection works on two arrays and removes duplicates.)
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"c": "FR", "age": 25}, {"c": "FR", "age": 45}, {"c": "ES", "age": 50}]}
+        - {"$group": {"_id": "$c", "a": {"$max": {"$cond": [{"$gt": ["$age", 40]}, 1, 0]}}, "b": {"$max": {"$cond": [{"$lt": ["$age", 30]}, 1, 0]}}}}
+        - {"$match": {"a": 1, "b": 1}}
+        - {"$project": {"_id": 0, "c": "$_id"}}
+      expected: [{"c": "FR"}]
+
+  - id: guide_union
+    title: UNION / "A or B"
+    patterns: [union]
+    operators: [$match, $or, $unionWith, $group]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/unionWith/
+    text: >-
+      Within one collection, OR is {"$match": {"$or": [<c1>, <c2>]}}. Across collections,
+      {"$unionWith": {"coll": "<coll>", "pipeline": [...]}} behaves like UNION ALL (keeps
+      duplicates); SQL UNION removes duplicates, so $group on the output columns afterwards.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"n": "x", "a": 1}, {"n": "y", "a": 5}, {"n": "x", "a": 9}]}
+        - {"$match": {"$or": [{"a": {"$lt": 2}}, {"a": {"$gt": 8}}]}}
+        - {"$group": {"_id": "$n"}}
+        - {"$project": {"_id": 0, "n": "$_id"}}
+      expected: [{"n": "x"}]
+
+  - id: guide_nested_compare
+    title: Compare with an aggregate (e.g. above average)
+    patterns: [nested, aggregate]
+    operators: [$group, $push, $unwind, $expr]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/group/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/match/
+    text: >-
+      WHERE x > (SELECT AVG(x) ...): compute the aggregate and keep the rows in one pass with
+      {"$group": {"_id": null, "avg": {"$avg": "$x"}, "rows": {"$push": "$$ROOT"}}},
+      {"$unwind": "$rows"}, then {"$match": {"$expr": {"$gt": ["$rows.x", "$avg"]}}} and project
+      "$rows.<field>". Field-to-field comparisons in $match need $expr.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"n": "a", "x": 1}, {"n": "b", "x": 5}, {"n": "c", "x": 6}]}
+        - {"$group": {"_id": null, "avg": {"$avg": "$x"}, "rows": {"$push": "$$ROOT"}}}
+        - {"$unwind": "$rows"}
+        - {"$match": {"$expr": {"$gt": ["$rows.x", "$avg"]}}}
+        - {"$project": {"_id": 0, "n": "$rows.n"}}
+      expected: [{"n": "b"}, {"n": "c"}]
+
+  - id: guide_like
+    title: LIKE / substring matching
+    patterns: [like]
+    operators: [$regex, $regexMatch]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/query/regex/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/regexMatch/
+    text: >-
+      LIKE '%abc%' -> {"f": {"$regex": "abc", "$options": "i"}}; LIKE 'abc%' -> "^abc"; LIKE
+      '%abc' -> "abc$". SQLite LIKE is case-insensitive for ASCII, $regex is case-sensitive
+      unless "$options": "i". Inside expressions use {"$regexMatch": {"input": "$f", "regex":
+      "abc", "options": "i"}}.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"t": "Super Bootcamp"}, {"t": "auditions"}, {"t": "Home Visits"}]}
+        - {"$match": {"t": {"$regex": "boot", "$options": "i"}}}
+        - {"$project": {"_id": 0, "t": 1}}
+      expected: [{"t": "Super Bootcamp"}]
+
+  - id: guide_projection
+    title: Output columns contract ($project)
+    patterns: [select]
+    operators: [$project, $literal]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/project/
+    text: >-
+      $project includes fields with 1, computes new ones with expressions ("name": "$j.Name"),
+      and _id is included unless "_id": 0. You cannot mix exclusions (other than _id) with
+      inclusions. A constant number must be written {"$literal": 5}. One output field per
+      requested column, in any order.
+    example:
+      collection: null
+      pipeline:
+        - {"$documents": [{"a": 1, "b": "x", "c": true}]}
+        - {"$project": {"_id": 0, "b": 1, "k": {"$literal": 5}}}
+      expected: [{"b": "x", "k": 5}]
+
+  - id: guide_count_per_parent
+    title: '"For each X, the number of Y" via $lookup + $size'
+    patterns: [join, group_by, count]
+    operators: [$lookup, $size, $project, $match]
+    sources:
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/
+      - https://www.mongodb.com/docs/manual/reference/operator/aggregation/size/
+    text: >-
+      Start from X, $lookup the Y rows into an array and return {"$size": "$arr"}. This keeps X
+      rows with zero Y (a LEFT JOIN). An SQL inner JOIN ... GROUP BY omits them: add
+      {"$match": {"arr": {"$ne": []}}} before projecting to reproduce that.
+    example:
+      collection: concert_singer__concert
+      pipeline:
+        - {"$lookup": {"from": "concert_singer__singer_in_concert", "localField": "concert_ID", "foreignField": "concert_ID", "as": "s"}}
+        - {"$match": {"s": {"$ne": []}}}
+        - {"$project": {"_id": 0, "concert_Name": 1, "n": {"$size": "$s"}}}
+      check_sql: >-
+        SELECT T1.concert_Name, count(*) FROM concert AS T1 JOIN singer_in_concert AS T2
+        ON T1.concert_ID = T2.concert_ID GROUP BY T1.concert_ID
+      check_db: concert_singer

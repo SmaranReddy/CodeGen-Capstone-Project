@@ -1,0 +1,64 @@
+{
+  "version": "corpus-v1",
+  "builder": "scripts/rag/build_corpus.py",
+  "command": "python scripts/rag/build_corpus.py",
+  "corpus_sha256": "98dc827305fd0a285062b67aa8d72f65d18d2d83b607ebe1d18f3b78d61280a0",
+  "inputs": {
+    "dataset": {
+      "path": "data/processed/spider1_nl_mql_expanded.jsonl",
+      "sha256": "59b6c1f3b537974cc2b400ed27a1e7926401866aae7df47f18081d5719d18134"
+    },
+    "split_manifest": {
+      "path": "data/splits_expanded/split_manifest.json",
+      "sha256": "a6bd1ca9efb2e4009049d4aaaccd80e6c3853c8edc02359e08c3af891352fc67"
+    },
+    "guides": {
+      "path": "data/rag/sources/mongodb_guides.yaml",
+      "sha256": "78a5e9a2f6ea46a6cb8b5f4a851ec1c7d72f146ec2105cd749d387c56a320a17"
+    },
+    "collections": {
+      "path": "data/interim/spider1/atlas_collections.json",
+      "sha256": "bd695601eddcd14dc57c36519b7b064abb6ebc4fbb0ad31202f2a4b2fd8306a3"
+    },
+    "predictions_gpt-oss-120b": {
+      "path": "outputs/evaluation_spider1_expanded/gpt-oss-120b/executions.jsonl",
+      "sha256": "faf2b410a37cbaf19c179913a030748fead2ed9563b2650ff1e4c7567c0feef7"
+    },
+    "predictions_qwen2.5-coder-7b": {
+      "path": "outputs/evaluation_spider1_expanded/qwen2.5-coder-7b/executions.jsonl",
+      "sha256": "517b764e32de55605ae35334a80c91cc4cdc717f2256f624889c18671ab343e6"
+    },
+    "predictions_qwen2.5-coder-3b": {
+      "path": "outputs/evaluation_spider1_expanded/qwen2.5-coder-3b/executions.jsonl",
+      "sha256": "273bbe51bda74acc1fd311ee14b8b364385f3f60dd50d6dc92130a71b248072b"
+    }
+  },
+  "counts": {
+    "example": 280,
+    "guide": 18,
+    "schema": 80
+  },
+  "examples_by_source_model": {
+    "gpt-oss-120b": 265,
+    "qwen2.5-coder-7b": 15,
+    "qwen2.5-coder-3b": 0
+  },
+  "example_databases": [
+    "car_1",
+    "concert_singer",
+    "cre_Doc_Template_Mgt",
+    "dog_kennels",
+    "flight_2",
+    "orchestra",
+    "poker_player",
+    "singer",
+    "student_transcripts_tracking",
+    "voter_1",
+    "world_1",
+    "wta_1"
+  ],
+  "train_items": 318,
+  "train_items_without_example": 38,
+  "leakage_check": "passed (scripts/rag/leakage.py)",
+  "policy": "examples: train databases only, saved predictions re-executed and exec_match-correct now; no hand-written or generated gold MQL. guides: official MongoDB manual paraphrases with executed examples. schema: inference-time information, not retrieved."
+}

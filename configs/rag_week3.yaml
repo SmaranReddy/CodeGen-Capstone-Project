@@ -1,0 +1,71 @@
+# Week 3 RAG pilot (docs/week3_rag_report.md). Model, generation, execution and dataset come
+# UNCHANGED from `base_config`; the only intended difference between experiments is the
+# retrieved context. Each experiment hash covers the model, generation and execution blocks of
+# the base config, the corpus hash and both prompt templates. scripts/rag/run_rag_eval.py
+# refuses to resume into a directory whose records differ in that hash, the partition, the
+# dataset hash or the code hash, and refuses the test partition unless --allow-test is given.
+base_config: configs/evaluation_spider1_expanded.yaml
+corpus_dir: data/rag/corpus_v1
+split_dir: data/splits_expanded
+output_dir: outputs/rag_week3
+provider: qwen                    # Qwen2.5-Coder-3B-Instruct GGUF q4_k_m (same as zero-shot)
+partition: validation
+tokenizer_gguf: models/qwen2.5-coder-3b-instruct-q4_k_m.gguf   # vocab-only load for budgeting
+
+context:
+  max_context_tokens: 1500        # cap on the inserted reference block
+  margin_tokens: 64               # chat-template overhead reserve; n_ctx and max_new_tokens
+                                  # come from the base config (8192, 1024)
+
+# Every experiment that was run is listed here and reported (docs/week3_rag_report.md §6).
+# Selection of the primary retriever was made OFFLINE on train-LODO before any generation
+# (outputs/rag_week3/retrieval_eval.json: hybrid_masked, w = 1.0).
+experiments:
+  zs_rerun:                       # k = 0: prompt byte-identical to zero-shot; checks determinism
+    retrieval: none
+    k: 0
+    k_guides: 0
+  random_k3:                      # control: 3 random train examples, no guides
+    retrieval: random
+    k: 3
+    k_guides: 0
+    seed: 20261020
+  hybrid_k3:                      # primary retriever, examples only
+    retrieval: hybrid_masked
+    hybrid_weight: 1.0
+    k: 3
+    k_guides: 0
+  hybrid_k3_g3:                   # primary retriever + 3 pattern-selected MongoDB guide cards
+    retrieval: hybrid_masked
+    hybrid_weight: 1.0
+    k: 3
+    k_guides: 3
+  hybrid_k3_fk:                   # VALIDATION-INFORMED iteration (added 2026-10-21 after inspecting
+    retrieval: hybrid_masked      # hybrid_k3 validation failures: 12/29 returned 0 rows, mostly a
+    hybrid_weight: 1.0            # string-vs-int join key in museum_visit). Adds schema-derived
+    k: 3                          # notes listing foreign keys whose observed types differ
+    k_guides: 0                   # (inference-time information only). Its validation score is
+    schema_notes: fk_type_mismatch  # optimistically biased; train is the check.
+
+# PRE-REGISTERED SUPPORTING ANALYSIS ON TRAIN (written 2026-10-20 after the validation runs of
+# zs_rerun / random_k3 / hybrid_k3 and BEFORE any train-partition RAG generation):
+#   runs (in this order, 3B only, one at a time):
+#     hybrid_k3 --partition train  ->  outputs/rag_week3/hybrid_k3__train/
+#     random_k3 --partition train  ->  outputs/rag_week3/random_k3__train/
+#     zs_rerun  --partition train  ->  outputs/rag_week3/zs_rerun__train/   (if time allows;
+#                                       otherwise stored zero-shot 3B records are the baseline)
+#   primary contrast: hybrid_k3 vs zero-shot; secondary: hybrid_k3 vs random_k3; same paired
+#   statistics as validation (Wilson, exact McNemar, paired bootstrap).
+#   hybrid_k3 is the train configuration regardless of how hybrid_k3_g3 does on validation.
+#   hybrid_k3_g3 is NOT run on train (guide examples use concert_singer, a train database).
+#   Validation remains the primary evidence. Train is a development partition: the retriever
+#   weight was selected on train-LODO (structural proxy, no generation), so train results are
+#   supporting, in-sample evidence. Each train query only sees examples from OTHER databases.
+#   2026-10-21: a first hybrid_k3 train run was stopped at 39 items and archived
+#   (outputs/rag_week3/history/superseded_non_lodo_index/) because its BM25 index/normaliser
+#   included the query's own database (review finding M1); the per-target-db index fix leaves
+#   every validation selection unchanged. hybrid_k3_fk --partition train was added (after its
+#   design, before any train result) as the train check of the validation-informed variant.
+#   Order: hybrid_k3, random_k3, hybrid_k3_fk, zs_rerun (train).
+#   Near-duplicate check: raw-question Jaccard of each query vs its top-1 retrieved example,
+#   train vs validation; train effect also reported without concert_singer and singer.
