@@ -62,7 +62,7 @@ Week 8.
 - RAG (Qwen-3B, clean Kaggle GPU control, 318 train-partition items): zero-shot 160, random-k3 155,
   hybrid-k3 172. The primary contrast, hybrid vs random, is +5.3 points, McNemar p = 0.021, Holm
   0.064: **not significant**. See ledger MQL-0005.
-- No fine-tuned MQL model exists yet.
+- A QLoRA pilot adapter (3B) has been trained but not yet scored on Atlas (see "Fine-tuning status").
 
 ## Mentor deliverable: Spider → MQL dataset + model comparison (Week 2)
 
@@ -112,10 +112,37 @@ python scripts/rag/rag_report.py --partition train     # outputs/rag_week3/repor
 python -m pytest -q
 ```
 
-## Fine-tuning status (not started)
+## Fine-tuning status (pilot run done, no accuracy number yet)
 
-- `docs/fine_tuning_plan.md` (ft-v1) and `scripts/finetune_v1/train_qlora.py` exist, but **no
-  training has been run**.
+### QLoRA pilot on the approved v2.1 corpus (2026-11-19)
+
+Notebook: `notebooks/kaggle/codegen_finetune.ipynb` (Unsloth, runs on Kaggle or Colab T4).
+Outputs are kept in the notebook so the run can be read without re-running it.
+
+- **Model:** `unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit` (4-bit QLoRA).
+- **Data:** SFT files built from the approved v2.1 corpus, 3,220 train / 225 dev. The dev split
+  holds out whole databases. Builder: `scripts/finetune_pilot/build_pilot_sft.py`
+  (see `scripts/finetune_pilot/README.md`). The `.jsonl` files are gitignored; only
+  `data/finetune_pilot/pilot_v0/manifest.json` is committed.
+- **Settings:** LoRA r=16, alpha=32, dropout 0, all 7 attention + MLP projections
+  (29.9M trainable params, 0.96%); 1 epoch, batch 2 x grad-accum 4, lr 2e-4, cosine, warmup 3%,
+  seed 3407, max length 2048. Loss is on the assistant answer only.
+- **Run:** 403 steps, 43.7 min on one T4, peak GPU memory 2.7 GB, final train loss 0.0456.
+- **Dev loss (100 dev examples):** 0.723 before, 0.026 after.
+- **Before/after demo (3 dev questions):** the base model wraps its answers in markdown fences
+  and uses its own style. After fine-tuning it returns bare JSON in the corpus style, and one
+  demo answer matches gold exactly. The join demo is still wrong (wrong collection, `$lookup`
+  missing).
+- **Not an accuracy result.** Lower dev loss and valid JSON only show the pipeline works.
+  Execution accuracy on Atlas with the project scorer is still pending and nothing has been
+  added to the ledger.
+- **Next:** score the adapter on Atlas; try r 8/32, lr 1e-4, 2 epochs, and the 7B model; use
+  both Kaggle T4s to cut training time.
+
+### ft-v1 (not run)
+
+- `docs/fine_tuning_plan.md` (ft-v1) and `scripts/finetune_v1/train_qlora.py` exist, but ft-v1
+  has never been trained.
 - **Do not run ft-v1 as written.** `data/finetune/ft_v1/` still contains the 88 converter labels
   the 2026-10-25 audit found wrong (86 in `train.jsonl`, 2 in `dev_internal.jsonl`;
   `docs/sql2mql_independent_audit.md`), plus 51 labels with SQL-level date-equality errors (45 in
@@ -151,6 +178,7 @@ Raw Spider 2.0-Lite files live in `data/raw/spider2/` and are **never modified**
 | `data/splits/` | Database-disjoint train/validation/test split of the 279 Spider 1.0 examples (retrospective; see `docs/week2_report.md` §9.2) |
 | `data/splits_expanded/` | Database-disjoint 318/72/65 train/validation/test split of the 455 expanded benchmark. The 65-item test partition is used once, at the final evaluation |
 | `data/finetune/ft_v1/` | ft-v1 MQL SFT candidate (not training-ready; see "Fine-tuning status") |
+| `data/finetune_pilot/` | SFT pilot data manifests (`.jsonl` files gitignored; see "Fine-tuning status") |
 | `src/data/` | Dataset loading and preparation utilities |
 | `src/conversion/` | Logic for adapting Spider examples to MongoDB/MQL |
 | `src/validation/` | Logic for validating/executing MQL against MongoDB |
