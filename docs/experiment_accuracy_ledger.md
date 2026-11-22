@@ -575,11 +575,31 @@ The results here use different datasets and metrics (the Spider-derived MQL benc
 - **Artifacts:** export `outputs/mql0008_predictions.zip` (sha256 2e4774f2117e480eba3b997e33ac209475794376f483561c85db77017192f65c); run `outputs/nl2mql_mql0008_approved_corpus_v2_1/scoring_runs/run_20261117T053551Z/` (`input_validation_report.json`, `predictions/`, `scoring/results_report.md` sha256 1daa8f71eceeddab1cf011f5423bd70a4d0ae1638229ab223513a25bfb88bf47, `scoring/analysis.json`, `scoring/paired_comparison.jsonl`, `scoring/arms/<arm>/evaluation_results.jsonl`, `scoring/RUN_MANIFEST.json`); package `kaggle/nl2mql_mql0008_approved_corpus_v2_1/`; scorer `scripts/nl2mql_mql0008/`.
 - **Not checked:** no executed Kaggle notebook or Kaggle log is saved locally, so model, GPU and library identity rest on the export's own run configs. Scoring was run once (no repeat to measure tie-order noise). Test partition (65): not evaluated.
 
+### MQL-0009: QLoRA fine-tuning pilot, Qwen-3B (Unsloth, Kaggle T4), approved corpus v2.1 SFT data
+
+**Status: provisional 2026-11-19.** Training run only. **No execution accuracy has been measured**: the adapter has not been run on Atlas, so this entry has no `correct / total` metric and is not in "Current best results".
+
+| Item | Value |
+|---|---|
+| Task | NL→MQL supervised fine-tuning (training-pipeline pilot) |
+| Model | `unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit` (pre-quantised 4-bit). **Revision not pinned** |
+| Hardware / libraries | Kaggle, 1 × Tesla T4 (`CUDA_VISIBLE_DEVICES=0`); unsloth 2026.11.6, unsloth_zoo 2026.11.6, torch 2.11.0+cu130, transformers 5.17.0, trl 1.15.0, peft 0.21.2, accelerate 1.15.0, bitsandbytes 0.50.2, datasets 4.8.5. Adapter saved 2026-11-19 04:46 (Kaggle clock) |
+| Data | `sft_train.prompt_completion.jsonl` 3,220 / `sft_dev.prompt_completion.jsonl` 225, from the Kaggle dataset `codegen-nl2mql-sft-approved-v2-1` (built from approved corpus v2.1; dev holds out whole databases). **The SFT files, their manifest and hashes are not in the repo**; the committed `data/finetune_pilot/pilot_v0/` (3,346 / 243, provisional corpus v1) is a different, earlier build |
+| Prompt | prompt/completion chat messages from the SFT files, Qwen chat template; loss on the assistant answer only (`train_on_responses_only`) |
+| Training settings | QLoRA r 16, alpha 32, dropout 0, targets q/k/v/o/gate/up/down_proj (29,933,568 trainable of 3,115,872,256, 0.96%); 1 epoch, 403 steps; batch 2 × grad-accum 4 (effective 8); lr 2e-4, cosine, warmup 3%; seed 3407; max_seq_length 2048; no packing |
+| Run | 43.7 min training; peak GPU memory reserved 2.7 GB; final train loss 0.0456 |
+| Dev loss (first 100 dev examples, same examples before and after) | base 0.7231, fine-tuned 0.0264 |
+| Demo (3 dev questions, greedy, max_new_tokens 512) | before: all 3 in markdown fences, none matches gold text. After: bare JSON; `spider_train_00216` text-identical to gold; `spider_train_00226` identical except output field `publisher` vs gold `Publisher`; `spider_train_00223` (join) wrong collection, no `$lookup`. Text comparison only, nothing executed |
+| Artifacts | notebook with outputs `notebooks/kaggle/codegen_finetune.ipynb` (sha256 a0438fe6411f4eac4aa4486a664f83d26fbbf77f6c4caf52068e55d87c246b2a). The adapter (`/kaggle/working/qwen25coder3b_lora_r16/`, incl. `run_info.json`, `pip_freeze.txt`) is **not saved locally** |
+| Not checked | SFT data hashes and counts (only the notebook's printed counts); model revision; adapter files; Atlas execution accuracy; MQL test partition (65): not evaluated |
+| Comparability | Loss values are not accuracy and are not comparable with any MQL-0001 to MQL-0008 result |
+
 ### Recorded but not ledger results
 
 - **Spider 2.0-Lite 68** (`data/processed/nl_mql_dataset.jsonl`): only reference-oracle (gold replay) harness runs exist. In `outputs/evaluation_68/reference_baseline/`, 62/68 executed and matched and 6 hit execution errors. The 6 were re-run in `reference_slow6/` (2/6 correct, 3 execution errors) and again in `reference_slow6b/` (6/6 correct). **No model has been evaluated on it.**
 - Partial Gemini runs and the CPU `random_k3__train` run: incomplete; see MQL-0001 and MQL-0004.
 - No fine-tuned MQL model exists. No MQL test-partition (65) evaluation has been run for any RAG or fine-tuning experiment.
+  - *Note 2026-11-19:* a fine-tuned pilot adapter now exists (MQL-0009), but it has not been evaluated on Atlas. The test-partition statement still holds.
 
 ## C. Dataset audits
 

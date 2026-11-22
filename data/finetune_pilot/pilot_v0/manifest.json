@@ -1,0 +1,60 @@
+{
+ "dataset": "finetune_pilot_v0",
+ "status": "PILOT_NOT_BENCHMARK_FAITHFUL",
+ "builder": "scripts/finetune_pilot/build_pilot_sft.py",
+ "corpus": {
+  "path": "provisional_rag_corpus.jsonl",
+  "sha256": "61553d03fe4244d7d14a82c434482ef73f5e74b59f95e0cf983dd07806c7fc3d",
+  "records": 3589,
+  "corpus_version": "provisional_corpus_v1",
+  "corpus_status": "PROVISIONAL",
+  "human_review_status": "NOT_REVIEWED"
+ },
+ "prompt": {
+  "source": "scripts/spider1/prompt_spider1.py",
+  "version": "nl-mql-spider1-v1"
+ },
+ "seed": 20261118,
+ "counts": {
+  "train": 3346,
+  "dev": 243,
+  "databases": 123,
+  "dev_databases": [
+   "book_2",
+   "browser_web",
+   "customer_deliveries",
+   "e_learning",
+   "game_1",
+   "icfp_1",
+   "local_govt_in_alabama",
+   "local_govt_mdm",
+   "news_report",
+   "restaurant_1",
+   "riding_club",
+   "workshop_paper"
+  ]
+ },
+ "estimated_tokens_chars_div_3_2": {
+  "mean": 836,
+  "max": 1668,
+  "records_over_warn": 0,
+  "warn_at": 3500,
+  "note": "approximation only; run a real tokenizer audit"
+ },
+ "leakage_checks": {
+  "corpus_dbs_vs_eval_dbs_overlap": [],
+  "eval_dbs_checked": 17,
+  "question_overlap_with_892": "NOT checked here (the 892 questions are not in git)"
+ },
+ "deviations_from_benchmark_prompt": [
+  "collections = union of collections touched by any corpus entry of the database (unused tables missing)",
+  "foreign keys written '(none)'",
+  "sample documents written '(none)'",
+  "field types mapped from observed_kind + sqlite_affinity, not read from stored data"
+ ],
+ "outputs": {
+  "meta.jsonl": "f056287433c3876c590ce068fa1c1954b1455f7400d751106f3faa6ee7db97ba",
+  "sft_dev.prompt_completion.jsonl": "63904651696343b17aae460284dcdd8a25d08f77ef9c4e07551a1c7be81813cd",
+  "sft_train.prompt_completion.jsonl": "0aad2a3845b0057fd2d7dc9e5c152f0d021a663bfa55403db23c779397ae716c"
+ }
+}

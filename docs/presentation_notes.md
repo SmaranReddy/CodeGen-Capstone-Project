@@ -406,3 +406,15 @@ Status: **package built, not yet executed**. There is no MQL-0008 result.
 - **Caveats:** the zero-shot score is 415 here and 421 in earlier runs with identical model output, because 6 tie-dependent queries returned a different tied row on Atlas; the corpus is AI-reviewed, not human-reviewed; RAG produced more execution errors (29 vs 13).
 - Metric is cross-engine execution accuracy on Atlas, not exact match. Details: ledger entry MQL-0008.
 
+
+## 20. First fine-tuning run: QLoRA pilot on Qwen-3B (2026-11-19)
+
+Status: **training done, not yet evaluated**. There is no fine-tuning accuracy number yet. Ledger entry MQL-0009 (provisional).
+
+- **What:** a LoRA adapter for Qwen2.5-Coder-3B (4-bit, Unsloth), trained on the approved corpus v2.1 SFT data: 3,220 training and 225 dev examples, dev on held-out databases.
+- **Cost:** 1 epoch, 43.7 minutes on one free Kaggle T4, 2.7 GB GPU memory. Only 0.96% of the model's weights are trained.
+- **Dev loss:** 0.72 before, 0.026 after.
+- **Before/after on 3 dev questions:** the base model wraps answers in markdown and uses its own query style. The fine-tuned model returns bare JSON in the corpus style: one answer matches gold exactly, one differs only in a field-name capital letter, and the join question is still wrong.
+- **Caveat:** lower loss and well-formed JSON show the training pipeline works. They do not show the queries are correct. That needs execution on Atlas with the MQL-0008 scorer.
+- **Next:** score the adapter on the 892 questions; try r 8/32, lr 1e-4, 2 epochs and the 7B model; try using both T4s to cut training time.
+- Notebook with outputs: `notebooks/kaggle/codegen_finetune.ipynb`.
