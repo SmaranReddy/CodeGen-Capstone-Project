@@ -1,0 +1,468 @@
+{
+ "experiment_id": "MQL-0009",
+ "title": "MQL-0009 - NL->MQL retrieval-control experiment (zero-shot / random / fixed / hybrid RAG)",
+ "package": "nl2mql_mql0009_retrieval_control",
+ "status": "PACKAGE BUILT - NOT EXECUTED (no prediction or score exists)",
+ "question": "Does the MQL-0008 hybrid-RAG gain come from RELEVANT retrieval, or from supplying any three demonstrations?",
+ "registered_at": "2026-11-18",
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "label": "qwen2.5-coder-3b-instruct",
+  "dtype": "bfloat16",
+  "dtype_note": "bfloat16 exactly as MQL-0006/0007/0008. Those runs used a Tesla T4 (compute capability 7.5), which has no native bf16: PyTorch emulated bf16 (torch.cuda.is_bf16_supported() is True with emulation). The notebook records compute capability and bf16_native per run, accepts only the registered GPU, and never substitutes fp16/fp32.",
+  "runtime": "transformers GPU, one card (CUDA_VISIBLE_DEVICES=0)",
+  "decoding": "greedy (do_sample=False)",
+  "max_new_tokens": 1024,
+  "batch_size": 8,
+  "seed": 42,
+  "oom_policy": "a batch that hits CUDA OOM is retried one prompt at a time (same prompt/dtype/decoding) and the record says so"
+ },
+ "hardware": {
+  "allowed_gpus": [
+   "Tesla T4"
+  ],
+  "min_gpu_gib": 14.0,
+  "bf16_emulation_allowed": true,
+  "historical_mql0008": {
+   "gpu": "Tesla T4",
+   "dtype": "bfloat16",
+   "torch": "2.11.0+cu130",
+   "transformers": "5.20.2",
+   "accelerate": "1.15.0",
+   "tokenizers": "0.23.3",
+   "bf16_supported_reported": true,
+   "resolved_revision_recorded": null,
+   "source": "outputs/nl2mql_mql0008_approved_corpus_v2_1/scoring_runs/run_20261117T053551Z/predictions/arm_b_hybrid_rag/run_config.json"
+  },
+  "resolution": "keep bf16 (comparability with MQL-0008 arm B); T4 bf16 is emulated, recorded as such; all 8 runs must share GPU type, dtype, torch and transformers (resume refuses otherwise)"
+ },
+ "prompt": {
+  "zero_shot_version": "nl-mql-spider1-v1",
+  "zero_shot_template_sha256": "7401bf140dd1b8a9dac057edd9f729a8624823604fa2bd6ae9cfaf1c1890c1be",
+  "zero_shot_prompts_sha256": "7e7651202bafd7ed2818111e854f09ed7272cd013515dd700c7410d0a1030123",
+  "rag_version": "nl-mql-spider1-rag-v1",
+  "rag_rule": "RAG prompt = zero-shot prompt with one reference block inserted before the final 'Question:' line; empty context => byte-identical to zero-shot",
+  "schema_context": "nl-mql-spider1-v1 Atlas-form context for the 16 held-out DBs, derived offline from SQLite with the import_atlas.py mapping (provisioning contract: scoring requires full Atlas parity)"
+ },
+ "evaluation": {
+  "n_items": 639,
+  "n_databases": 16,
+  "db_ids": [
+   "chinook_1",
+   "company_employee",
+   "cre_Docs_and_Epenses",
+   "election_representative",
+   "epinions_1",
+   "gymnast",
+   "hr_1",
+   "inn_1",
+   "machine_repair",
+   "manufactory_1",
+   "phone_market",
+   "ship_1",
+   "small_bank_1",
+   "swimming",
+   "tracking_share_transactions",
+   "tracking_software_problems"
+  ],
+  "ids_sha256": "6f1425f71310e043eb4698ea655c7b39943e18531fe197f1d7cac22a3ed90a29",
+  "source": "spider-pool-v3 val_internal membership (639) x spider-sql-v1 val_internal records; database-level split of Spider train (16 whole DBs, seeded shuffle seed 20261027); gold SQL / rows NOT shipped",
+  "protected_db_ids": [
+   "battle_death",
+   "car_1",
+   "concert_singer",
+   "course_teach",
+   "cre_Doc_Template_Mgt",
+   "dog_kennels",
+   "employee_hire_evaluation",
+   "flight_2",
+   "museum_visit",
+   "network_1",
+   "orchestra",
+   "pets_1",
+   "poker_player",
+   "real_estate_properties",
+   "singer",
+   "student_transcripts_tracking",
+   "tvshow",
+   "voter_1",
+   "world_1",
+   "wta_1"
+  ],
+  "protected_note": "the 892-item MQL-0008 evaluation set (Spider dev) and the 65-item test partition are not used"
+ },
+ "corpus": {
+  "name": "approved_corpus_v2_1",
+  "source_path": "outputs/sql2mql_v2_1/approved_corpus_v2_1/corpus.jsonl",
+  "package_path": "data/corpus/approved_corpus_v2_1.jsonl",
+  "n_entries": 3445,
+  "source_sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "eligible_view": {
+   "n": 3445,
+   "n_source": 3445,
+   "ids_sha256": "966830c1f7ef3c617685c9333bb27cb0763dcb09d49ede67ec72c9187b1f9f15",
+   "removed": 0,
+   "db_ids": [
+    "activity_1",
+    "aircraft",
+    "allergy_1",
+    "apartment_rentals",
+    "architecture",
+    "assets_maintenance",
+    "baseball_1",
+    "behavior_monitoring",
+    "bike_1",
+    "body_builder",
+    "book_2",
+    "browser_web",
+    "candidate_poll",
+    "cinema",
+    "city_record",
+    "climbing",
+    "club_1",
+    "coffee_shop",
+    "college_1",
+    "college_2",
+    "college_3",
+    "company_1",
+    "company_office",
+    "county_public_safety",
+    "cre_Doc_Control_Systems",
+    "cre_Doc_Tracking_DB",
+    "cre_Drama_Workshop_Groups",
+    "cre_Theme_park",
+    "csu_1",
+    "culture_company",
+    "customer_complaints",
+    "customer_deliveries",
+    "customers_and_addresses",
+    "customers_and_invoices",
+    "customers_and_products_contacts",
+    "customers_campaigns_ecommerce",
+    "customers_card_transactions",
+    "debate",
+    "decoration_competition",
+    "department_management",
+    "department_store",
+    "device",
+    "document_management",
+    "dorm_1",
+    "driving_school",
+    "e_government",
+    "e_learning",
+    "election",
+    "entertainment_awards",
+    "entrepreneur",
+    "farm",
+    "film_rank",
+    "flight_1",
+    "flight_4",
+    "flight_company",
+    "formula_1",
+    "game_1",
+    "game_injury",
+    "gas_company",
+    "hospital_1",
+    "icfp_1",
+    "insurance_and_eClaims",
+    "insurance_fnol",
+    "insurance_policies",
+    "journal_committee",
+    "loan_1",
+    "local_govt_and_lot",
+    "local_govt_in_alabama",
+    "local_govt_mdm",
+    "manufacturer",
+    "match_season",
+    "medicine_enzyme_interaction",
+    "mountain_photos",
+    "movie_1",
+    "music_1",
+    "music_4",
+    "musical",
+    "network_2",
+    "news_report",
+    "party_host",
+    "party_people",
+    "performance_attendance",
+    "perpetrator",
+    "phone_1",
+    "pilot_record",
+    "product_catalog",
+    "products_for_hire",
+    "products_gen_characteristics",
+    "program_share",
+    "protein_institute",
+    "race_track",
+    "railway",
+    "restaurant_1",
+    "riding_club",
+    "roller_coaster",
+    "sakila_1",
+    "school_bus",
+    "school_finance",
+    "school_player",
+    "scientist_1",
+    "ship_mission",
+    "shop_membership",
+    "soccer_1",
+    "soccer_2",
+    "solvency_ii",
+    "sports_competition",
+    "station_weather",
+    "store_1",
+    "store_product",
+    "storm_record",
+    "student_1",
+    "student_assessment",
+    "theme_gallery",
+    "tracking_grants_for_research",
+    "tracking_orders",
+    "train_station",
+    "twitter_1",
+    "university_basketball",
+    "voter_2",
+    "wedding",
+    "wine_1",
+    "workshop_paper",
+    "wrestler"
+   ],
+   "rule": "corpus rows whose db_id is not an evaluation database (and not otherwise excluded), corpus order"
+  },
+  "review_label": "AI-reviewed (G-AIR, AI-only protocol); never human-reviewed. Labels validated on local MongoDB 8.0.34 with verifier 3.1; never executed on Atlas."
+ },
+ "retrieval": {
+  "bm25_k1": 1.5,
+  "bm25_b": 0.75,
+  "hybrid_weight": 1.0,
+  "method_relevant": "hybrid_masked",
+  "tie_break": "score desc, then doc_id (retrieval.py)",
+  "index": "per target database, target-db documents excluded",
+  "guides": 0,
+  "dedup": "same doc_id, same MQL, or same normalised question: higher-ranked copy kept"
+ },
+ "context": {
+  "k": 3,
+  "max_context_tokens": 1500,
+  "margin_tokens": 64,
+  "n_ctx": 8192,
+  "max_new_tokens": 1024,
+  "token_budgeting": "Qwen2.5 tokenizer at the pinned revision (HF AutoTokenizer, add_special_tokens=False) over system+user text and the block; over-budget documents are skipped (dropped_budget), never truncated"
+ },
+ "arm_runs": {
+  "A_zero_shot": {
+   "family": "zero_shot",
+   "k": 0,
+   "label": "A. zero-shot (no demonstrations)"
+  },
+  "B_random_s1": {
+   "family": "random",
+   "k": 3,
+   "seed": 20261181,
+   "label": "B. random RAG seed 1: retrieval.Retriever(method='random', seed=20261181)"
+  },
+  "B_random_s2": {
+   "family": "random",
+   "k": 3,
+   "seed": 20261182,
+   "label": "B. random RAG seed 2: retrieval.Retriever(method='random', seed=20261182)"
+  },
+  "B_random_s3": {
+   "family": "random",
+   "k": 3,
+   "seed": 20261183,
+   "label": "B. random RAG seed 3: retrieval.Retriever(method='random', seed=20261183)"
+  },
+  "B_random_s4": {
+   "family": "random",
+   "k": 3,
+   "seed": 20261184,
+   "label": "B. random RAG seed 4: retrieval.Retriever(method='random', seed=20261184)"
+  },
+  "B_random_s5": {
+   "family": "random",
+   "k": 3,
+   "seed": 20261185,
+   "label": "B. random RAG seed 5: retrieval.Retriever(method='random', seed=20261185)"
+  },
+  "C_fixed": {
+   "family": "fixed",
+   "k": 3,
+   "label": "C. fixed-example RAG: the same 3 frozen corpus ids for every question"
+  },
+  "D_hybrid": {
+   "family": "hybrid",
+   "k": 3,
+   "label": "D. MQL-0008 hybrid RAG (hybrid_masked, w=1.0), unchanged"
+  }
+ },
+ "random_retrieval": {
+  "seeds": [
+   20261181,
+   20261182,
+   20261183,
+   20261184,
+   20261185
+  ],
+  "method": "retrieval.Retriever(method='random'): per question, order = random.Random(int(sha256(f'{seed}:{qid}:{question}')[:16], 16)).shuffle(corpus order); target-db, duplicate and exclusion filtering, then the shared budget loop takes the first 3 that fit (uniform over the eligible view, distinct)",
+  "registered_at": "2026-11-18, before any plan was built"
+ },
+ "fixed_retrieval": {
+  "ids": [
+   "spider_train_02033",
+   "spider_train_01967",
+   "spider_train_03829"
+  ],
+  "db_ids": [
+   "gas_company",
+   "products_for_hire",
+   "e_learning"
+  ],
+  "seed": 20261186,
+  "skipped_for_leakage": 0,
+  "procedure": "seeded draw from the eligible view; corpus attributes + question-level leakage gate only; see preflight/fixed_selection.json"
+ },
+ "leakage_gates": {
+  "near_duplicate_token_jaccard": 0.8,
+  "policy": "L1 db / L2 id+source overlap: STOP; L3 exact, L4 normalised question, L5 Jaccard >= 0.8: evaluation-specific retrieval exclusion after ranking, identical for every demonstration arm; L6/L7 SQL-based: report only (gold never drives retrieval)"
+ },
+ "retrieval_exclusions": [
+  {
+   "eval_id": "spider_train_00810",
+   "corpus_id": "spider_train_00614"
+  },
+  {
+   "eval_id": "spider_train_01692",
+   "corpus_id": "spider_train_00276"
+  },
+  {
+   "eval_id": "spider_train_01744",
+   "corpus_id": "spider_train_00098"
+  },
+  {
+   "eval_id": "spider_train_01744",
+   "corpus_id": "spider_train_01120"
+  },
+  {
+   "eval_id": "spider_train_01744",
+   "corpus_id": "spider_train_02271"
+  },
+  {
+   "eval_id": "spider_train_01744",
+   "corpus_id": "spider_train_02308"
+  },
+  {
+   "eval_id": "spider_train_01744",
+   "corpus_id": "spider_train_02542"
+  },
+  {
+   "eval_id": "spider_train_01779",
+   "corpus_id": "spider_train_00668"
+  },
+  {
+   "eval_id": "spider_train_01796",
+   "corpus_id": "spider_train_01507"
+  },
+  {
+   "eval_id": "spider_train_01797",
+   "corpus_id": "spider_train_03256"
+  },
+  {
+   "eval_id": "spider_train_01797",
+   "corpus_id": "spider_train_06494"
+  },
+  {
+   "eval_id": "spider_train_02235",
+   "corpus_id": "spider_train_00650"
+  },
+  {
+   "eval_id": "spider_train_06244",
+   "corpus_id": "spider_train_03998"
+  },
+  {
+   "eval_id": "spider_train_06385",
+   "corpus_id": "spider_train_00667"
+  },
+  {
+   "eval_id": "spider_train_06386",
+   "corpus_id": "spider_train_00668"
+  },
+  {
+   "eval_id": "spider_train_06420",
+   "corpus_id": "spider_train_00722"
+  },
+  {
+   "eval_id": "spider_train_06432",
+   "corpus_id": "spider_train_06476"
+  }
+ ],
+ "plans_sha256": {
+  "A_zero_shot": "6aed32644dbfb44745b4e7ea0ed006c5e259224efa5781950047b8a2ecf38a9c",
+  "B_random_s1": "bf1896ddb44d52286594da9f379b5f6cc43eb5eaa0c78acfb8d1b487716288de",
+  "B_random_s2": "610dd559e6e0ca63202bcdf9792b3c8f5c2539d9b52815b66b9733d5275381a7",
+  "B_random_s3": "0658ee29408bb1040ea55621156c2465900b87ddd5bd293443b0ff7fdeabb7b6",
+  "B_random_s4": "03d3c52c54e7956004048cf5522d49b32cbfdaea848aa34b87e0519fa7dd1e6d",
+  "B_random_s5": "3f1a910ff2be42af5cc4f41b62442510e8be83c3ba1bae15a9ad8f5507945c28",
+  "C_fixed": "00b98b4cff37e6f1fcfd92f374e90f59ef909b1eee9ced3c01d78c39f1a2186f",
+  "D_hybrid": "984fb0d67aefa33edf99d1013ac04b2e67d5f9b5292c4bdb027f1c056b550439"
+ },
+ "session_plan": {
+  "estimate_basis": "MQL-0008 Tesla T4 wall clock: zero-shot 2.3 h / 892 items, hybrid 12,198.8 s / 892 items",
+  "estimated_hours": {
+   "zero_shot_run": 1.65,
+   "each_rag_run": 2.43,
+   "total": 18.64
+  },
+  "1": {
+   "runs": [
+    "A_zero_shot",
+    "D_hybrid",
+    "B_random_s1"
+   ],
+   "est_hours": 6.5
+  },
+  "2": {
+   "runs": [
+    "C_fixed",
+    "B_random_s2",
+    "B_random_s3"
+   ],
+   "est_hours": 7.28
+  },
+  "3": {
+   "runs": [
+    "B_random_s4",
+    "B_random_s5"
+   ],
+   "est_hours": 4.85
+  },
+  "rule": "sessions 2 and 3 resume from the previous version's output (RESUME_FROM='auto') in the pinned environment; a 12-hour Kaggle session cannot hold all runs. Session 1 holds D and one random seed together so the primary contrast has a same-session pair. If the pinned environment is lost (resume refused), regenerate ALL runs in one new environment under a new output; never mix environments"
+ },
+ "analysis_plan_sha256": "ecb7479f7909a65f726fadce1e49dda4f6cc472cbcf9c2eaa3f2d59eb2bb4144",
+ "frozen_reference": {
+  "experiment": "MQL-0008",
+  "config_sha256": "c5295b3858ef4ef82a4ae6f8ac310c26abe0b0e3c004082ac176f8facf54c13f",
+  "package_manifest_sha256": "fb20c496fa20fbc5eecc60b1407ac3858a6370cd607df257709b3cea4e26fed8",
+  "shared_source_sha256": {
+   "mql0008_core.py": "16c15a5b3393ed96a8def93770c76733d287634bd39e4e236b3b59d9f283d24f",
+   "patterns.py": "59de553454cc2c2720d083be9ecbd52707a87673e66fb60b8f806e05c8b4748d",
+   "retrieval.py": "9d487c5bb72db18676d79ca5ebadc546060768b096d94b665db3522939ee1494",
+   "rag_block.py": "72b4f45601d2c4e1e5c71ce3a9f4a5a19252344347f25131bb23598cf963330e"
+  },
+  "must_equal": [
+   "model",
+   "retrieval",
+   "context",
+   "prompt.zero_shot_template_sha256",
+   "prompt.rag_version"
+  ]
+ },
+ "stated_differences_from_MQL-0008": [
+  "evaluation set: 639 held-out Spider-train questions on 16 databases (spider-sql-v1 val_internal / spider-pool-v3) instead of the 892 Spider-dev questions; schema context derived offline (those DBs are not on Atlas yet)",
+  "arms: A, five random seeds, fixed, hybrid (8 runs) instead of A and hybrid",
+  "retrieval exclusions recomputed for this evaluation set (question-level gates); the MQL-0008 exclusions refer to dev ids",
+  "prediction records add prediction_id, arm_family, random_seed, precision, runtime, parse_status, normalized_mql",
+  "the eligible corpus view equals the full approved corpus (no corpus database is an evaluation database)"
+ ]
+}

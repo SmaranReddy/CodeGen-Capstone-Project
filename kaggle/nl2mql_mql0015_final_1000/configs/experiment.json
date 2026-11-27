@@ -1,0 +1,136 @@
+{
+ "experiment_id": "MQL-0015",
+ "package": "nl2mql_mql0015_final_1000",
+ "status": "PACKAGE BUILT - NOT EXECUTED (no prediction or score exists)",
+ "registration_sha256": "fb5d07d0c282b4eeb5ffd5da59c2bc3ab09068eb420a59cbf559920e6d85ab69",
+ "amendment_A1_sha256": "a67224d5feffe7436adf75eceb5812f399bd983758e1de710c41490de2ff51f0",
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "label": "qwen2.5-coder-3b-instruct",
+  "dtype": "bfloat16",
+  "decoding": "greedy (do_sample=False)",
+  "max_new_tokens": 1024,
+  "seed": 42,
+  "batch_size_first_pass": 8,
+  "batch_size_retry": 1,
+  "runtime": "transformers GPU, one card (CUDA_VISIBLE_DEVICES=0)"
+ },
+ "hardware": {
+  "allowed_gpus": [
+   "Tesla T4"
+  ],
+  "min_gpu_gib": 14.0,
+  "bf16_emulation_allowed": true
+ },
+ "context": {
+  "k": 3,
+  "max_context_tokens": 1500,
+  "n_ctx": 8192,
+  "max_new_tokens": 1024,
+  "margin_tokens": 64
+ },
+ "ft": {
+  "adapter_path_in_package": "model/ft_adapter",
+  "adapter_sha256": "7096760ac2ed7e4a6c2eefdd7c0c249d4b3dba723f069982a499b876d434e09d",
+  "adapter_config_sha256": "3302913371469f750b4f121b833f0a8e93081f70ae9647a250bef3beec0926a5",
+  "lora": {
+   "r": 16,
+   "alpha": 32
+  },
+  "trained_on": "unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit (QLoRA)",
+  "merge": "peft merge_and_unload into the bf16 base 488639f1 (as MQL-0010-FT1)",
+  "tokenizer": "base tokenizer at 488639f1 (not the Unsloth tokenizer files)",
+  "only_checkpoint": "the notebook loads only this in-package adapter and refuses other attached adapters"
+ },
+ "retrieval": {
+  "family": "hybrid R3 (frozen)",
+  "lexical": "rrf_fused",
+  "k": 3,
+  "index": "mql0011__v2_1_view2912__bge_small_en_v1_5__5c38ec7c__masked_q",
+  "embedder": "BAAI/bge-small-en-v1.5",
+  "embedder_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+  "corpus_sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "view_ids_sha256": "cfde5e9c2df334bbfd08f159671b819e84ca9850c3fbb35d59c02ffb7a8d08de",
+  "view_n": 2912,
+  "embedding_manifest_sha256": "ff5f899bd9701e2372ea7138b23d26954bd184d9c89e0fc88f9751f465405e4d",
+  "embedding_files_sha256": {
+   "doc_index.jsonl": "9341c6ad360bf913895d8ed2067af0bd32c0bbd54dae9792b9292de9fb5dd041",
+   "doc_vectors.npy": "fd74ab726c53bb8b82b0673af83bec3e4aa97fbd459e7ea31e8452a9ec73c8e8"
+  },
+  "plans": "frozen MQL-0013 plan_R3 rows (not re-derived)"
+ },
+ "arms": {
+  "A0V": {
+   "model": "base",
+   "prompts": "A0",
+   "component_V": "schema"
+  },
+  "R3V": {
+   "model": "base",
+   "prompts": "R3",
+   "component_V": "schema"
+  },
+  "FT-R3V": {
+   "model": "ft",
+   "prompts": "R3",
+   "component_V": "schema"
+  }
+ },
+ "evaluation": {
+  "source": "data/processed/spider_sql_v1/test_full.jsonl",
+  "n_items": 1000,
+  "ids_sha256": "5439b8b45c493b07dc7b4fa2ccae980e338cda8190ccb21c75119c216eb6fceb",
+  "n_databases": 40
+ },
+ "prompt_lengths": {
+  "r3_tokens_median": 1314,
+  "r3_tokens_max": 3782,
+  "r3_over_2048": 144,
+  "truncation": "none"
+ },
+ "frozen_inputs_sha256": {
+  "mql0013_bundle_zip": "5cd0034064950325474e028824a577ba7506caeccf6e005d6bc7292d6244f89a",
+  "mql0013_package_manifest": "b43c56255c624a2ab44a560397bf72fc7304ab082bf325e6cfb03c7a45c253a3",
+  "prompt_pins": "f251746419101174154b7ebac76f0f5b5047df7e1ed65952afc2d7c3162487c4",
+  "sample_manifest": "640482af7855b78b46394316329da1810f2520ca033dd2438b7658c6cc3aeddf"
+ },
+ "scoring_contract": {
+  "path": "outputs/nl2mql_final_1000/scoring_contract/atlas_mapping.json",
+  "sha256": "6095bf442f29a2409241165cdc2a24ed5b9ace505a14c09462a2fee9ab89e45e",
+  "atlas_db": "codegen_spider1_test_mql0015",
+  "collections": 180,
+  "documents": 245574,
+  "copied_from": {
+   "path": "outputs/nl2mql_mql0013/scoring_contract/atlas_mapping.json",
+   "sha256": "32cbbc4dd82a18d12f1288b6491e14931481543b09c09f1df711f745e9cf4f42",
+   "changed_fields": [
+    "atlas_db",
+    "status"
+   ]
+  }
+ },
+ "prompt_context_sha256": {
+  "prompt_samples.json": "a86babdf98a50c14c6e506466d2013cc47f80e76fa1434b4a6f6a92add47577a",
+  "tables.json": "99210d882237ca5bec5eaa8bd58de1b6e31ee3a9ad360b73675014ef50e46f47"
+ },
+ "analysis_sha256": {
+  "scripts/nl2mql_mql0015/src/mql0015_analysis.py": "6d678844eeacec93882215ffec0fe3321fa432c63439657d2a92d11ccd3f87b7"
+ },
+ "scoring_code_sha256": {
+  "scripts/nl2mql_mql0015/mql0015_scoring.py": "e2d397e7ddd7ea65c0a37dfd5dc49bc212a7fec333e8dbeb821361bc71de967f",
+  "scripts/nl2mql_mql0015/src/mql0015_common.py": "5602f311cbb0981a8ffd7d4fd719b55f98c5a9d534bb3646c734a406ff89c32f",
+  "scripts/nl2mql/dev1034_core.py": "81b86f0b08bb5221925e23ef80fe4caa4b8ce06b41f1f21c20826b735b71b65e"
+ },
+ "session_plan": {
+  "1": [
+   "first:A0",
+   "first:R3",
+   "retry:base"
+  ],
+  "2": [
+   "first:FT-R3",
+   "retry:FT"
+  ]
+ }
+}

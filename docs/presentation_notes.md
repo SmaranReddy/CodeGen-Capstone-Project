@@ -406,3 +406,240 @@ Status: **package built, not yet executed**. There is no MQL-0008 result.
 - **Caveats:** the zero-shot score is 415 here and 421 in earlier runs with identical model output, because 6 tie-dependent queries returned a different tied row on Atlas; the corpus is AI-reviewed, not human-reviewed; RAG produced more execution errors (29 vs 13).
 - Metric is cross-engine execution accuracy on Atlas, not exact match. Details: ledger entry MQL-0008.
 
+## 20. MQL-0009 planned: does RAG help because of relevance or just because of examples? (2026-11-18)
+
+- **Status: PENDING.** The package is built and not run. There are no results.
+- **Design:** four arms on 639 held-out Spider-train questions (16 databases the corpus never saw):
+  - zero-shot;
+  - random examples, with 5 seeds;
+  - the same 3 fixed examples for every question;
+  - the MQL-0008 hybrid retriever.
+- **Fairness:** same model, prompt, budget and K=3; only the choice of examples differs.
+- **Leakage audit:** no database or id overlap; 17 near-duplicate question pairs are excluded from retrieval in every arm.
+- **Needs before results:**
+  - about 18.6 Kaggle T4-hours, in 3 sessions;
+  - importing the 16 databases into Atlas, because scoring is blocked until then.
+- **Source:** `docs/nl2mql_mql0009_retrieval_control.md`; ledger MQL-0009 (PLANNED) and DA-2026-11-18-MQL0009-LEAKAGE.
+
+
+## 21. MQL-0009 Atlas provisioning prepared, not executed (2026-11-18)
+
+- **What was built:** a safe, insert-only wrapper that loads the 16 held-out databases into a separate Atlas database,
+  `codegen_spider1_heldout`. The data is 69 collections and 16,885 documents.
+- **Nothing has been seeded yet.**
+- **Safeguards:**
+  - no drops and no overwrites;
+  - it refuses any other database and the read-only scoring account;
+  - existing data that conflicts with the expected data stops the run instead of being overwritten;
+  - every collection is checked by count and row digest.
+- **Evidence:** the offline dry run verified all 69 source tables; 20/20 mocked tests passed.
+- **Source:** `docs/mql0009_heldout_provisioning.md`.
+
+
+## 22. MQL-0009 status: session 1 of 3 done, nothing scored yet (2026-11-18)
+
+- **Done:** Kaggle session 1 generated zero-shot, hybrid RAG and random-seed-1 predictions for all 639 questions.
+  That is 1,917 of 5,112 predictions. The pinned model and settings were used, and every check passed.
+- **Atlas:** the 16 held-out databases are now loaded into `codegen_spider1_heldout` and verified (69 collections,
+  16,885 documents).
+- **Not done:** session 2 (fixed examples, random seeds 2–3) and session 3 (random seeds 4–5). These were always
+  planned as separate manual Kaggle runs. Scoring waits for all 8 runs.
+- **No accuracy yet.** The main test (hybrid vs the average of 5 random seeds) needs all five seeds.
+- **Source:** `docs/mql0009_continuation_runbook.md`; ledger MQL-0009 status note.
+
+
+## 23. MQL-0009 result: relevant retrieval beats random and fixed examples (2026-11-19)
+
+- **Done:** all 8 runs (5,112 predictions) were generated and scored on Atlas in a single read-only, full-parity
+  check. The 639 questions come from 16 held-out Spider-train databases.
+- **Accuracy:**
+  - zero-shot: 319 (49.9%);
+  - random examples: 328–335 over the 5 seeds, mean 332.8 (52.1%);
+  - fixed examples: 334 (52.3%);
+  - **hybrid RAG: 357 (55.9%)**.
+- **Main test (registered):** hybrid beats the random-seed mean by +3.8 points (95% interval +1.3 to +6.3), Holm p = 0.008.
+  It beats fixed examples by +3.6 points, Holm p = 0.030. The MQL-0008 gain is therefore partly real relevance, not just
+  "any examples".
+- **"Any 3 examples" alone** is worth about +2.2 points over zero-shot, which is not significant (p = 0.11).
+- **Limits:** RAG does not help set-operation or subquery questions (about 11% in every run). Anti-join questions get
+  worse with examples (33% → 11%).
+- **Caveat:** absolute numbers are not comparable with MQL-0008, because the question set is different.
+- **Source:** ledger MQL-0009; `docs/mql0009_post_experiment_analysis.md`.
+
+## 24. MQL-0010 result: a schema-feedback retry is the one improvement that clearly works (2026-11-21)
+
+- **Done:**
+  - all 9 registered arms, 716 held-out Spider-train questions each;
+  - the arms come from 18 databases whose own examples were kept out of retrieval;
+  - the arms were verified against the frozen package and scored on Atlas in one read-only, full-parity check.
+- **Accuracy (out of 716):**
+  - zero-shot 397 (55.4%); zero-shot + retry 415 (58.0%);
+  - hybrid RAG 413 (57.7%);
+  - **hybrid + schema-feedback retry 430 (60.1%)**;
+  - hybrid + generic "try again" retry 414 (57.8%);
+  - + diversity 424 (59.2%); + FK type notes 421 (58.8%);
+  - **everything combined (FULL) 434 (60.6%)**.
+- **Registered tests:**
+  - **Retry vs hybrid:** +2.4 points (95% interval +1.3 to +3.6, p < 0.001). It fixed 17 questions and broke none, so it passes the pre-set +1-point bar.
+  - **Schema feedback vs generic retry:** +2.2 points. Simply asking the model again does nothing; the concrete schema issues are what help.
+  - **FULL vs hybrid:** +2.9 points. FULL is no better than retry alone (434 vs 430).
+  - **Diversity:** +1.5 points, not significant. This test was underpowered, so the result is inconclusive.
+  - **FK type notes:** slightly negative on the 52 questions they changed, so not useful as written.
+- **Takeaway:** use hybrid RAG + schema-feedback retry. About 36% of questions still return a runnable but wrong
+  result, which the schema validator cannot see. Next gains need semantic checks.
+- **Caveats:**
+  - Re-running identical queries flipped about 2 outcomes per arm, because of tie/document order. No conclusion changes.
+  - The numbers are not comparable with MQL-0008/0009, because the question sets differ.
+- **Source:** ledger MQL-0010; `docs/mql0010_final_results_analysis.md`.
+
+## 25. MQL-0011 stage 1: dense embeddings were added to retrieval and screened offline; the pre-registered gate failed (2026-11-22)
+
+- **Built (no frozen file changed):**
+  - BAAI/bge-small-en-v1.5 embeddings, pinned commit 5c38ec7c…, of the 2,912 eligible retrieval questions (schema-masked);
+  - stored in an embedded Qdrant vector database behind a swappable `VectorStore` interface, with a NumPy reference backend;
+  - fused with the existing BM25 + structure ranking by reciprocal-rank fusion (RRF).
+  - Qdrant and NumPy gave identical rankings on all 779 dev questions.
+- **Screen:** an offline retrieval proxy on the 779 registered dev questions. It measures how often a top-3 example has the right query structure. **No model was run; this is not accuracy.**
+- **Result:**
+
+  | | Fused (R3) | Current hybrid (R0) | Difference |
+  |---|---|---|---|
+  | Right structure in top 3 | 68.2% | 65.5% | **+2.7 points** (95% interval +0.3 to +4.9) |
+  | Same pipeline shape | | | +2.4 points |
+
+- **Verdict: FAIL against the bar set in advance (+3 points).**
+  - It also fails the pre-set robustness check: on the 440 questions without a near-duplicate in another database, the gain is +1.6 points and not significant.
+  - Near-duplicates come from other databases, so they are not leakage. That subset is partly defined by the embeddings themselves, though, so the robustness check is conservative.
+- **Takeaway:** embeddings give a small structural gain, below the bar we set. That does not justify a costly Atlas accuracy run. The vector-store architecture stays in place for future use.
+- **Source:** ledger "MQL-0011 stage 1"; `outputs/nl2mql_mql0011/screen/screen_summary.md`.
+
+## 26. MQL-0012: two retrieval simplifications tested on fresh databases; both failed (2026-11-22)
+
+- **What was tested:**
+  - 3,295 questions from 90 databases that were never used as queries before;
+  - pre-registered before any result existed;
+  - offline retrieval proxy only, **not accuracy**.
+- **X1: replace the regex "structure cues" with a majority vote of the 10 nearest embedding neighbours.**
+  - Result: **worse**. Right structure in the top 3 fell from 67.5% to 63.3% (−4.1 points, 95% interval −5.6 to −2.7).
+  - Joins also got worse: −4.3 points.
+  - The voted cues were *more accurate* than the regex cues (exact match 50% vs 40%), yet retrieval got worse. The likely reason: they are derived from the same embedding neighbours, so they double-count the dense signal instead of adding independent evidence.
+- **X2: remove BM25 and keep embeddings + regex cues.**
+  - Result: **not shown to be as good**: −1.1 points (−2.2 to −0.1).
+  - This test was known to be underpowered. The interval excluding zero hints that BM25 still adds about 1 point.
+- **Confirmed along the way (descriptive):** the current hybrid (BM25 + embeddings + regex cues, R3) beats the old BM25-only hybrid by +3.9 points (+2.7 to +5.2) on fresh data.
+- **Biggest finding is not about retrieval:** four query structures (anti-join, intersect, nested, union) never appear in the approved corpus. That makes 12.5% of questions impossible for any retriever.
+- **Takeaway:** keep R3 as the retriever. Stop tuning retrieval. The next lever is corpus coverage for those four structures.
+- **Source:** ledger MQL-0012; `outputs/nl2mql_mql0012/results/summary.md`.
+
+## 27. MQL-0013: first real execution test of embedding retrieval, on unused Spider test databases (registered 2026-11-22; not yet run)
+
+- **Question:** does the embedding-enhanced retriever (R3) beat the BM25 hybrid (R0) in real MongoDB execution accuracy on Atlas? Everything else is identical: Qwen-3B, prompts, validator + one retry, scorer.
+- **Benchmark:** Spider test_full, 2,147 questions on 40 databases that no earlier NL→MQL experiment touched. The user chose to spend the reserved test set on this comparison.
+- **Target:** at least 60% execution accuracy for R3. It is reported as measured, not assumed.
+- **Status:** registered, package built, and a mocked end-to-end dry run passed. The run waits on Atlas provisioning of the new database and about 20 Kaggle T4-hours.
+- **Source:** `docs/mql0013_execution_runbook.md`.
+
+## 28. Side experiment MQL-0010-FT1: fine-tuned Qwen-3B on the MQL-0010 holdout (2026-11-22)
+
+- **Question:** what does a LoRA fine-tune of Qwen-3B (adapter q3b_r16_q10, 1 epoch on about 2,900 converter-labelled examples) score in real MongoDB execution, using the plain zero-shot prompts?
+- **Result:** 516 / 716 (72.07%) on Atlas, against 397 (55.45%) for the same base model with the identical prompts: +16.6 pp, paired p < 1e-17. It also beats the best MQL-0010 RAG arm (FULL 434, D0V 430), though those use different prompts.
+- **Errors:** 3 invalid pipelines, 10 execution errors, 0 timeouts (base: 13 invalid, 9 execution errors).
+- **Caveat:** the training file was not available locally, so leakage is not verified. Its row count matches the registered holdout-clean corpus view exactly, and the pattern of exact matches looks like learned converter style rather than memorisation. Provisional until the training file is checked.
+- **Source:** `outputs/nl2mql_mql0010_ft_side/ft_q3b_r16_q10_A0/REPORT.md`; ledger MQL-0010-FT1.
+
+## 28. MQL-0014: R3 vs R0 execution re-check on the MQL-0010 holdout (registered and scored 2026-11-23)
+
+- **Change of plan:** the user replaced MQL-0013 (Spider test_full) with a **secondary re-analysis** of the MQL-0010 holdout (716 questions, 18 databases). It is not a fresh test. test_full stays unused.
+- **Arms:** R0V (BM25 hybrid plus schema retry, byte-identical to MQL-0010 D0V) vs R3V (embedding-enhanced R3 retrieval, same retry). Both arms are regenerated in one matched Kaggle session (about 6.5 T4-hours). The old D0V (430/716) is rescored alongside as a reproducibility check.
+- **Primary test:** exact McNemar on R3V vs R0V, plus a paired bootstrap CI, over all 716 items.
+- **Source:** `outputs/nl2mql_mql0010_r3_execution_recheck/RUNBOOK.md`.
+- **Result (scored 2026-11-23, verified):** R3V scored **450/716 (62.8%)** and R0V **432/716 (60.3%)**. The difference is **+2.5 points** (95% CI +0.4 to +4.6; McNemar p = 0.03; 40 questions only R3V got right vs 22 only R0V).
+- First answers without the retry: R3 438 vs R0 414. The retry helps both arms and never broke a correct answer.
+- **Takeaway:** embeddings give a small, statistically supported gain in real Atlas execution accuracy on this holdout, and R3V clears the 60% target. Nested and set-operation queries stay at about 16% in every arm, because the corpus has no examples of them.
+- **Caveat:** this is a re-analysis of a known holdout, not a fresh test.
+
+## 29. Fine-tuned checkpoint handoff checked; MQL-0010-FT1 promoted to verified (2026-11-23)
+
+- **Question:** can we trust the 72% from the friend's fine-tuned Qwen-3B (`q3b_r16_q10`), and is it ready to combine with R3?
+- **What we received:** the LoRA adapter (~120 MB, sha matches the scored run), the training data (2,395 train / 506 dev), the training notebook and config, the prompt format and the evaluation notebook.
+- **Leakage check (our own script, CPU only):** no holdout question, id or database in training. No near-duplicate holdout questions. Training data equals the registered RAG retrieval view minus the 11 near-duplicates. Labels are byte-identical to the approved corpus. The adapter was chosen on dev databases, not the holdout.
+- **Result stands:** **516/716 (72.07%)** Atlas execution accuracy, fine-tuned model with the plain zero-shot prompt, now verified. It remains a secondary result, because the 716 questions were already used by MQL-0010 and MQL-0014.
+- **Where the gain is:** 462/533 (86.7%) on questions the converter can express, but only 54/183 (29.5%) on set operations and nested queries that are absent from training.
+- **R3 compatibility:** same system prompt and ChatML format as R3. But training never saw retrieved examples, foreign keys or sample documents, and training sequences were ≤ ~1.6k tokens, while R3 prompts have a median of ~1.5k and 236/716 exceed 2,048. Fine-tuned + R3 has not been run.
+- **Source:** `outputs/finetuning_reuse/investigation_report.md`; ledger MQL-0010-FT1 note 2026-11-23.
+
+## 30. MQL-0015 registered: final 1,000-question evaluation on Spider test_full (2026-11-23; not yet run)
+
+- **Design:** three systems on the same 1,000 questions. A0V = base Qwen-3B, zero-shot. R3V = base Qwen-3B + frozen hybrid R3. FT-R3V = the verified fine-tuned checkpoint + frozen hybrid R3. Every arm gets one schema-feedback retry.
+- **Primary comparison:** FT-R3V vs R3V, i.e. what fine-tuning adds on top of RAG.
+- **Sample:** 1,000 of the 2,147 untouched test_full questions, seed 20261123, stratified by database × difficulty with structure-ordered systematic selection, covering all 40 databases. As groups, joins, nested queries, set operations and anti-joins are each within 1 item of their proportional share. Individually, union is +1.8 items and intersect −1.1. HAVING happens to be over-represented (9.0% vs 7.5%); this is documented, not corrected.
+- **Independence:** test databases share nothing with the corpus, the fine-tuning data or any earlier evaluation set. There are no exact or normalised question matches. 11 sampled items have near-duplicate generic questions (e.g. "list the names in alphabetical order") about other databases; keeping them is pending user decision D3. No gold answers are in the generation inputs.
+- **Power:** a gain of about +4.7 pp is detectable with 80% power if the arms disagree as often as FT vs base did before (27%). If they disagree only as often as in MQL-0014 (8.7%), +2.7 pp is detectable. Both figures are assumptions.
+- **Status:** awaiting approval, the Atlas provisioning decision and the package build. Budget ≈ 12–13 Kaggle T4-hours.
+- **Source:** `outputs/nl2mql_final_1000/preflight/PREFLIGHT_REPORT.md`.
+
+## 31. MQL-0015 preparation complete: package, scorer, provisioning scripts, mocked dry run (2026-11-23; nothing run for real)
+
+- **Decisions applied (amendment A1):** D1 keeps the sample as drawn. D2 uses a new Atlas database, `codegen_spider1_test_mql0015`. D3 keeps the 11 near-duplicates, with a sensitivity line that excludes them.
+- **Package:** `kaggle/nl2mql_mql0015_final_1000_bundle.zip` (91ab0e9f…). It holds the registered 1,000 ids, prompts frozen byte-for-byte, the verified adapter inside the package (the only checkpoint the notebook will load), no gold answers, and every hash pinned. Two independent builds are byte-identical.
+- **MQL-0013 dry-run mislabel explained:** a function default in the MQL-0009 helper froze the old database name into the report rows. Writes always received the correct target, and MQL-0013 never provisioned anything. MQL-0015 passes the target explicitly and asserts it on every row.
+- **Mocked end-to-end run:** kill/resume, two model sessions, generation failures, retries, OOM fallback, scoring dedup (6,000 → 1,866 executions), infrastructure re-execution, every outcome category and all sensitivity analyses work. Tests: 61 passed, 1 skipped (merge smoke test, run separately: pass).
+- **Next (user):** provision Atlas with MQL-0015 credentials, grant read-only scoring access, run `readiness`, then two Kaggle sessions.
+- **Source:** `outputs/nl2mql_final_1000/preparation/PREPARATION_REPORT.md`.
+
+## 32. MQL-0015 Atlas provisioning attempted and blocked before any change (2026-11-24)
+- **Outcome:** nothing was provisioned, created or modified on Atlas.
+- **Blocker 1, no admin access:** the only local credential is the read-only evaluation account. Creating the provisioning role and user needs the Atlas UI, CLI or Admin API.
+- **Blocker 2, capacity uncertain:**
+  - **Storage is fine:** the new data is 20.0 MB of BSON (aan_1 is 19.7 MB), about 42 MB with indexes and overhead. Visible usage is 77 MB of data plus indexes, so about 119 of 512 MB.
+  - **Collection count is the risk:** 248 visible + 180 new = 428 of the documented M0 limit of 500. The pilot database `codegen_capstone_pilot` is invisible and was last documented at about 104 collections.
+- **Target checks (offline) all pass:** 180/180 rows target `codegen_spider1_test_mql0015`, the mislabel fix is present, the target is passed explicitly on every call, and protected targets are refused. 10 tests passed.
+- **Source:** `outputs/nl2mql_final_1000/atlas/ATLAS_PREPARATION_REPORT.md`.
+
+## 33. Atlas capacity audit via MCP: MQL-0015 does not fit the M0 collection cap (2026-11-24)
+- **Cluster0 is M0** (instanceType FREE; AWS ap-south-1; MongoDB 8.0.39). The audit was read-only; nothing was changed.
+- **Collections:** 492 user collections across 9 databases. +180 for MQL-0015 = 672, against the documented M0 limit of 500, so **over by 172**.
+- **Storage:** 209.5 of 512 MiB used; with MQL-0015 about 252, which fits.
+- **Pilot database:** `codegen_capstone_pilot` holds only 5 collections. The earlier gap was `codegen_spider1_ts1..3` (231 collections), invisible to the read-only account.
+- **Decision needed:** free collections (for example, dropping ts1..3 would fit) or upgrade the tier.
+- **Source:** `outputs/nl2mql_final_1000/atlas/ATLAS_CAPACITY_AUDIT.md`.
+
+## 34. Retirement audit for codegen_spider1_ts1..3 (2026-11-24; nothing dropped)
+- **Purpose of the three databases:** test-suite variant copies used only to validate the October 2026 gold MQL (`testsuite_check.py`).
+- **No dependency:** the evaluation account has been unable to read them since 2026-10-20, and no MQL-0006 to MQL-0015 code, Kaggle package or planned work references them.
+- **Backup outside OneDrive:** `~/codegen_data/backups/codegen_spider1_ts_retirement_20261124.tar.gz` (sha `55398e33…`). 231 collections and 46,258 documents, rebuilt from the exact source SQLite variants.
+  - It is proven identical to Atlas with a server-side content fingerprint: 231/231 match.
+  - Extract-and-verify passes; negative controls catch tampering.
+- **Recommendation:** drop all three, pending user approval. Collections would then be 261, and 441/500 after MQL-0015.
+- **Source:** `outputs/nl2mql_final_1000/atlas/TEST_DATABASE_RETIREMENT_AUDIT.md`.
+
+## 35. codegen_spider1_ts1..3 dropped on Atlas (2026-11-24, owner-authorised)
+- **Backup gate passed first:** archive sha256 exact, 531/531 internal sums, `verify_ts_backup.py` `all_ok: true`.
+- **Drops:** via Atlas MCP `drop-database`, one at a time, between 04:39 and 04:43 UTC, each returning `dropped: true`.
+- **Collections:** 492 → 415 → 338 → **261**, matching the plan at every step.
+- **Unchanged:** the 6 remaining databases are byte-for-byte identical in db-stats; users and IP access list are unchanged.
+- **Headroom:** 239 free collections under M0 500, so MQL-0015's 180 fit, leaving 59 after it.
+- **Not done:** MQL-0015 provisioning has not started.
+- **Source:** `outputs/nl2mql_final_1000/atlas/TS_RETIREMENT_EXECUTION_REPORT.md`.
+
+## 36. MQL-0015 Atlas provisioning complete (2026-11-24)
+- **Account:** a dedicated temporary account, `mql0015_provisioner`, created by the owner in the UI.
+  - Its role is exactly `find`, `insert` and `listCollections` on `codegen_spider1_test_mql0015`, and it is limited to Cluster0.
+  - A read-only check (`verify_provisioner_account.py`) confirmed nothing else is granted.
+- **Provisioning:** 07:04–07:07 UTC, exit 0. 40 logical databases, 180 collections and 245,574 documents.
+  - Every collection was count- and digest-verified at insert.
+  - It was re-verified independently afterwards: 180/180 match the contract.
+- **Atlas totals:** 441/500 collections. Other databases are unchanged.
+- **Next (not done):** scoring grants for the read-only account, retiring the provisioner account, and Kaggle.
+- **Source:** `outputs/nl2mql_final_1000/atlas/MQL0015_PROVISIONING_REPORT.md`.
+
+## 37. MQL-0015 final result on 1,000 Spider test_full items (2026-11-25)
+- **Run:** Kaggle session 1 (base passes) and session 2 (FT passes, resumed from the session-1 output). Session 2's first attempt stopped at the resume step because the session-1 output was not attached; it worked once attached as a dataset. All arms were scored in one Atlas session, read-only.
+- **Execution accuracy (strict, /1,000):** A0V **497 (49.7%)**, R3V **544 (54.4%)**, FT-R3V **598 (59.8%)**. First answers before the retry: A0 471, R3 515, FT-R3 588.
+- **Primary (registered):** FT-R3V − R3V +5.4 pp, 95% CI [2.7, 8.1], McNemar p = 0.00014. Secondary: R3V − A0V +4.7 pp (Holm p 0.0025); FT-R3V − A0V +10.1 pp (Holm p 2e-9).
+- **Takeaways:**
+  - Fine-tuning plus retrieval is the best configuration on unseen test data, and each step adds accuracy.
+  - The retry helps the base model more (+2.6 / +2.9 pp) than the fine-tuned one (+1.0 pp).
+  - Set operations and anti-joins get worse with retrieval and fine-tuning (set ops 15 → 8 → 4 of 85): a known corpus gap.
+  - The 60% target was narrowly missed (59.8%).
+- **Source:** `outputs/nl2mql_final_1000/scoring_runs/run_final/scoring/results_report.md`; ledger MQL-0015.

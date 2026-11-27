@@ -1,0 +1,34 @@
+Database: allergy_1
+
+Collections (field: observed type [declared SQL type]):
+- allergy_1__Allergy_Type
+    Allergy: string [VARCHAR(20)]
+    AllergyType: string [VARCHAR(20)]
+- allergy_1__Has_Allergy
+    StuID: int [INTEGER]
+    Allergy: string [VARCHAR(20)]
+- allergy_1__Student
+    StuID: int [INTEGER]
+    LName: string [VARCHAR(12)]
+    Fname: string [VARCHAR(12)]
+    Age: int [INTEGER]
+    Sex: string [VARCHAR(1)]
+    Major: int [INTEGER]
+    Advisor: int [INTEGER]
+    city_code: string [VARCHAR(3)]
+
+Foreign keys:
+- allergy_1__Has_Allergy.Allergy -> allergy_1__Allergy_Type.Allergy
+- allergy_1__Has_Allergy.StuID -> allergy_1__Student.StuID
+
+Sample documents:
+- allergy_1__Allergy_Type: {"Allergy": "Eggs", "AllergyType": "food"}
+- allergy_1__Allergy_Type: {"Allergy": "Nuts", "AllergyType": "food"}
+- allergy_1__Has_Allergy: {"StuID": 1001, "Allergy": "Cat"}
+- allergy_1__Has_Allergy: {"StuID": 1002, "Allergy": "Shellfish"}
+- allergy_1__Student: {"StuID": 1001, "LName": "Smith", "Fname": "Linda", "Age": 18, "Sex": "F", "Major": 600, "Advisor": 1121, "city_code": "BAL"}
+- allergy_1__Student: {"StuID": 1002, "LName": "Kim", "Fname": "Tracy", "Age": 19, "Sex": "F", "Major": 600, "Advisor": 7712, "city_code": "HKG"}
+
+Question: How many allergies are there?
+
+Return the JSON object.

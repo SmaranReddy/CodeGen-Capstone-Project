@@ -2,6 +2,34 @@
 
 College capstone project exploring open-source LLMs for code generation.
 
+## Milestone on this branch: MQL-0015, FT-R3V = 59.8 % execution accuracy
+
+Branch `research/mql0015-embedding-ft-r3v` is a source snapshot of the NL→MQL system at the completed **MQL-0015** experiment: 1,000 questions from Spider 1.0 `test_full`, Qwen2.5-Coder-3B-Instruct, one registered run.
+
+| System | Accuracy |
+|---|---:|
+| A0: zero-shot | 471 / 1000 = 47.1 % |
+| A0V: + schema validator with one retry | 497 / 1000 = 49.7 % |
+| R3V: + hybrid RAG (BM25 + BGE-small/Qdrant, RRF, structural rerank, top-3) | 544 / 1000 = 54.4 % |
+| **FT-R3V: + LoRA fine-tuned model** | **598 / 1000 = 59.8 %** |
+
+**Metric.** Each generated MongoDB aggregation pipeline is executed on MongoDB Atlas. Its result is compared with the result of the reference **Spider SQL executed on SQLite**. There are no hand-written gold MQL pipelines.
+
+**Workflow:**
+
+```
+question -> schema/context -> hybrid retrieval -> prompt -> Qwen generation -> MQL validation -> retry if needed
+         -> MongoDB execution -> result comparison
+```
+
+**Where to look:**
+- architecture, file map, setup, and everything that must be supplied separately (datasets, model and adapter weights, Qdrant index, Atlas): **[`docs/MQL0015_MILESTONE.md`](docs/MQL0015_MILESTONE.md)**;
+- the full results report: [`reports/mql0015/results_report.md`](reports/mql0015/results_report.md);
+- fine-tuning: [`finetuning/q3b_r16_q10/`](finetuning/q3b_r16_q10/README.md).
+
+Datasets, test questions, gold SQL, prediction archives, model and adapter weights, and credentials are **not** in the repository, so the experiment cannot be re-run from this repository alone. Later work after MQL-0015 is not part of this branch.
+
+
 ## Project objective (confirmed 2026-10-29)
 
 **Primary task: natural language → MongoDB query (NL→MQL).** Given a question and a MongoDB

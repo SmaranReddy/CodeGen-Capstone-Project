@@ -1,0 +1,63 @@
+{
+ "run_name": "q3b_r16_q10",
+ "model": "unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit",
+ "max_seq_length": 2048,
+ "lora": {
+  "r": 16,
+  "alpha": 32,
+  "dropout": 0.0,
+  "targets": [
+   "q_proj",
+   "k_proj",
+   "v_proj",
+   "o_proj",
+   "gate_proj",
+   "up_proj",
+   "down_proj"
+  ]
+ },
+ "train": {
+  "epochs": 1,
+  "max_steps": -1,
+  "batch": 2,
+  "grad_accum": 4,
+  "lr": 0.0002,
+  "warmup_ratio": 0.03,
+  "scheduler": "cosine",
+  "seed": 3407
+ },
+ "data": {
+  "train_rows_used": 2395,
+  "dev_rows": 506,
+  "files": [
+   "sft_train.prompt_completion.jsonl",
+   "sft_dev.prompt_completion.jsonl"
+  ]
+ },
+ "results_not_a_benchmark": {
+  "train_loss": 0.04816741362214089,
+  "train_minutes": 30.7,
+  "dev_loss_before": 0.7747051185369491,
+  "dev_loss_after": 0.017482283863573686,
+  "dev_loss_samples": 100
+ },
+ "demo": {
+  "spider_train_01110": {
+   "before": "```json\n{\n  \"collection\": \"climbing__climber\",\n  \"pipeline\": [\n    {\n      \"$count\": \"total_climbers\"\n    }\n  ]\n}\n```",
+   "after": "{\"collection\":\"climbing__climber\",\"pipeline\":[{\"$facet\":{\"rows\":[{\"$group\":{\"_id\":null,\"a0\":{\"$sum\":1}}}]}},{\"$project\":{\"row\":{\"$ifNull\":[{\"$arrayElemAt\":[\"$rows\",0]},{\"a0\":0}]}}},{\"$replaceRoot\":{\"newRoot\":\"$row\"}},{\"$project\":{\"_id\":0,\"count\":\"$a0\"}}]}"
+  },
+  "spider_train_01111": {
+   "before": "```json\n{\n  \"collection\": \"climbing__climber\",\n  \"pipeline\": [\n    {\n      \"$count\": \"total_climbers\"\n    }\n  ]\n}\n```",
+   "after": "{\"collection\":\"climbing__climber\",\"pipeline\":[{\"$facet\":{\"rows\":[{\"$group\":{\"_id\":null,\"a0\":{\"$sum\":1}}}]}},{\"$project\":{\"row\":{\"$ifNull\":[{\"$arrayElemAt\":[\"$rows\",0]},{\"a0\":0}]}}},{\"$replaceRoot\":{\"newRoot\":\"$row\"}},{\"$project\":{\"_id\":0,\"count\":\"$a0\"}}]}"
+  },
+  "spider_train_01112": {
+   "before": "```json\n{\n  \"collection\": \"climbing__climber\",\n  \"pipeline\": [\n    {\n      \"$sort\": {\n        \"Points\": -1\n      }\n    },\n    {\n      \"$project\": {\n        \"_id\": 0,\n        \"Name\": 1\n      }\n    }\n  ]\n}\n```",
+   "after": "{\"collection\":\"climbing__climber\",\"pipeline\":[{\"$sort\":{\"Points\":-1}},{\"$project\":{\"_id\":0,\"Name\":\"$Name\"}}]}"
+  }
+ },
+ "smoke_test": false,
+ "sweep": "sweep_20261122T0813Z",
+ "gpu": "Tesla T4",
+ "platform": "kaggle",
+ "finished_utc": "2026-11-22T08:45:08+00:00"
+}

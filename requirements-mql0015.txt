@@ -1,0 +1,36 @@
+# NL->MQL system as of the MQL-0015 milestone (59.8 %). Python 3.10+.
+# Versions are those recorded by the experiments (see scripts/nl2mql_mql0011/requirements-rag.txt and
+# finetuning/q3b_r16_q10/training/pip_freeze.txt); other versions may work but are not what was measured.
+
+# ---- evaluation, scoring, data handling (local) ----
+pymongo>=4.6
+python-dotenv>=1.0
+sqlglot>=25.0
+sqlparse>=0.5
+numpy==2.2.6
+scipy>=1.11
+pandas>=2.0
+pyyaml>=6.0
+tqdm>=4.66
+requests>=2.31
+certifi>=2023.0
+nltk>=3.8
+
+# ---- hybrid retrieval: BGE-small embeddings + Qdrant (local, CPU) ----
+# install torch first, e.g.: pip install torch --index-url https://download.pytorch.org/whl/cpu
+transformers==5.20.2
+tokenizers==0.23.3
+safetensors==0.8.0
+huggingface_hub==2.4.0
+qdrant-client==1.20.0
+
+# ---- tests / notebooks ----
+pytest>=8.0
+nbformat>=5.9
+
+# ---- GPU generation (Kaggle T4 image; preinstalled there, do not upgrade) ----
+# torch==2.11.0+cu130  transformers==5.20.2  accelerate==1.15.0  peft==0.21.2
+
+# ---- fine-tuning (Kaggle T4; installed by the training notebook) ----
+# unsloth==2026.11.9 unsloth_zoo==2026.11.8 trl==1.15.0 transformers==5.17.0 peft==0.21.2 accelerate==1.15.0
+# bitsandbytes==0.50.2 datasets==4.8.5   (full list: finetuning/q3b_r16_q10/training/pip_freeze.txt)

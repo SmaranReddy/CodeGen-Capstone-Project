@@ -1,0 +1,231 @@
+{
+ "experiment_id": "MQL-0010",
+ "title": "MQL-0010 - controlled recovery, diversified selection and join-key notes on top of the MQL-0008 hybrid RAG",
+ "status": "REGISTERED - NOT EXECUTED (no prediction, no score). Prerequisites in docs/mql0010_experiment_plan.md section 9",
+ "registered_at": "2026-11-19",
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "dtype": "bfloat16",
+  "decoding": "greedy (do_sample=False)",
+  "max_new_tokens": 1024,
+  "batch_size": 8,
+  "seed": 42,
+  "gpu": "Tesla T4 only (bf16 emulated, as MQL-0006..0009)",
+  "retry_max_new_tokens": 1024
+ },
+ "prompt": {
+  "zero_shot_version": "nl-mql-spider1-v1",
+  "rag_version": "nl-mql-spider1-rag-v1",
+  "rag_rule": "reference block inserted before the final 'Question:' line by the unchanged rag_block.insert_block",
+  "recovery": "one extra turn: [user: first prompt, assistant: first answer, user: validator feedback + RETRY_SUFFIX], same system prompt"
+ },
+ "corpus": {
+  "path": "outputs/sql2mql_v2_1/approved_corpus_v2_1/corpus.jsonl",
+  "sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "modified": false,
+  "holdout_view": {
+   "n_records": 2912,
+   "n_dbs": 105,
+   "ids_sha256": "cfde5e9c2df334bbfd08f159671b819e84ca9850c3fbb35d59c02ffb7a8d08de"
+  }
+ },
+ "split": {
+  "path": "outputs/nl2mql_mql0010/preflight/split_registration.json",
+  "sha256": "fd0c8e18a83171d32782806db82e4e67f072fa39a30e9fff68f39b43588c2df3",
+  "holdout_n": 716,
+  "holdout_ids_sha256": "186b080a956a60b6d9a1ecd4181255fdbda1f311d833442702299a5ecb308214",
+  "dev_n": 779,
+  "dev_ids_sha256": "b65ef62cfd0d667ef89f6eeac23fd1f9a4f0366aa982a5eedab45c265e354bcb",
+  "retrieval_exclusions": [
+   {
+    "eval_id": "spider_train_00459",
+    "corpus_id": "spider_train_04254",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_00459",
+    "corpus_id": "spider_train_05684",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_00500",
+    "corpus_id": "spider_train_05501",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_01529",
+    "corpus_id": "spider_train_00925",
+    "level": "L5",
+    "jaccard": 0.8
+   },
+   {
+    "eval_id": "spider_train_03768",
+    "corpus_id": "spider_train_04635",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_04028",
+    "corpus_id": "spider_train_05444",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_04029",
+    "corpus_id": "spider_train_04254",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_04029",
+    "corpus_id": "spider_train_05684",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_04055",
+    "corpus_id": "spider_train_00060",
+    "level": "L5",
+    "jaccard": 0.8182
+   },
+   {
+    "eval_id": "spider_train_04055",
+    "corpus_id": "spider_train_06734",
+    "level": "L5",
+    "jaccard": 0.8182
+   },
+   {
+    "eval_id": "spider_train_04860",
+    "corpus_id": "spider_train_01884",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_04861",
+    "corpus_id": "spider_train_01885",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   },
+   {
+    "eval_id": "spider_train_06066",
+    "corpus_id": "spider_train_02854",
+    "level": "L3/L4",
+    "jaccard": 1.0
+   }
+  ]
+ },
+ "context": {
+  "k": 3,
+  "max_context_tokens": 1500,
+  "n_ctx": 8192,
+  "max_new_tokens": 1024,
+  "margin_tokens": 64
+ },
+ "retrieval": {
+  "base": "retrieval.Retriever(method='hybrid_masked', hybrid_weight=1.0), unchanged (BM25 k1 1.5, b 0.75)",
+  "diversify_candidate_pool": 50
+ },
+ "arms": [
+  {
+   "name": "A0",
+   "kind": "generate",
+   "label": "zero-shot (nl-mql-spider1-v1), unchanged",
+   "flags": {
+    "family": "zero_shot"
+   }
+  },
+  {
+   "name": "A0V",
+   "kind": "retry",
+   "source": "A0",
+   "label": "A0 + controlled recovery (V)",
+   "flags": {
+    "family": "zero_shot",
+    "validate_retry": true
+   }
+  },
+  {
+   "name": "D0",
+   "kind": "generate",
+   "label": "MQL-0008/0009 hybrid RAG, unchanged (baseline)",
+   "flags": {
+    "family": "hybrid"
+   }
+  },
+  {
+   "name": "D0V",
+   "kind": "retry",
+   "source": "D0",
+   "label": "D0 + controlled recovery (V)",
+   "flags": {
+    "family": "hybrid",
+    "validate_retry": true
+   }
+  },
+  {
+   "name": "E",
+   "kind": "generate",
+   "label": "D0 ranking + signature-diversified selection (E)",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50
+   }
+  },
+  {
+   "name": "EF",
+   "kind": "prompt_delta",
+   "base": "E",
+   "label": "E + type-incompatible join-key notes (F)",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50,
+    "fk_type_notes": "numeric_unified"
+   }
+  },
+  {
+   "name": "FULL",
+   "kind": "retry",
+   "source": "EF",
+   "label": "E + F + V (improved architecture)",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50,
+    "fk_type_notes": "numeric_unified",
+    "validate_retry": true
+   }
+  }
+ ],
+ "not_adopted": {
+  "structure_scoring_nb": "dev proxy hit@3 45.5 vs baseline 52.1 alone; +0.7 pt over baseline with diversity (outputs/nl2mql_mql0010/dev_evidence/retrieval_dev_proxy.json)",
+  "lexical_tie_break": "no change on the dev proxy",
+  "id_postprocessor": "offline counterfactual on MQL-0009: -10 to -17 correct per arm (outputs/nl2mql_mql0010/mql0009_post_analysis/offline_counterfactuals.json)",
+  "unsupported_family_gate": "ceiling ~1 item on MQL-0009 (set-op family A 12.1% vs D 11.0%); NB gate precision 0.77 / recall 0.35 on train CV",
+  "corpus_set_op_expansion": "proposal only (docs/mql0010_rag_architecture_design.md section 8)"
+ },
+ "analysis_plan_sha256": "a629474310d5b9cf219792c03cab381bf8b9800b3b300b942e31ac1e74b9cd40",
+ "source_sha256": {
+  "driver.py": "49005f1c951236ceca281a029967ed81e56f2975ae704962623667916a0322c9",
+  "planner.py": "bedde2a7f042ffbf13af97f2d53e15cc5b22eafec4d8ad83ce0ea7dcaa7a8d14",
+  "prompt_v2.py": "ddfc2cf3d5a7f1a459fe0c9a98ce7d1297f25dfd4a1e7ad18df162f6a4df87a4",
+  "recovery.py": "5736aea0505880907bd33b1794fa998671df11a2a9e1ac7df4fcfd5c93c76d29",
+  "retriever_v2.py": "4e708bdf323fd8525573b65bb08e9ccd94b627608f2096cab71a59759bcf6121",
+  "structure.py": "e8a980a0b53cf76c0b2cb71e57c8e9fd1046e1d1124b4814abdc8c108584299a",
+  "validator.py": "1f8b7daa575495d629738209437ace50bbcb1dff2a45e40df91375605185e920"
+ },
+ "compute_estimate_t4_hours": {
+  "A0": 2.0,
+  "D0": 2.6,
+  "E": 2.6,
+  "EF_delta": 0.3,
+  "retries_3_arms": 2.0,
+  "total": 9.5,
+  "basis": "MQL-0009 run configs: 9.9-12.8 s/item; ~20% of items retried (MQL-0009 validator flag rate)"
+ }
+}

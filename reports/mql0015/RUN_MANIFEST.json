@@ -1,0 +1,37 @@
+{
+ "experiment": "MQL-0015",
+ "adapter": "mql0015-scoring-v1",
+ "scored_at": "2026-11-25T11:38:01+00:00",
+ "atlas_db": "codegen_spider1_test_mql0015",
+ "atlas_check_sha256": "e5ca7996d4bd0aa95cbfc4c143c4fe28133062740116bab7fc007705416c70e1",
+ "reference": {
+  "sha256": "de1aa61e708eff9f173f718869c6f4459010d9a28ed668a01df4a007590f23de",
+  "n": 1000,
+  "computed_at": "2026-11-25T10:55:04+00:00",
+  "status_counts": {
+   "ok": 952,
+   "tie_at_limit": 37,
+   "order_ties_unverified": 11,
+   "utf8_dependent": 0,
+   "reference_error": 0
+  }
+ },
+ "package_manifest_sha256": "74e724f1ff54e8a20777b8acd35fe605d69c3c33df58e86557e2b21128934766",
+ "registration_sha256": "fb5d07d0c282b4eeb5ffd5da59c2bc3ab09068eb420a59cbf559920e6d85ab69",
+ "amendment_A1_sha256": "a67224d5feffe7436adf75eceb5812f399bd983758e1de710c41490de2ff51f0",
+ "predictions_sha256": {
+  "A0": "80f82f1b11dfad7a8f6cfdc30f91bf70c159f9ab5afc2a70c22cba76e1982d39",
+  "A0V": "fd5211198d40f2e54ded30522ac6a5f7d7f3daacfdd31f7f5ac4030cc064d85f",
+  "R3": "4195e7b5432f56f7210900eddb2f5090e892246c85af9e08f8ddba8d476d735d",
+  "R3V": "a699c46f957332f1d1e9a682b8d02e3f4e72acf8e5d689c71813bbe25e2372d0",
+  "FT-R3": "6b814a0a36f4273d18c7b673e60735d713fd166d32044e37b2a8ec767d7af148",
+  "FT-R3V": "97f6c01c585f1265261200f6e20b254491f0fdcae4bb67b07added84d037c4eb"
+ },
+ "unique_evaluations": 3144,
+ "bootstrap_reps": 10000,
+ "code_sha256": {
+  "scripts/nl2mql/dev1034_core.py": "81b86f0b08bb5221925e23ef80fe4caa4b8ce06b41f1f21c20826b735b71b65e",
+  "scripts/nl2mql_mql0015/mql0015_scoring.py": "e2d397e7ddd7ea65c0a37dfd5dc49bc212a7fec333e8dbeb821361bc71de967f",
+  "scripts/nl2mql_mql0015/src/mql0015_analysis.py": "6d678844eeacec93882215ffec0fe3321fa432c63439657d2a92d11ccd3f87b7"
+ }
+}

@@ -1,0 +1,134 @@
+{
+ "experiment": "MQL-0012",
+ "title": "Offline confirmation of two single-variable retrieval changes against the MQL-0011 R3 hybrid: X1 neighbour-voted structure cues, X2 dense without BM25",
+ "written": "2026-11-22",
+ "type": "offline structural retrieval proxy; NOT execution accuracy; no model generation; no Atlas",
+ "origin": "hypotheses from the post-hoc MQL-0011 dev diagnostic (chat report 2026-11-22; scripts and output in the session scratchpad: mql0011_diag.py, mql0011_diag2.py, mql0011_diag_out.json). The MQL-0011 dev split is NOT used for confirmation.",
+ "data": {
+  "confirmation_split": "outputs/nl2mql_mql0012/split/x0_split.json",
+  "x0": {
+   "n_items": 3295,
+   "n_dbs": 90,
+   "ids_sha256": "d31164f36be6de126ffd763a7ffbf1589cd5d33ddf023c4c9dec0471b060201f",
+   "selection": "all 90 MQL-0010 build databases; MQL-0010 item rule + spider-pool-v3 membership; no sampling",
+   "seed": 20261123
+  },
+  "retrieval_view": {
+   "n_records": 2912,
+   "ids_sha256": "cfde5e9c2df334bbfd08f159671b819e84ca9850c3fbb35d59c02ffb7a8d08de",
+   "policy": "leave-target-database-out per query; holdout DBs physically absent; no question-level exclusion pairs (MQL-0011 policy)"
+  },
+  "query_vectors": "outputs/nl2mql_mql0012/query_cache_x0 (bge-small-en-v1.5 @ 5c38ec7c, masked questions, tables.json schema)",
+  "embedding_artifact_and_store": "MQL-0011 artifact + Qdrant collection mql0011__v2_1_view2912__bge_small_en_v1_5__5c38ec7c__masked_q, opened read-only (verify-on-open; no writes), exact local search, CanonicalScorer re-scoring",
+  "gold_use": "gold SQL (signature) and corpus MQL (skeleton) of X0 items are used for METRICS only"
+ },
+ "arms": {
+  "R3": {
+   "role": "primary control",
+   "implementation": "scripts/nl2mql_mql0011/src/retriever_dense.py DenseHybridRetriever(lexical='rrf_fused'), unchanged",
+   "score": "L + 1.0*J_regex;  L = [1/(60+r_bm25) + 1/(60+r_dense)] / max_U"
+  },
+  "X1": {
+   "role": "confirmatory: neighbour-voted structure cues",
+   "implementation": "FlexRetriever(channels=('bm25','dense'), cues='knn_vote')",
+   "score": "L + 1.0*J(cues_vote, patterns);  L as R3",
+   "vote": {
+    "neighbours": "top 10 distinct documents of the candidate universe U (target DB excluded, forbidden DBs absent) by (-round(canonical cosine, 6), doc_id), after the existing duplicate collapse (doc_id, repr(mql), normalised question)",
+    "labels_voted": [
+     "count",
+     "count_distinct",
+     "distinct",
+     "aggregate",
+     "group_by",
+     "having",
+     "order_by",
+     "limit",
+     "join",
+     "like",
+     "anti_join",
+     "intersect",
+     "union",
+     "nested"
+    ],
+    "not_voted": "select, where (ignored by retrieval.jaccard); text_number (database property)",
+    "weighting": "unweighted: each neighbour gives one vote per label in its corpus `patterns`",
+    "rule": "label predicted iff 2*votes > n (n = 10): strict majority, >= 6 of 10; 5/5 tie excluded; confidence = votes/n (reported only)",
+    "no_support": "empty predicted set (no structural cue), identical to a question where no regex cue fires",
+    "schema_rules": "unchanged from patterns.question_cues and UNIONED: join if >= 2 target collections mentioned; text_number if the target schema has text-typed numeric fields",
+    "representation": "{'select'} | predicted | schema_rule labels, passed to the unchanged retrieval.jaccard",
+    "frozen": "k = 10 and the threshold are fixed here; not tuned on X0 or on dev"
+   }
+  },
+  "X2": {
+   "role": "confirmatory: BM25 removed",
+   "implementation": "FlexRetriever(channels=('dense',), cues='regex')",
+   "score": "L + 1.0*J_regex;  L = [1/(60+r_dense)] / max_U = 61/(60+r_dense)",
+   "note": "BM25 is never constructed or called; U = [view examples with db_id != target], identical (ids, order) to retrieval.Retriever._index_for",
+   "deviation_from_brief": "The brief asked for 'the existing dense-only ranking mode' AND preserved regex Jaccard at weight 1.0. MQL-0011's dense_only mode ranks by cosine with NO Jaccard, so it cannot satisfy both. X2 therefore uses channels=('dense',) with the unchanged regex Jaccard: identical to R3 except that the BM25 term is removed from L."
+  },
+  "R0": {
+   "role": "descriptive historical reference only (no confirmatory test)",
+   "implementation": "retriever_v2.StructureAwareRetriever baseline (MQL-0010 D0 ranking), via DenseHybridRetriever(lexical='bm25')"
+  }
+ },
+ "shared": {
+  "k": 3,
+  "selection": "top-3 of the ranking (no diversity), as in the MQL-0011 screen",
+  "dedup": "unchanged",
+  "rrf_k": 60,
+  "structure_weight": 1.0,
+  "ranks": "competition ranking on 6-decimal scores over U",
+  "sort": "(-round(score, 9), doc_id)"
+ },
+ "metrics": {
+  "structure_match": "PRIMARY. hit@3 over attainable X0 items: some top-3 doc has exactly the item's gold structure signature (structure.signature(patterns.sql_patterns(gold SQL))); attainable = the gold signature occurs in the 2,912-record view (MQL-0011 definition)",
+  "pipeline_shape": "hit@3 over X0 items that are corpus records (they have a corpus MQL): some top-3 doc has the same pipeline stage-operator sequence (MQL-0011 skeleton definition)",
+  "join_subgroup": "attainable X0 items whose gold signature contains 'join'",
+  "descriptive": "R0; hit@1, mJ@3; subgroup table (simple, join, group_by, order/limit, ungrouped aggregate); paraphrase-twin split (MQL-0011 definition: identical masked text or canonical cosine >= 0.95 with the same gold signature; biased, descriptive only); cue precision/recall of regex vs vote against the gold signature; candidate-set and top-3 overlap; latency"
+ },
+ "statistics": {
+  "pairing": "identical X0 items for every arm",
+  "bootstrap": {
+   "resamples": 10000,
+   "seed": 20261123,
+   "unit": "item",
+   "ci": "percentile 95%: sorted bootstrap deltas, values at index int(0.025*B) and int(0.975*B)-1",
+   "implementation": "numpy.random.default_rng(seed).integers(0, n, size=(chunk, n), dtype=int32) in chunks of 1,000; one index matrix per item set reused for every comparison on that set (paired). Seeds: structure_match set = seed, pipeline_shape set = seed+1, join subgroup = seed+2. NOTE: MQL-0011 used random.Random, so CIs are not byte-comparable across MQL-0011 and MQL-0012."
+  },
+  "mcnemar": "exact two-sided on discordant pairs",
+  "X1_test": "superiority on structure_match: p_X1 = exact McNemar two-sided p (X1 vs R3)",
+  "X2_test": "non-inferiority, margin -1.0 pp, on BOTH structure_match and pipeline_shape (intersection-union: both must pass, no within-X2 adjustment). One-sided bootstrap p per metric = (1 + #{bootstrap delta <= -1.0 pp}) / (B + 1); p_X2 = max of the two",
+  "multiplicity": "Holm over {p_X1, p_X2} at family alpha 0.05"
+ },
+ "acceptance": {
+  "X1_pass": "ALL of: (1) X1 - R3 structure_match >= +2.0 pp; (2) paired bootstrap 95% CI lower bound > 0; (3) X1 - R3 on the join subgroup >= -2.0 pp; (4) p_X1 survives Holm",
+  "X2_pass": "ALL of: (1) structure_match 95% CI lower bound of X2 - R3 > -1.0 pp; (2) pipeline_shape 95% CI lower bound of X2 - R3 > -1.0 pp; (3) p_X2 survives Holm",
+  "interpretation_rules": "a non-significant difference is not evidence of equivalence; X2 failing non-inferiority does not show BM25 is needed; structure-proxy changes are not execution-accuracy changes; thresholds are never changed after registration"
+ },
+ "power": {
+  "assumptions": "n_attainable ~ 2,872 (= 3,295 x 679/779, estimate from the dev attainability rate), n_shape = 2,405 corpus-record items; discordance rates from MQL-0011 dev: R3 vs R0 9.1%, R2 vs R3 24%",
+  "ci_half_width_pp": {
+   "discordance_0.09": {
+    "structure": 1.1,
+    "shape": 1.2
+   },
+   "discordance_0.15": {
+    "structure": 1.42,
+    "shape": 1.55
+   },
+   "discordance_0.24": {
+    "structure": 1.79,
+    "shape": 1.96
+   }
+  },
+  "X1": "P(CI lower bound > 0 | true +2 pp) = 0.95 / 0.79 / 0.59 at 9 / 15 / 24% discordance; P(pass criteria 1-2 | true +3 pp) = 0.96 / 0.90 / 0.78; at a true +2.0 pp criterion (1) alone has ~50% chance",
+  "X2": "UNDERPOWERED for equivalence: P(pass both margins | true difference 0) = 0.16 / 0.07 / 0.03; | true +0.5 pp: 0.53 / 0.26 / 0.12. X2 can realistically pass only if it is genuinely at least as good as R3. Registered as specified anyway; a FAIL is not evidence that BM25 is needed."
+ },
+ "validation_before_x0": [
+  "R3 (unchanged MQL-0011 class, Qdrant, dev cache) reproduces the registered MQL-0011 dev R3 top-3 for 779/779 items and the registered R0 top-3 for 779/779",
+  "FlexRetriever(bm25+dense, regex) returns rankings identical to R3 on all 779 MQL-0011 dev items",
+  "no X1/X2 outcome metric is computed on dev or X0 before registration"
+ ],
+ "coverage_analysis": "separate descriptive finding: X0 and dev items whose gold signature is absent from the view, by missing label; no corpus change",
+ "provenance_disclosure": "X1 and X2 were selected from a post-hoc analysis of MQL-0011 DEV results. X0 databases appeared in that analysis only as retrieved candidate documents (doc-side signatures/skeletons), never as queries; no X0 query outcome has been computed before this registration. Week 3 (2026) selected hybrid weight 1.0 by train-LODO on corpus v1, which may have included some build-DB questions (not verified); that choice is part of R3/X1/X2 alike."
+}

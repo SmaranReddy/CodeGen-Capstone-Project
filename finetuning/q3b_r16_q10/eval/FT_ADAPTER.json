@@ -1,0 +1,49 @@
+{
+ "adapter_name": "q3b_r16_q10",
+ "adapter_path": "/kaggle/input/notebooks/kshv0532/fine-tune-mql-0010/q3b_r16_q10",
+ "adapter_sha256": "7096760ac2ed7e4a6c2eefdd7c0c249d4b3dba723f069982a499b876d434e09d",
+ "r": 16,
+ "lora_alpha": 32,
+ "target_modules": [
+  "down_proj",
+  "gate_proj",
+  "k_proj",
+  "o_proj",
+  "q_proj",
+  "up_proj",
+  "v_proj"
+ ],
+ "trained_on": "unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit",
+ "train": {
+  "epochs": 1,
+  "max_steps": -1,
+  "batch": 2,
+  "grad_accum": 4,
+  "lr": 0.0002,
+  "warmup_ratio": 0.03,
+  "scheduler": "cosine",
+  "seed": 3407
+ },
+ "data": {
+  "train_rows_used": 2395,
+  "dev_rows": 506,
+  "files": [
+   "sft_train.prompt_completion.jsonl",
+   "sft_dev.prompt_completion.jsonl"
+  ]
+ },
+ "train_results": {
+  "train_loss": 0.04816741362214089,
+  "train_minutes": 30.7,
+  "dev_loss_before": 0.7747051185369491,
+  "dev_loss_after": 0.017482283863573686,
+  "dev_loss_samples": 100
+ },
+ "applied_to": {
+  "model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "dtype": "bfloat16"
+ },
+ "method": "peft merge_and_unload into the bf16 base, saved to MERGED_DIR, loaded by the unchanged MQL-0010 generator",
+ "merged_weights_changed_tensors": "252/252"
+}

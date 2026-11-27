@@ -1,0 +1,10 @@
+# MQL-0010 Kaggle runtime. Use the PREINSTALLED Kaggle GPU image; do not upgrade anything.
+# The notebook only pip-installs a package that is MISSING, and only when INSTALL_MISSING = True.
+# Versions of the MQL-0009 run (Tesla T4, 2026-11-18/19), recorded for comparison; the notebook records the actual ones
+# and every pass must share them (pin the Kaggle environment after session 1).
+torch==2.11.0+cu130          # MQL-0009 value; any Kaggle-preinstalled CUDA build with bf16 (emulated on T4) support
+transformers==5.20.2         # MQL-0009 value
+accelerate==1.15.0           # MQL-0009 value
+tokenizers==0.23.3           # MQL-0009 value
+huggingface_hub              # preinstalled; snapshot_download at revision 488639f1ff808d1d3d0ba301aef8c11461451ec5
+# Python stdlib only otherwise. No pymongo, no database driver, no API client.

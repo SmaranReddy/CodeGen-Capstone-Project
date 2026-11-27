@@ -19,6 +19,7 @@ This is the permanent record of quantitative results: model evaluations, fine-tu
 Secondary metric, not used for ranking: SQL-0001 test-suite EX (e97acc5 defaults) is 630/1,034 (60.9%). See the SQL-0001 note (b).
 
 Test-set (`test_full`) accuracy: **not evaluated yet.**
+*Note 2026-11-25:* the NL→MQL test_full evaluation has now run: MQL-0015, the registered 1,000-item sample (see the NL→MQL table and the MQL-0015 entry). No NL→SQL test_full accuracy exists.
 
 **Scope note 2026-10-29 (no entry, heading or metric changed).**
 - The project's target task is **NL→MQL** (MongoDB). See `docs/target_language_scope_review.md`.
@@ -35,6 +36,10 @@ Test-set (`test_full`) accuracy: **not evaluated yet.**
 | NL→MQL / expanded train partition (318) / Qwen-3B GGUF q4_k_m on Kaggle T4, KV reset per item, fresh paired arms | MQL-0005 | zero-shot 160/318 (50.3%); random_k3 155/318 (48.7%); **hybrid_k3 172/318 (54.1%)** | — | — |
 | NL→MQL / Spider dev minus the 3 held-out test DBs (892 items, 17 DBs) / zero-shot, `nl-mql-spider1-v1`, HF transformers bf16 on Kaggle T4, **cross-engine** (Atlas MQL result vs SQLite gold-SQL result), local Windows scoring (added 2026-10-30, verified) | MQL-0006 | 421/892 (47.2%), Wilson 95% 43.9–50.5% | — | — |
 | NL→MQL / the same 892 items / Qwen-3B HF bf16 on Kaggle T4, paired arms generated in one run, cross-engine, local Windows scoring on Atlas (added 2026-11-17, verified) | MQL-0008 | zero-shot 415/892 (46.5%), Wilson 95% 43.3–49.8%; **hybrid RAG k=3 on approved corpus v2.1: 457/892 (51.2%)**, Wilson 95% 48.0–54.5%; exact McNemar p = 0.0018 | — | — |
+| NL→MQL / 639 held-out Spider-train items (16 DBs disjoint from the corpus) / Qwen-3B HF bf16 on Kaggle T4, 8 paired runs in 3 sessions, cross-engine, local Windows scoring on Atlas `codegen_spider1_heldout` (added 2026-11-19, verified) | MQL-0009 | zero-shot 319/639 (49.9%); random k=3 (5 seeds) 334/335/334/333/328, mean 332.8 (52.1%); fixed k=3 334/639 (52.3%); **hybrid RAG k=3 on approved corpus v2.1: 357/639 (55.9%)**, Wilson 95% 52.0–59.7%; H1 hybrid − random mean +3.79 pp [1.28, 6.32], Holm p = 0.0079; H2 hybrid − fixed +3.60 pp, Holm p = 0.030 | — | — |
+| NL→MQL / 716 held-out Spider-train items (18 corpus DBs, holdout view excludes them from retrieval) / Qwen-3B HF bf16 on Kaggle T4, 9 registered arms in 1 session, cross-engine, local Windows scoring on Atlas `codegen_spider1_holdout_mql0010` (added 2026-11-21, verified) | MQL-0010 | zero-shot A0 397/716 (55.4%); hybrid D0 413/716 (57.7%); **D0V (hybrid + schema-feedback retry) 430/716 (60.1%)**, D0V − D0 +2.37 pp [1.26, 3.63], p = 1.5e-5, +1 pp criterion met; **FULL 434/716 (60.6%)**, FULL − D0 +2.93 pp, Holm p = 0.011; generic retry D0G 414/716 | — | — |
+| NL→MQL / the same 716 MQL-0010 holdout items, **secondary re-analysis (not a fresh test)** / Qwen-3B HF bf16 on Kaggle T4, R0V vs R3V regenerated in 1 matched session, cross-engine, Atlas `codegen_spider1_holdout_mql0010` (added 2026-11-23, verified) | MQL-0014 | R0 414/716 (57.8%); R0V 432/716 (60.3%); R3 438/716 (61.2%); **R3V (embedding-enhanced R3 + schema retry) 450/716 (62.8%)**, R3V − R0V +2.51 pp [0.42, 4.61], exact McNemar p = 0.030 (40/22) | — | — |
+| NL→MQL / **Spider `test_full`, registered 1,000-item sample** (fresh test set, first use) / Qwen-3B HF bf16 on Kaggle T4, 2 sessions, cross-engine, Atlas `codegen_spider1_test_mql0015`, all arms scored in 1 session (added 2026-11-25, verified) | MQL-0015 | A0V 497/1000 (49.7%); R3V 544/1000 (54.4%); **FT-R3V (fine-tuned + R3 + schema retry) 598/1000 (59.8%)**, Wilson 95% 56.7–62.8%; FT-R3V − R3V +5.40 pp [2.7, 8.1], exact McNemar p = 0.00014 (125/71) | — | — |
 
 MQL test-partition (65) accuracy for any new experiment: **not evaluated.** (The 455 aggregates in MQL-0002 predate the split and therefore include the 65 items; see MQL-0002.)
 
@@ -575,6 +580,473 @@ The results here use different datasets and metrics (the Spider-derived MQL benc
 - **Artifacts:** export `outputs/mql0008_predictions.zip` (sha256 2e4774f2117e480eba3b997e33ac209475794376f483561c85db77017192f65c); run `outputs/nl2mql_mql0008_approved_corpus_v2_1/scoring_runs/run_20261117T053551Z/` (`input_validation_report.json`, `predictions/`, `scoring/results_report.md` sha256 1daa8f71eceeddab1cf011f5423bd70a4d0ae1638229ab223513a25bfb88bf47, `scoring/analysis.json`, `scoring/paired_comparison.jsonl`, `scoring/arms/<arm>/evaluation_results.jsonl`, `scoring/RUN_MANIFEST.json`); package `kaggle/nl2mql_mql0008_approved_corpus_v2_1/`; scorer `scripts/nl2mql_mql0008/`.
 - **Not checked:** no executed Kaggle notebook or Kaggle log is saved locally, so model, GPU and library identity rest on the export's own run configs. Scoring was run once (no repeat to measure tie-order noise). Test partition (65): not evaluated.
 
+### MQL-0009: retrieval-control experiment (zero-shot / random x5 / fixed / hybrid RAG), Qwen-3B, 639 held-out Spider-train items
+
+**Status: PLANNED (registered 2026-11-18). The package is built and has not been executed. No prediction and no metric exist. Scoring is BLOCKED on Atlas data provisioning.** Next unused ID confirmed: MQL-0007 exists in outputs/ without its own entry, and MQL-0008 is the latest entry. No file used MQL-0009 before this entry.
+
+| Item | Value |
+|---|---|
+| Question | Is the MQL-0008 hybrid-RAG gain due to relevant retrieval or to supplying any three demonstrations? |
+| Runs | A_zero_shot; B_random_s1..s5 (unchanged `retrieval.Retriever(method="random")`, seeds 20261181..20261185); C_fixed (spider_train_02033, 01967, 03829 for every question); D_hybrid (the unchanged MQL-0008 hybrid_masked retriever). K=3 for B, C and D. 8 runs x 639 = 5,112 predictions |
+| Model / decoding | `Qwen/Qwen2.5-Coder-3B-Instruct` @ `488639f1ff808d1d3d0ba301aef8c11461451ec5`, bfloat16 (emulated on a Tesla T4, compute capability 7.5, as in MQL-0006..0008; only a T4 is accepted), greedy, max_new_tokens 1024, batch 8, seed 42 |
+| Evaluation set | spider-sql-v1 `val_internal` database-level split (16 Spider-train DBs, seed 20261027) intersected with spider-pool-v3 membership = 639 items; disjoint from all 123 corpus DBs and from Spider dev |
+| Corpus | approved corpus v2.1, 3,445 records, sha256 96552f06...dd199bf, unmodified; the eligible view = the full corpus; 17 question-level exclusion pairs, applied identically in B, C and D |
+| Prompt | `nl-mql-spider1-v1` / `nl-mql-spider1-rag-v1`; schema context derived offline from SQLite with the import_atlas.py mapping |
+| Package | `kaggle/nl2mql_mql0009_retrieval_control_bundle.zip` sha256 2ed81c46874c828b139b0eac87ea087f9b0a2f97396fac9307fd9319a71515ce; manifest 2a4f22e0eb526540e70f62f561d0314b1b2faa5c12917196a953d9f98aecface |
+| Analysis plan | `outputs/nl2mql_mql0009_retrieval_control/preflight/analysis_plan.json` sha256 ecb7479f7909a65f726fadce1e49dda4f6cc472cbcf9c2eaa3f2d59eb2bb4144. Primary: H1 D vs per-question mean of 5 random seeds (bootstrap + sign-flip), H2 D vs C (McNemar), Holm |
+| Blocker | the 16 DBs (69 collections, 16,885 documents) are not on Atlas; scoring requires provisioning plus full parity with `outputs/nl2mql_mql0009_retrieval_control/scoring_contract/atlas_mapping.json` |
+| Details | `docs/nl2mql_mql0009_retrieval_control.md` |
+
+- **Not comparable** with MQL-0008 absolute accuracies (different item set). Only within-run paired comparisons are planned.
+- 2026-11-18, status note (no metric): **PARTIAL, unscored.**
+  - Kaggle session 1 ran as registered: A_zero_shot, D_hybrid and B_random_s1, 639/639 each, so 1,917 of 5,112
+    predictions. Pinned revision, bf16 emulated on a T4, torch 2.11.0+cu130 / transformers 5.20.2, environment
+    consistent, no problems. Export: `mql0009_predictions.zip`, predictions sha256 A `1ed94e2c…`, B_random_s1
+    `c6ba66fa…`, D `e7536b6b…`.
+  - Sessions 2 (C_fixed, B_random_s2/s3) and 3 (B_random_s4/s5) have not been run. The registered scorer refuses
+    partial exports.
+  - The Atlas provisioning blocker above is resolved: `codegen_spider1_heldout` holds 69 collections and 16,885
+    documents (`outputs/nl2mql_mql0009_retrieval_control/provisioning/provision_20261118T040504.json`).
+  - No accuracy is recorded until all 8 runs are scored. Continuation: `docs/mql0009_continuation_runbook.md`.
+
+**Status update 2026-11-19: COMPLETE and VERIFIED.** The PLANNED / PARTIAL text above is historical and is left as written.
+
+- **Generation:** Kaggle sessions 2 (C_fixed, B_random_s2/s3) and 3 (B_random_s4/s5) were run as registered. Exports are at the repo root:
+  - `mql0009_predictions.zip` (session 1), sha256 e982a47d…;
+  - `mql0009_predictions_session2.zip` (session 2), 2933da0a…;
+  - `mql0009_predictionssession2.zip` (**session 3**, misnamed at download), bc3d2b9e….
+- **Integrity checks:**
+  - 8 × 639 = 5,112 records, each with one unique id per run, and every record `status: ok`.
+  - `input_validation_report.json` reports `ok: true`.
+  - The arms re-exported in later cumulative zips (A, B_s1 and D in sessions 2 and 3; B_s2/s3 and C in session 3) are byte-identical to their first export, so nothing was regenerated.
+  - All 8 runs used the pinned revision 488639f1…: T4, bf16 emulated, torch 2.11.0+cu130, transformers 5.20.2.
+  - Frozen hashes match: package manifest 2a4f22e0…, config 3f052e98…, analysis plan ecb7479f…, evaluation ids 6f1425f7….
+- **Scoring:** registered command, `mql0009_scoring.py score --run-name run_final`.
+  - The first attempt stopped at the Atlas preflight because the read-only user had no `find` on `codegen_spider1_heldout`. The user then added the grant and twice sent the registered command as a chat message; the shell prefix did not take effect either time. Claude took this as authorization and ran the command in-session on 2026-11-19, departing from the task brief's no-Atlas-scoring restriction.
+  - There was one fail-closed full-parity preflight for all 8 runs: Atlas 8.0.37, 69 collections, 16,885 documents, digests match, read-only verified. `scoring/preflight/atlas_check.json` sha256 af4ae6f6….
+  - The reference has 639 items, all `ok`, sha256 ce1a915b….
+  - The per-arm counts and H1 were recomputed independently from `evaluation_results.jsonl` and `paired_per_question.jsonl` with identical results.
+
+| Run | correct / 639 | % | incorrect | invalid | execution_error |
+|---|---:|---:|---:|---:|---:|
+| A_zero_shot | 319 | 49.92 | 303 | 4 | 13 |
+| B_random_s1 | 334 | 52.27 | 285 | 3 | 17 |
+| B_random_s2 | 335 | 52.43 | 280 | 5 | 19 |
+| B_random_s3 | 334 | 52.27 | 283 | 4 | 18 |
+| B_random_s4 | 333 | 52.11 | 282 | 3 | 21 |
+| B_random_s5 | 328 | 51.33 | 281 | 5 | 25 |
+| B_random mean | 332.8 | 52.08 | | | |
+| C_fixed | 334 | 52.27 | 289 | 2 | 14 |
+| D_hybrid | 357 | 55.87 | 263 | 2 | 17 |
+
+No timeouts, generation failures, infrastructure failures or not_comparable outcomes in any run.
+
+- **H1 (primary, registered):** D_hybrid − per-question mean of the 5 random seeds = +3.79 pp.
+  - Question-level bootstrap 95% [+1.28, +6.32]; sign-flip p = 0.00395; Holm p = 0.0079.
+  - Hybrid is better on 128 questions and the random mean is better on 80.
+  - **Supported:** the hybrid gain is not explained by supplying any three demonstrations.
+- **H2 (primary, registered):** D_hybrid − C_fixed = +3.60 pp, bootstrap 95% [+0.63, +6.73]; exact McNemar p = 0.0297 (D only 63, C only 40); Holm p = 0.030. **Supported.**
+- **Secondary (unadjusted unless stated):**
+  - D vs A: +5.95 pp, 86 fixes / 48 regressions, McNemar p = 0.0013.
+  - Random mean vs A: +2.16 pp, bootstrap [−0.41, +4.73], sign-flip p = 0.108, **not significant**.
+  - C vs A: +2.35 pp, p = 0.159, **not significant**.
+  - D vs each seed: p = 0.033 / 0.033 / 0.031 / 0.026 / 0.0046. Holm over the 5 seeds leaves only s5 below 0.05 (adjusted 0.023; the others are 0.106).
+  - Random-seed SD 0.43 pp, but 182 of 639 questions change outcome across seeds.
+- **Exploratory:** set_op_or_subquery (91 items) is about 11% in every run; anti-join (18) is 33% zero-shot vs 10–11% with random or hybrid examples. See `docs/mql0009_post_experiment_analysis.md`.
+- **Comparability:** all 8 runs are directly comparable (same items, model, scorer and Atlas snapshot). The absolute accuracies are **not** comparable with MQL-0008 (different items: Spider-train DBs, not Spider dev).
+- **Artifacts:** `outputs/nl2mql_mql0009_retrieval_control/scoring_runs/run_final/`, containing:
+  - `scoring/results_report.md` 8730abf3…;
+  - `scoring/analysis.json` c0bc45ad…;
+  - `scoring/paired_per_question.jsonl` cf594568…;
+  - `scoring/RUN_MANIFEST.json` 352631ea…;
+  - `scoring/arms/<run>/`.
+
+### MQL-0010: schema-feedback retry, signature diversity and FK type notes (9 arms), Qwen-3B, 716 held-out Spider-train items
+
+**Status: verified (2026-11-21).**
+
+**Checks run:**
+- archive verify (`mql0010_scoring.py verify`: SHA256SUMS, frozen package manifest 87bea695…, registration index 11b56c79…, frozen plans, `verify_exports`);
+- full-parity read-only Atlas preflight;
+- 0 infrastructure failures;
+- recount of correct per arm equals `analysis.json`;
+- 716 evaluation records per arm;
+- prediction hashes equal `RUN_MANIFEST.json`;
+- post-hoc configuration check 60/60 (`posthoc_config_check.json`):
+  - every pass fingerprint, recomputed from the frozen package, matches;
+  - config_sha256 0f80cb87… equals the frozen config;
+  - D0G's generic text is verbatim R5;
+  - batch size is 1 for delta and retries.
+
+**Setup:**
+- **Dataset file:**
+  - gold from `data/processed/spider_sql_v1/train.jsonl` (sha256 40c1a7c1…);
+  - split `kaggle/nl2mql_mql0010_holdout/registration/split_registration.json` (sha256 fd0c8e18…);
+  - evaluation inputs `kaggle/nl2mql_mql0010_holdout/data/eval/eval_inputs.jsonl`.
+- **Prompt:**
+  - zero-shot `nl-mql-spider1-v1` (template sha256 7401bf14…);
+  - RAG `nl-mql-spider1-rag-v1`;
+  - frozen per-item prompts in `data/plans/plan_{A0,D0,E,EF}.jsonl` (plans sha256 d59f626f… / c489ce33… / a2b8c5d4… / ba196aaf…);
+  - retry feedback: validator issue list (schema) or the R5 generic sentence;
+  - retrieval corpus `data/corpus/approved_corpus_v2_1.jsonl` (96552f06…), view of 2,912 records.
+- **Task:** NL→MQL, cross-engine (the Atlas MQL result is compared with the SQLite gold-SQL result), using the unchanged MQL-0006..0009 evaluator (`scripts/nl2mql/dev1034_core.py`).
+- **Dataset:** 716 Spider-train items from 18 corpus DBs (holdout seed 20261119, after amendment A1). The retrieval view is corpus v2.1 minus the 18 holdout DBs (A4 R3).
+- **Model:** Qwen/Qwen2.5-Coder-3B-Instruct @ 488639f1ff808d1d3d0ba301aef8c11461451ec5.
+- **Decoding and precision:** HF bf16, emulated on a Kaggle T4; greedy; max_new_tokens 1024.
+- **Batch size:** 8 for the first passes, with a recorded batch-1 OOM fallback (61 events). 1 for the matched delta and all retries.
+- **Kaggle run:** all 8 passes in 1 Kaggle session (2 were planned).
+- **Scoring:** local Windows, as `codegen_eval_readonly`, on Atlas `codegen_spider1_holdout_mql0010` (99 collections / 1,280 docs, server 8.0.39).
+- **Gold reference:** 716/716 `ok`.
+
+**Results (correct / 716, one metric: execution match):**
+
+| Arm | Correct |
+|---|---:|
+| A0 | 397 (55.4%) |
+| A0V | 415 (58.0%) |
+| D0 | 413 (57.7%) |
+| D0V | 430 (60.1%) |
+| D0G | 414 (57.8%) |
+| E | 424 (59.2%) |
+| EP | 426 (59.5%) |
+| EF | 421 (58.8%) |
+| **FULL** | **434 (60.6%)** |
+
+EP and EF differ from E only on the 52 matched-delta items. On those items: E 28/52, EP 28/52, EF 25/52.
+
+**Registered A4 sequence** (exact McNemar test; bootstrap 95% CI, 10,000 resamples, seed 20261119):
+- **Step 1 — D0V vs D0:** +2.37 pp [+1.26, +3.63], 17 / 0, p = 1.5e-5. **Rejects. The +1 pp practical criterion is met.**
+- **Step 2 (Holm):**
+  - FULL vs D0: +2.93 pp [+0.84, +5.17], Holm p = 0.011. **Rejects.**
+  - D0V vs D0G: +2.23 pp [+1.26, +3.35], 16 / 0, Holm p = 6.1e-5. **Rejects.**
+- **Step 3 (Holm):**
+  - E vs D0: +1.54 pp [−0.28, +3.49], Holm p = 0.25. **Inconclusive (underpowered).**
+  - EF vs EP: −0.70 pp [−1.54, 0.00], 1 / 6, Holm p = 0.25. **Descriptive.**
+- **Descriptive comparisons:**
+  - D0 vs A0: +2.23 pp, p = 0.26.
+  - A0V vs A0: +2.51 pp, p = 1.2e-4.
+  - D0G vs D0: +0.14 pp, p = 1.0.
+- **Broken by a kept retry:** A0V 0, D0V 0, D0G 0, FULL 1.
+
+**Noise (post hoc):**
+- 10 reused byte-identical queries changed outcome on re-execution (tie/document-order nondeterminism). D0V vs D0 was unaffected.
+- A sensitivity analysis that gives each reused record its source's outcome leaves every registered conclusion unchanged.
+
+**Comparability:** the 9 arms are directly comparable with each other. They are **not** comparable with MQL-0008 (892) or MQL-0009 (639), because the items differ. "Current best results" is therefore not updated.
+
+**Artifacts** (`outputs/nl2mql_mql0010/scoring_runs/run_final/`):
+- `scoring/results_report.md` c98a1f7f…
+- `scoring/analysis.json` 1ce743bc…
+- `scoring/RUN_MANIFEST.json` 0844a9e8…
+- `scoring/preflight/atlas_check.json` 0b323fee…
+- `scoring/descriptive_recount_posthoc.json` b986b483…
+- `scoring/posthoc_noise_sensitivity.json` e45233b2…
+- `scoring/posthoc_config_check.json` 4bc24839…
+- `scoring/arms/<arm>/`
+
+**Post-hoc scripts:** `scripts/nl2mql_mql0010/analysis/posthoc_{descriptive_recount,noise_sensitivity,config_check}.py`.
+
+**Input:** `mql0010_predictions.zip`, sha256 d18e7a85751151d0efff9b9432932dcbd37a62376be921cc0ec31945c0facebe.
+
+**Report:** `docs/mql0010_final_results_analysis.md`.
+
+### MQL-0011 stage 1: dense-retrieval offline screen (bge-small + embedded Qdrant + RRF), MQL-0010 dev split, 779 items
+
+**Added:** 2026-11-22. **Status:** verified locally.
+- The anchors reproduced exactly, and the artifact hashes were checked.
+- Every gate value and arm metric was recomputed independently from `per_item.jsonl` by `scripts/nl2mql_mql0011/analysis/recompute_gate.py`, which does not import the screen code. 0 mismatches; output `screen/gate_recompute.json` 07148f56….
+
+**What this is:** an **offline structural retrieval proxy. It is NOT execution accuracy.**
+- No model generation and no Atlas query.
+- Nothing here is comparable with any accuracy entry.
+
+**Pre-registered verdict:** **FAIL. No stage 2.**
+
+**Inputs:**
+- **Retrieval pool:** approved corpus v2.1 (96552f06…) restricted to the registered MQL-0010 retrieval view.
+  - 2,912 records, 105 DBs, ids sha256 cfde5e9c…, 18 holdout DBs absent.
+  - Each query leaves its own DB out.
+- **Questions:** the registered MQL-0010 **dev** split, 779 items in 15 DBs (ids sha256 b65ef62c…).
+  - 679 items are attainable (their gold signature exists in the pool).
+  - 507 have a corpus MQL, used for the skeleton metric.
+- **Holdout:** the MQL-0010 holdout was **not read**.
+- **Labels:** gold SQL and corpus MQL of dev items were used for metrics only.
+
+**Embedding:**
+- BAAI/bge-small-en-v1.5 at commit 5c38ec7c405ec4b44b94cc5a9bb96e735b38267a; weights sha256 3c9f3166….
+- CLS pooling, L2-normalised, float32, 384 dimensions, CPU, batch 1.
+- Embedded text: `masked_question`, the same text BM25 indexes.
+- Re-encoding is byte-identical at 1 and at 4 threads.
+
+**Vector store:** embedded Qdrant (qdrant-client 1.20.0, exact brute-force search) at `~/codegen_data/qdrant_mql0011`.
+- Qdrant generates and filters the candidates.
+- The ranking scores are re-computed from the artifact vectors (CanonicalScorer). Raw backend cosines differ by up to 3.1e-7, which flips 6-decimal ties.
+- Backend parity on all 779 queries: 0 candidate-set mismatches, and 0 final-ranking mismatches between Qdrant and NumPy.
+
+**Arms:** K = 3, top-3 of the ranking as in `retrieval_dev_proxy.py`.
+
+| Arm | Retrieval |
+|---|---|
+| R0 | registered D0 hybrid |
+| R1 | RRF(BM25) + Jaccard (matched control) |
+| R2 | dense only |
+| R3 | RRF(BM25, dense), k = 60, + Jaccard |
+| R0E / R1E / R3E | the same with signature diversity |
+
+**Results:**
+
+| Arm | hit@3 | hit@3 attainable (679) | skeleton hit@3 (507) | mJ@3 | triples differing from R0 |
+|---|---|---|---|---|---|
+| R0 | 57.12 | 65.54 | 67.06 | 0.6564 | — |
+| R1 | 56.74 | 65.10 | 66.07 | 0.6535 | 17.6% |
+| R2 | 57.64 | 66.13 | 71.99 | 0.6354 | 96.9% |
+| R3 | 59.44 | 68.19 | 69.43 | 0.6638 | 88.7% |
+| R0E | 65.85 | 75.55 | 76.33 | 0.7121 | — |
+| R3E | 69.32 | 79.53 | 78.70 | 0.7261 | 91.9% vs R0E |
+
+The R0 and R0E anchors equal `outputs/nl2mql_mql0010/dev_evidence/retrieval_dev_proxy.json` exactly.
+
+**Gate (paired bootstrap, 10,000 resamples, seed 20261122):**
+
+| Check | Result | Outcome |
+|---|---|---|
+| G1: R3 − R0 on hit@3 attainable | +2.65 pp [0.29, 4.86] | **fails the +3.0 pp bar** |
+| G2: R3 − R1 | +3.09 pp [1.03, 5.15] | passes |
+| G3: R3 − R0 on skeleton hit@3 | +2.37 pp | passes |
+| G4: the same checks on the 440 attainable non-twin items | R3 − R0 +1.59 pp [−1.59, 4.77]; R3 − R1 +2.05 pp [−0.68, 5.00] | **fails** |
+
+A paraphrase twin is an item that has a candidate with an identical masked question or cosine ≥ 0.95 together with the same gold signature. 239 of the 779 items are twins.
+
+**Descriptive:**
+- The twin flag is partly defined by the dense channel: cosine ≥ 0.95 to a candidate with the same signature.
+- The non-twin subset is therefore, by construction, the items where dense finds no close same-structure match. The −7.05 pp for dense alone (R2 − R0) on that subset reflects how the subset was selected; it is **not** a general property of embeddings.
+- Twins come from other databases with different schemas, so they are **not leakage**. The deployed retriever would find them legitimately.
+- G4 was registered as a robustness condition and is applied as written.
+- The RRF rescaling by itself (R1 − R0) is −0.44 pp, so it explains nothing.
+
+**Latency (embedded-local; not evidence of production-scale performance):**
+- R0: 66 ms per query.
+- R3: 414 ms per query (Qdrant local brute force).
+- Artifact build: 48.5 s for 2,912 texts on CPU.
+
+**Artifacts** (`outputs/nl2mql_mql0011/`):
+- `screen/screen_results.json` fdf50ef6…
+- `screen/per_item.jsonl` 59dc05ec…
+- `screen/screen_summary.md` 16ff9d8d…
+- `registration/screen_registration.json` 3ceaeb8f… (config sha256 989546b6…, plus source hashes)
+- `preflight/{planner_equivalence f4f4ff1b…, backend_parity edfb054c…, ingest_report 73db5891…, artifact_verify_threads1 fc0ff975…, artifact_verify_threads4 06563f3c…}.json`
+- `embeddings/mql0011__v2_1_view2912__bge_small_en_v1_5__5c38ec7c__masked_q/manifest.json` ff5f899b…
+
+**Code and config:** `scripts/nl2mql_mql0011/`; config `scripts/nl2mql_mql0011/configs/mql0011_screen.json`.
+
+**Limitation:** every metric is structural. The screen cannot detect non-structural accuracy effects, such as paraphrase or output-shape priming.
+
+### MQL-0012: offline confirmation of X1 (neighbour-voted structure cues) and X2 (BM25 removed) against R3, fresh X0 split, 3,295 items
+
+**Added:** 2026-11-22. **Status:** verified locally.
+- Every confirmatory value and verdict was recomputed independently from `per_item.jsonl` by `scripts/nl2mql_mql0012/analysis/recompute_confirmatory.py`: 0 mismatches.
+- MQL-0011 files and the Qdrant storage are byte-identical before and after the run.
+
+**What this is:** an **offline structural retrieval proxy. It is NOT execution accuracy.** No model generation, no Atlas query.
+
+**Pre-registered verdicts:**
+
+| Arm | Verdict |
+|---|---|
+| X1 | **FAIL** (significantly worse than R3) |
+| X2 | **FAIL** (non-inferiority not shown) |
+
+**Data:**
+- **X0:** all 90 MQL-0010 build DBs, 3,295 items (ids sha256 d31164f3…).
+  - Same item rule as MQL-0010, plus spider-pool-v3 membership.
+  - Disjoint from the MQL-0010 holdout, the MQL-0010/0011 dev split, MQL-0009, Spider dev and the expanded MQL splits.
+  - 2,882 items are attainable; 2,405 have a corpus MQL (shape metric).
+- **Retrieval:** the registered 2,912-record view, leaving out each query's own DB, with no pair exclusions.
+  - The MQL-0011 embedding artifact and Qdrant collection were used read-only.
+  - X0 query vectors come from the same pinned bge-small model.
+- **Holdout:** not used.
+
+**Registration:** `outputs/nl2mql_mql0012/registration/mql0012_registration.json` 2fcebcdc…
+- Config sha256 5909a914…, registered 2026-11-22 09:28 UTC, before any X0 retrieval.
+- Validation before registration: on all 779 MQL-0011 dev items, R3 and R0 reproduce their registered top-3, and the X1/X2 code with the regex cues reproduces R3's full rankings.
+
+**Arms** (K = 3, RRF k = 60, structure weight 1.0):
+
+| Arm | Retrieval |
+|---|---|
+| R3 | control: the unchanged MQL-0011 rrf_fused retriever |
+| X1 | R3 with the regex cues replaced by a strict-majority (≥ 6 of 10) unweighted vote of the top-10 distinct dense neighbours' corpus labels, unioned with the unchanged schema-mention join rule and text_number rule |
+| X2 | R3 with the BM25 term removed: L = 61/(60 + dense rank), plus the regex Jaccard. MQL-0011's `dense_only` mode was not used, because it has no Jaccard; this deviation is stated in the config |
+| R0 | descriptive reference |
+
+**Results:**
+
+| Arm | structure_match (2,882) | pipeline_shape (2,405) | join (993) | hit@1 |
+|---|---|---|---|---|
+| R0 | 63.53 | 66.07 | 51.86 | 50.31 |
+| R3 | 67.45 | 69.48 | 57.40 | 54.79 |
+| X1 | 63.32 | 66.07 | 53.07 | 53.61 |
+| X2 | 66.31 | 68.44 | 56.70 | 54.61 |
+
+**Confirmatory tests** (paired bootstrap, 10,000 resamples, seed 20261123, numpy; exact McNemar; Holm over {p_X1, p_X2}):
+
+| Comparison | Discordant pairs | Δ, pp | 95% CI | p |
+|---|---|---|---|---|
+| X1 − R3, structure | 164 / 283 | −4.13 | [−5.55, −2.71] | McNemar 2.0e-8 |
+| X1 − R3, join subgroup | — | −4.33 | [−6.65, −2.11] | — |
+| X2 − R3, structure | 102 / 135 | −1.15 | [−2.19, −0.10] | NI 0.618 |
+| X2 − R3, shape | 81 / 106 | −1.04 | [−2.16, 0.08] | NI 0.508 |
+
+- X1 fails criteria 1–3. The difference is significant, in the harmful direction.
+- X2 fails both non-inferiority margins (CI lower bound must exceed −1.0).
+
+**Descriptive** (not confirmatory):
+- **R3 vs R0:** +3.92 pp [2.67, 5.17], McNemar 9e-10. This does not change the MQL-0011 gate, which stays FAIL.
+- **X2 vs R3:** the structure CI excludes 0 (McNemar 0.037, unadjusted). This suggests BM25 adds about 1 pp, but it is a single unregistered test.
+- **X1 vs R3 on shape:** −3.41 pp.
+- **Subgroups (X1 vs R3):** group-by 49.8 vs 61.5 (n = 613); join 53.1 vs 57.4.
+- **Twin split:** twins 84.2 vs 84.9 (n = 1,167); non-twins 49.2 vs 55.6 (n = 1,715). The twin definition is biased, so this is descriptive only.
+- **Cue accuracy against gold signatures:** vote cues match the exact signature on 50.1% of items vs 40.2% for regex, and are more precise on most labels. They lose recall on aggregate (0.55 vs 0.82), having (0.27 vs 0.76), distinct (0.43 vs 0.67) and like (0.30 vs 0.69). They can never predict the four labels absent from the corpus.
+- **Latency (embedded-local, per query):** R0 43 ms, R3 195 ms, X1 196 ms, X2 183 ms.
+
+**Coverage (separate finding):**
+- anti_join, intersect, nested and union never occur in approved corpus v2.1.
+- 413 of 3,295 X0 items (12.5%) and 100 of 779 dev items are unattainable for every retriever. Details in `outputs/nl2mql_mql0012/coverage/coverage.json` 045f3365….
+
+**Power, as registered:** X2 had a 3–16% chance of passing even if X2 and R3 were truly equal.
+
+**Artifacts** (`outputs/nl2mql_mql0012/`):
+- `results/per_item.jsonl` 2e66b2df…
+- `results/results.json` a4ec7921…
+- `results/summary.md` df0fcad4…
+- `results/recompute_confirmatory.json` 0b4ac19d…
+- `split/x0_split.json` a9d75ed3…
+- `split/x0_items.jsonl` 90b08399…
+- `preflight/validation.json` 766c4136…
+- `query_cache_x0/manifest.json` 219a8dcf…
+
+**Code:** `scripts/nl2mql_mql0012/`.
+
+### MQL-0010-FT1 (side experiment): fine-tuned Qwen-3B LoRA q3b_r16_q10, A0 zero-shot prompts, MQL-0010 holdout (716)
+
+**Added:** 2026-11-22. **Status:** provisional. Predictions (hashes, counts, ids, prompts) and the metric were checked locally and on Atlas; the fine-tuning training data was **not** checked (it exists only on Kaggle). Side experiment outside the registered MQL-0010 A4 sequence; the MQL-0010 entry and "Current best results" are unchanged.
+
+- **Model:** Qwen/Qwen2.5-Coder-3B-Instruct @488639f1 bf16 with LoRA `q3b_r16_q10` (sha 7096760a…; r 16, alpha 32, all attn+MLP proj; 1 epoch, lr 2e-4, trained on the unsloth bnb-4bit base, merged into bf16). Training data reported by the export: 2,395 train / 506 dev rows, file `sft_train.prompt_completion.jsonl` (not available locally; the local `data/finetune/ft_v1` file of that name is a different set, 1,784 rows).
+- **Generation:** unchanged MQL-0010 package (manifest 87bea695…), A0 zero-shot prompts (prompt_sha256 identical to MQL-0010 A0 for 716/716), greedy, max_new_tokens 1024, Kaggle T4 (bf16 emulated), 144 OOM batch-1 fallbacks.
+- **Evaluation:** MQL-0010 holdout, 716 items / 18 DBs, Atlas `codegen_spider1_holdout_mql0010`, read-only `codegen_eval_readonly`, full-parity preflight OK; unchanged evaluator `dev1034_core` (sha 81b86f0b…) via `mql0010_scoring.py` (sha ba32e1c0…) functions, A0 only; frozen reference sha 1ff619f2… reused from run_final.
+- **Execution accuracy (Atlas): 516 / 716 (72.07%).** incorrect 187, invalid 3 (2 unsafe_mql, 1 format_error), failed 10 (model execution_error), timeout 0. Model output: 716 stop, 1 unparseable.
+- **Paired vs MQL-0010 (same 716 questions):** A0 397 → +16.62 pp (156/37, exact McNemar p 1.4e-18; same prompts, the clean comparison). Descriptive only (different prompts): D0 413 (+14.39 pp), D0V 430 (+12.01 pp), FULL 434 (+11.45 pp).
+- **Leakage evidence (not a verification):** registered holdout retrieval view rebuilt exactly (2,912, ids sha cfde5e9c…); minus 11 L3–L5 near-duplicate ids = 2,901 = 2,395 + 506. 533/716 holdout items are corpus records, so leakage would matter. FT output equals the corpus gold MQL byte-for-byte on 273/532 corpus-member items (base 0), falling with hardness (easy 151/234 → extra 3/19), consistent with learned converter style.
+- **Not run:** inspection of the actual training file for holdout DBs/ids; second-session re-score of base A0 on the same Atlas state.
+- **Note 2026-11-22:** the line "No fine-tuned MQL model exists" under "Recorded but not ledger results" predates this entry.
+- **Note 2026-11-23 (status → verified):** the friend's handoff `ft_handoff_q3b_r16_q10.zip` (repo root, sha 0103333c…; SHA256SUMS 25/25 OK; extracted to `outputs/finetuning_reuse/handoff_extract/`) supplies the adapter, training data, training notebook, config and prompt format. `adapter_model.safetensors` sha = 7096760a… (matches the scored run). Independent local leakage check (`outputs/finetuning_reuse/leakage_check/`, our own script, not the friend's builder):
+  - rows 2,395 / 506 / 2,901 (full = train ∪ dev, 0 duplicates);
+  - all ids are approved-corpus v2.1 records; 0 holdout ids; 0 rows from the 18 holdout DBs;
+  - train = the 90 registered build DBs, dev = the 15 registered dev DBs, no DB overlap;
+  - full = the 2,912 holdout retrieval view minus exactly the 11 L3–L5 near-duplicate ids;
+  - questions and labels are byte-equal to the corpus (0 mismatches); one system prompt, identical to eval A0;
+  - 0 exact, 0 normalised and 0 token-Jaccard ≥ 0.8 question matches against the 716 holdout questions;
+  - positive control: the same detector flags 11/11 removed near-duplicates, and those 11 ids equal the registered L3–L5 pair corpus ids;
+  - Spider `test_full` (MQL-0013, 40 DBs) shares 0 DBs with the 105 training DBs.
+
+  Adapter selection used dev loss on the 15 dev DBs, not the holdout (4-config sweep, `training/sweep_summary.json`). Training config confirmed from the notebook code: Unsloth QLoRA, adamw_8bit, weight decay 0.01, max_seq_length 2048, response-only loss, no packing, LoRA dropout 0. Training prompts use the eval A0 layout but write `Foreign keys: (none)` / `Sample documents: (none)` and list only the touched collections. Remaining caveats: the holdout was reused (MQL-0010, MQL-0014, FT1) and FT1 was not pre-registered, so it is a secondary result; the base A0 was not re-scored in the same Atlas session; the Unsloth base-repo revision is not pinned.
+- **Artifacts:** `outputs/nl2mql_mql0010_ft_side/ft_q3b_r16_q10_A0/` (REPORT.md, input zip sha 24118b11…, predictions sha a7996b83…, `scoring/arms/A0/evaluation_results.jsonl`, `scoring/comparison_vs_run_final.json`, `scoring/RUN_MANIFEST.json`).
+
+### MQL-0014: R0V vs R3V execution re-check (BM25 hybrid vs embedding-enhanced R3 retrieval), Qwen-3B, MQL-0010 holdout (716), secondary re-analysis
+
+**Added:** 2026-11-23. **Status:** verified. Export hashes and counts were checked; the 4 arms were assembled and checked by `verify_exports`; Atlas full-parity preflight OK; all metrics independently recomputed from the per-question evaluation files (counts, McNemar, numpy bootstrap CI [0.42, 4.61]). **This is a secondary re-analysis of existing evaluation data, not a fresh independent test.** The D0V recipe was selected on these items; R3 retrieval was developed on the MQL-0011 dev split and X0 and was never tuned on them. This entry does not change MQL-0011's failed stage-1 gate. MQL-0013 (Spider test_full) was registered but superseded and never run; test_full remains unused.
+
+- **Arms:**
+  - R0 = MQL-0010 D0 (planner_dense lexical `bm25`; the plan equals the frozen MQL-0010 `plan_D0` on 716/716 rows).
+  - R3 = lexical `rrf_fused` (MQL-0011 R3: RRF_60(BM25) + RRF_60(bge-small @5c38ec7c dense) + regex-cue Jaccard; registered Qdrant collection read-only, byte-identical before and after).
+  - Both use K=3, the 2,912-record view and the 13 registered L3–L5 exclusions. 0 examples came from a holdout DB or the question's own DB; 0 were dropped by the budget.
+  - R0V / R3V add the MQL-0010 validator and one schema-feedback retry.
+  - Prompts were identical on 58 items and differed on 658.
+- **Generation:** Qwen/Qwen2.5-Coder-3B-Instruct @488639f1, bf16 emulated on a Tesla T4, greedy, max_new_tokens 1024, torch 2.11.0+cu130, transformers 5.20.2.
+  - One Kaggle session.
+  - Passes: shared (58), R0-only (658) and R3-only (658) at batch 8; distinct retries at batch 1.
+  - Retried: R0V 131, R3V 126. Kept: 55 / 46.
+- **Evaluation:** 716 items over 18 DBs on Atlas `codegen_spider1_holdout_mql0010` (server 8.0.39), read-only `codegen_eval_readonly`.
+  - Unchanged evaluator `dev1034_core` (sha 81b86f0b…).
+  - Reference = the frozen MQL-0010 reference (sha 1ff619f2…). A local recompute matched it on every field except the timing field `gold_ms`.
+  - Each distinct (item, text) was executed once: 1,123 executions.
+- **Execution accuracy (strict, /716):**
+
+  | Arm | Correct | % | Incorrect | Invalid | Execution failure | Timeout | Generation failure | Infrastructure |
+  |---|---:|---:|---:|---:|---:|---:|---:|---:|
+  | R0 | 414 | 57.82 | 280 | 6 | 16 | 0 | 0 | 0 |
+  | R0V | 432 | 60.34 | 260 | 5 | 19 | 0 | 0 | 0 |
+  | R3 | 438 | 61.17 | 250 | 8 | 20 | 0 | 0 | 0 |
+  | R3V | 450 | 62.85 | 239 | 6 | 21 | 0 | 0 | 0 |
+
+- **Primary (registered):** R3V − R0V = **+2.51 pp**, paired bootstrap 95% CI [0.42, 4.61], exact McNemar p = **0.030**.
+  - Both correct 410; both wrong 244; R3V-only 40; R0V-only 22.
+  - H0 rejected at α 0.05. This was the single registered hypothesis.
+- **Descriptive:**
+  - R3 − R0 +3.35 pp [1.26, 5.45], p 0.0032 (43/19).
+  - Retry effect: R0V − R0 +2.51 pp (18/0); R3V − R3 +1.68 pp (12/0).
+  - 60% target: R3V 450 ≥ 430, met. R0V 432 is also just above it.
+- **Breakdowns (R3V − R0V):**
+  - Hardness: easy +1.67 (240), medium +4.41 (272), hard +0.85 (118), extra +1.16 (86).
+  - Join +3.38 (237); no join +2.09 (479).
+  - Flat +2.97 (639); nested or set-operation −1.30 (77). Nested/set-op accuracy stays about 16% in every arm, a known corpus coverage gap.
+- **Reproducibility:** the original MQL-0010 D0V, rescored in the same session, gives 431/716. It was 430 in MQL-0010: `spider_train_06109` flipped incorrect→correct on re-execution of the same text (known tie-order noise). That text is shared by R0V and R3V, so the primary comparison is unaffected. The regenerated R0V text equals the old D0V text on 698/716 items; R0V vs old D0V is 1/0.
+- **Artifacts:** `outputs/nl2mql_mql0010_r3_execution_recheck/`:
+  - registration `registration/mql0014_registration.json` (f8378231…);
+  - package `kaggle/nl2mql_mql0014_r3_recheck/` (manifest 76409a76…);
+  - input `mql0014_predictions.zip` (c1b244f6…);
+  - `scoring_runs/run_final/scoring/` (analysis.json, results_report.md, RUN_MANIFEST.json, arms/*/evaluation_results.jsonl);
+  - `REPORT.md`.
+
+### MQL-0015: A0V vs R3V vs FT-R3V, Qwen-3B, 1,000 Spider `test_full` items (registered final evaluation)
+
+**Added:** 2026-11-25. **Status:** verified.
+- **Checks run:**
+  - Export SHA256SUMS OK. Status `complete` with no problems; the environment and weights were consistent across both sessions.
+  - All six session-1 pass files are byte-identical in the session-2 export.
+  - `verify` passed: 6 arms × 1,000, frozen prompts, weights per arm, adapter identity.
+  - Atlas full-parity preflight OK: 180 collections.
+  - Per-arm counts and the three McNemar tests were recomputed independently from `arms/*/evaluation_results.jsonl` and match the analysis.
+- **This is the first and only `test_full` run.** Registration `fb5d07d0…`, amendment A1.
+
+- **Arms:**
+  - A0 = zero-shot; R3 = frozen R3 retrieval prompts (hybrid BM25 + bge-small dense, RRF, top 3); FT-R3 = the same R3 prompts on base + the verified LoRA, merged (adapter `7096760a…`).
+  - The V arms add the schema validator and one schema-feedback retry.
+- **Generation:** Qwen/Qwen2.5-Coder-3B-Instruct @488639f1, bf16 emulated on one Tesla T4 (Kaggle), greedy, max_new_tokens 1024, batch 8 for first answers and 1 for retries, torch 2.11.0+cu130, transformers 5.20.2, peft 0.21.2.
+  - Session 1 (base passes): `mql0015_predictions.zip` (`bc3d49ca…`).
+  - Session 2 (FT passes, resumed from the session-1 output attached as a dataset): `mql0015_predictions_session2.zip` (`2375aa69…`).
+  - 0 generation failures. Retried / kept: A0V 152/85, R3V 154/83, FT-R3V 130/43.
+- **Evaluation:**
+  - Atlas `codegen_spider1_test_mql0015`, read-only `codegen_eval_readonly` via `mql0015_scoring_authorized.py`.
+  - Unchanged evaluator `dev1034_core` (`81b86f0b…`), cross-engine against the SQLite gold, all arms in one session.
+  - 3,144 unique executions; 0 infrastructure failures (no re-execution rounds).
+- **Execution accuracy (strict, /1,000):**
+
+  | Arm | Correct | % | Wilson 95% | Incorrect | Invalid | Execution failure | Timeout | Not comparable |
+  |---|---:|---:|---|---:|---:|---:|---:|---:|
+  | A0 | 471 | 47.1 | 44.0–50.2 | 447 | 14 | 16 | 22 | 30 |
+  | **A0V** | 497 | 49.7 | 46.6–52.8 | 418 | 11 | 21 | 23 | 30 |
+  | R3 | 515 | 51.5 | 48.4–54.6 | 397 | 3 | 35 | 21 | 29 |
+  | **R3V** | 544 | 54.4 | 51.3–57.5 | 361 | 3 | 42 | 23 | 27 |
+  | FT-R3 | 588 | 58.8 | 55.7–61.8 | 329 | 20 | 13 | 24 | 26 |
+  | **FT-R3V** | 598 | 59.8 | 56.7–62.8 | 318 | 18 | 13 | 27 | 26 |
+
+- **Primary (registered):** FT-R3V − R3V = **+5.40 pp**, paired bootstrap 95% CI [2.7, 8.1], cluster bootstrap [2.49, 8.3], exact McNemar p = **0.00014** (FT-R3V-only 125, R3V-only 71). H0 rejected.
+- **Secondary (Holm):**
+  - R3V − A0V +4.70 pp [1.7, 7.8], Holm p 0.0025 (140/93).
+  - FT-R3V − A0V +10.10 pp [7.0, 13.3], Holm p 2.1e-9 (188/87).
+  - Both rejected; all three stay rejected under Holm over three.
+- **Descriptive:**
+  - Retry effect: A0V − A0 +2.6 pp (26/0); R3V − R3 +2.9 pp (29/0); FT-R3V − FT-R3 +1.0 pp (11/1).
+  - 60% target: FT-R3V 59.8% is just below it (fact only).
+  - Weak spots: set operations (n 85) A0V 15 → R3V 8 → FT-R3V 4; anti-joins (n 35) 19 → 5 → 2. Extra-hard items: FT-R3V 40 vs R3V 42.
+  - The primary result is stable under every registered sensitivity exclusion: +5.43 to +5.46 pp, p ≈ 0.00014.
+- **Artifacts:** `outputs/nl2mql_final_1000/`:
+  - `registration/`;
+  - `scoring_runs/run_final/scoring/`: analysis.json `6f0f11de…`, results_report.md `afd6ce69…`, RUN_MANIFEST.json `d8fd6d00…`, `arms/*/evaluation_results.jsonl`;
+  - input zips in the repo root.
+- **Note:** the run's final console print failed after scoring (a Windows cp1252 `UnicodeEncodeError` on "−"). Every result file had already been written; nothing was re-run.
+
 ### Recorded but not ledger results
 
 - **Spider 2.0-Lite 68** (`data/processed/nl_mql_dataset.jsonl`): only reference-oracle (gold replay) harness runs exist. In `outputs/evaluation_68/reference_baseline/`, 62/68 executed and matched and 6 hit execution errors. The 6 were re-run in `reference_slow6/` (2/6 correct, 3 execution errors) and again in `reference_slow6b/` (6/6 correct). **No model has been evaluated on it.**
@@ -892,3 +1364,26 @@ Earlier audits have not been back-filled yet. Sources: `docs/sql2mql_independent
 - **Unchanged (hash-checked after the tests):** MQL-0008 package (19 files, manifest fb20c496fa20fbc5eecc60b1407ac3858a6370cd607df257709b3cea4e26fed8, bundle afa0aa67e44d018f0c7c22756429d012928115da1f75dc1d2b730d48c1083551), approved corpus, MQL-0007 package and results report.
 - **Supersedes** the "Open" bullet of DA-2026-11-16-MQL0008-PACKAGE (the two-arm adapter and plan now exist).
 
+### DA-2026-11-18-MQL0009-LEAKAGE: MQL-0009 evaluation split and leakage audit (held-out Spider-train vs approved corpus v2.1)
+
+- **Status: verified.** Local recompute by script (`scripts/nl2mql_mql0009/build_mql0009_package.py`), re-checked by tests. No model was run, there was no database connection, and no gold SQL was executed.
+- **Split:** 639 items, 16 DBs (797 → 744 → 734 → 639 funnel); all `exec_ok`. Registration: `outputs/nl2mql_mql0009_retrieval_control/preflight/eval_split_registration.json`.
+- **Gates (registered before running):**
+
+  | Gate | Hits |
+  |---|---|
+  | L1 DB overlap | 0 / 639 items |
+  | L2 id overlap | 0 |
+  | L2 source-index overlap | 0 |
+  | L3 exact question | 4 pairs |
+  | L4 normalised question | 5 pairs |
+  | L5 token Jaccard ≥ 0.8 | 17 pairs |
+  | → retrieval exclusions | 17 pairs on 13 items |
+  | L6 normalised gold SQL equal to a corpus SQL (report only) | 7 / 639 items |
+  | L7 masked SQL skeleton match (report only) | 383 / 639 items |
+
+- **Fixed-example draw:** 0 skips for leakage.
+- **Plans:** K=3 for every question of every demonstration run, with 0 over-budget drops.
+- **Evidence:** `outputs/nl2mql_mql0009_retrieval_control/preflight/leakage_audit.json` and `fixed_selection.json`.
+
+<!-- Release snapshot: entries after the completed MQL-0015 experiment (MQL-0016 and later dataset audits) are intentionally omitted from this branch. -->
