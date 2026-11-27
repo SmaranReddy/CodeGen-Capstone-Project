@@ -1,0 +1,395 @@
+{
+ "experiment_id": "MQL-0010",
+ "package": "nl2mql_mql0010_holdout",
+ "status": "PACKAGE BUILT - NOT EXECUTED (no prediction or score exists)",
+ "registration_index_sha256": "11b56c79a5009017335c101658f402b10fd6befc92d60f5a706f5f1104131c98",
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "label": "qwen2.5-coder-3b-instruct",
+  "dtype": "bfloat16",
+  "decoding": "greedy (do_sample=False)",
+  "max_new_tokens": 1024,
+  "seed": 42,
+  "batch_size_first_pass": 8,
+  "batch_size_delta": 1,
+  "batch_size_retry": 1,
+  "runtime": "transformers GPU, one card (CUDA_VISIBLE_DEVICES=0)"
+ },
+ "hardware": {
+  "allowed_gpus": [
+   "Tesla T4"
+  ],
+  "min_gpu_gib": 14.0,
+  "bf16_emulation_allowed": true
+ },
+ "context": {
+  "k": 3,
+  "max_context_tokens": 1500,
+  "n_ctx": 8192,
+  "max_new_tokens": 1024,
+  "margin_tokens": 64
+ },
+ "arms": [
+  {
+   "name": "A0",
+   "kind": "generate",
+   "flags": {
+    "family": "zero_shot"
+   },
+   "batch_size": 8
+  },
+  {
+   "name": "A0V",
+   "kind": "retry",
+   "source": "A0",
+   "feedback_mode": "schema",
+   "flags": {
+    "family": "zero_shot",
+    "validate_retry": true
+   },
+   "batch_size": 1
+  },
+  {
+   "name": "D0",
+   "kind": "generate",
+   "flags": {
+    "family": "hybrid"
+   },
+   "batch_size": 8
+  },
+  {
+   "name": "D0V",
+   "kind": "retry",
+   "source": "D0",
+   "feedback_mode": "schema",
+   "flags": {
+    "family": "hybrid",
+    "validate_retry": true
+   },
+   "batch_size": 1
+  },
+  {
+   "name": "D0G",
+   "kind": "retry",
+   "source": "D0",
+   "feedback_mode": "generic",
+   "flags": {
+    "family": "hybrid",
+    "validate_retry": true
+   },
+   "batch_size": 1,
+   "label": "R5 generic-retry control: same trigger (validator flag or unparseable), same items, same acceptance rule (strictly fewer issues), same model/decoding/retry budget (1); second turn = GENERIC_FEEDBACK, no schema-specific content"
+  },
+  {
+   "name": "E",
+   "kind": "generate",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50
+   },
+   "batch_size": 8
+  },
+  {
+   "name": "EP",
+   "kind": "matched_delta_control",
+   "base": "E",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50
+   },
+   "batch_size": 1,
+   "label": "R2 control: E's prompt regenerated for exactly the items whose EF prompt differs, in the same delta pass, batch size 1; all other items reuse E"
+  },
+  {
+   "name": "EF",
+   "kind": "matched_delta",
+   "base": "E",
+   "control": "EP",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50,
+    "fk_type_notes": "numeric_unified"
+   },
+   "batch_size": 1
+  },
+  {
+   "name": "FULL",
+   "kind": "retry",
+   "source": "EF",
+   "feedback_mode": "schema",
+   "flags": {
+    "family": "hybrid",
+    "diversify": "signature",
+    "candidate_pool": 50,
+    "fk_type_notes": "numeric_unified",
+    "validate_retry": true
+   },
+   "batch_size": 1
+  }
+ ],
+ "passes": [
+  "first:A0",
+  "first:D0",
+  "first:E",
+  "delta",
+  "retry:A0V",
+  "retry:D0V",
+  "retry:D0G",
+  "retry:FULL"
+ ],
+ "pass_dependencies": {
+  "delta": [
+   "first:E"
+  ],
+  "retry:A0V": [
+   "first:A0"
+  ],
+  "retry:D0V": [
+   "first:D0"
+  ],
+  "retry:D0G": [
+   "first:D0"
+  ],
+  "retry:FULL": [
+   "first:E",
+   "delta"
+  ]
+ },
+ "session_plan": {
+  "1": {
+   "passes": [
+    "first:A0",
+    "first:D0",
+    "first:E",
+    "delta"
+   ],
+   "estimated_t4_hours": 7.6
+  },
+  "2": {
+   "passes": [
+    "retry:A0V",
+    "retry:D0V",
+    "retry:D0G",
+    "retry:FULL"
+   ],
+   "estimated_t4_hours": 2.4
+  }
+ },
+ "plans_sha256": {
+  "A0": "d59f626f8851b1ea0ffa911a291769f230cfc7a3d687a283cfc5274bfc327a76",
+  "D0": "c489ce3324cfb6206df0f374d8cfa291c9c50bb69ee1ca908c923305e2f7862a",
+  "E": "a2b8c5d4493e7e4781441aa8c7c07ea1c76d03811bab0455ae34b9a92d08d369",
+  "EF": "ba196aafcd91c70bf047f5d203731759de7d69612421f72dd8d5e0d20c03129f"
+ },
+ "delta_ids": [
+  "spider_train_00747",
+  "spider_train_00748",
+  "spider_train_00749",
+  "spider_train_00750",
+  "spider_train_00751",
+  "spider_train_00752",
+  "spider_train_00755",
+  "spider_train_00756",
+  "spider_train_00757",
+  "spider_train_00758",
+  "spider_train_00759",
+  "spider_train_00760",
+  "spider_train_00763",
+  "spider_train_00764",
+  "spider_train_00765",
+  "spider_train_00766",
+  "spider_train_00767",
+  "spider_train_00768",
+  "spider_train_00769",
+  "spider_train_00770",
+  "spider_train_00771",
+  "spider_train_00772",
+  "spider_train_00773",
+  "spider_train_00774",
+  "spider_train_00781",
+  "spider_train_00782",
+  "spider_train_00783",
+  "spider_train_00784",
+  "spider_train_00785",
+  "spider_train_00786",
+  "spider_train_05403",
+  "spider_train_05408",
+  "spider_train_05409",
+  "spider_train_05412",
+  "spider_train_05414",
+  "spider_train_05415",
+  "spider_train_05416",
+  "spider_train_05417",
+  "spider_train_05418",
+  "spider_train_05419",
+  "spider_train_05420",
+  "spider_train_05424",
+  "spider_train_05428",
+  "spider_train_05429",
+  "spider_train_05430",
+  "spider_train_05431",
+  "spider_train_05436",
+  "spider_train_05437",
+  "spider_train_05438",
+  "spider_train_05439",
+  "spider_train_05442",
+  "spider_train_05443"
+ ],
+ "prompt": {
+  "zero_shot_version": "nl-mql-spider1-v1",
+  "rag_version": "nl-mql-spider1-rag-v1",
+  "zero_shot_template_sha256": "7401bf140dd1b8a9dac057edd9f729a8624823604fa2bd6ae9cfaf1c1890c1be",
+  "zero_shot_prompts_sha256": "8a608728151b759277fc161dfd3ba28e116135575c017db6ac12f7f372cc23cf"
+ },
+ "evaluation": {
+  "n_items": 716,
+  "ids_sha256": "186b080a956a60b6d9a1ecd4181255fdbda1f311d833442702299a5ecb308214",
+  "db_ids": [
+   "allergy_1",
+   "behavior_monitoring",
+   "cre_Theme_park",
+   "customers_and_addresses",
+   "e_learning",
+   "game_1",
+   "insurance_and_eClaims",
+   "local_govt_and_lot",
+   "mountain_photos",
+   "news_report",
+   "program_share",
+   "race_track",
+   "railway",
+   "school_player",
+   "shop_membership",
+   "store_product",
+   "student_1",
+   "workshop_paper"
+  ]
+ },
+ "corpus": {
+  "path": "data/corpus/approved_corpus_v2_1.jsonl",
+  "sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "view_n": 2912,
+  "view_ids_sha256": "cfde5e9c2df334bbfd08f159671b819e84ca9850c3fbb35d59c02ffb7a8d08de"
+ },
+ "retrieval_exclusions": [
+  {
+   "eval_id": "spider_train_00459",
+   "corpus_id": "spider_train_04254",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_00459",
+   "corpus_id": "spider_train_05684",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_00500",
+   "corpus_id": "spider_train_05501",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_01529",
+   "corpus_id": "spider_train_00925",
+   "level": "L5",
+   "jaccard": 0.8
+  },
+  {
+   "eval_id": "spider_train_03768",
+   "corpus_id": "spider_train_04635",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_04028",
+   "corpus_id": "spider_train_05444",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_04029",
+   "corpus_id": "spider_train_04254",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_04029",
+   "corpus_id": "spider_train_05684",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_04055",
+   "corpus_id": "spider_train_00060",
+   "level": "L5",
+   "jaccard": 0.8182
+  },
+  {
+   "eval_id": "spider_train_04055",
+   "corpus_id": "spider_train_06734",
+   "level": "L5",
+   "jaccard": 0.8182
+  },
+  {
+   "eval_id": "spider_train_04860",
+   "corpus_id": "spider_train_01884",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_04861",
+   "corpus_id": "spider_train_01885",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  },
+  {
+   "eval_id": "spider_train_06066",
+   "corpus_id": "spider_train_02854",
+   "level": "L3/L4",
+   "jaccard": 1.0
+  }
+ ],
+ "test_sequence": {
+  "alpha": 0.05,
+  "procedure": "serial gatekeeping",
+  "step1": "D0V vs D0 (exact two-sided McNemar) + R4 practical criterion",
+  "step2": "only if step 1 rejects: Holm over {FULL vs D0, D0V vs D0G}",
+  "step3": "only if BOTH step-2 hypotheses reject: Holm over {E vs D0, EF vs EP}",
+  "descriptive_no_claim": [
+   "D0 vs A0",
+   "A0V vs A0",
+   "D0G vs D0",
+   "recovery statistics per retry arm",
+   "outcome taxonomy",
+   "per-DB and per-family accuracy"
+  ],
+  "power_notes": {
+   "step1": "see R4",
+   "D0V_vs_D0G": "simulated at the Holm worst-case level 0.025: repair 20% vs 10%: power 0.53 (independent repairs) to 0.99 (generic repairs a subset); 10% vs 5%: 0.21-0.66; 20% vs 5%: 0.96-1.00",
+   "E_vs_D0": "0.24-0.43 at a true +2 pp (discordance 8-16%); a non-rejection is inconclusive",
+   "EF_vs_EP": "52 changed items; power <= 0.71 even at +8 net; descriptive in practice"
+  },
+  "supersedes": [
+   "analysis_plan.json primary/secondary_gatekept ordering",
+   "amendment A3 ordering (A3's step 1 is kept; its steps 2-3 are replaced)"
+  ]
+ },
+ "scoring_contract": {
+  "atlas_db": "codegen_spider1_holdout_mql0010",
+  "mapping_sha256": "b14b36078ddc3d89371dae8e6504ad17db73cee80adea301995f13fb8692ca38",
+  "collections": 99,
+  "documents": 1280
+ },
+ "budget_drops": {
+  "A0": 0,
+  "D0": 0,
+  "E": 0,
+  "EF": 0
+ }
+}

@@ -1,0 +1,166 @@
+{
+ "generated_by": "scripts/nl2mql/build_mql0007_package.py",
+ "gates_fixed_in": "configs/experiment.json (before execution)",
+ "leakage_eval": {
+  "exact_hits": 0,
+  "near_hits": 2,
+  "threshold": 0.8,
+  "max_token_jaccard": 0.8,
+  "db_overlap": [],
+  "near_hits_acknowledged": [
+   [
+    "spider_dev_0383",
+    "spider_train_00650",
+    0.8
+   ],
+   [
+    "spider_dev_0824",
+    "spider_train_00650",
+    0.8
+   ]
+  ],
+  "acknowledgement": "user 2026-11-06: keep corpus unmodified (3,589). v1.1 (2026-11-06, user): deterministic evaluation-specific retrieval exclusion in arms B and C + supplementary sensitivity arm D"
+ },
+ "leakage_protected": {
+  "spider_dev_1034": {
+   "n": 1034,
+   "question_exact_hits": 0,
+   "sql_exact_hits": 0,
+   "near_dup_hits": 0,
+   "db_overlap": []
+  },
+  "spider_test_2147": {
+   "n": 2147,
+   "question_exact_hits": 0,
+   "sql_exact_hits": 0,
+   "near_dup_hits": 16,
+   "db_overlap": []
+  },
+  "held_out_mql_test_dbs": [
+   "employee_hire_evaluation",
+   "pets_1",
+   "tvshow"
+  ],
+  "corpus_sql_equal_to_eval_gold_sql": 0
+ },
+ "eligibility": {
+  "split_train": true,
+  "verifier_accepted": true,
+  "corpus_converter": [
+   "sql2mql-v2"
+  ],
+  "in_excluded_accepted": 0,
+  "in_pre_excluded": 0,
+  "leakage_sql_hash_flagged_in_corpus": 0,
+  "leakage_sql_hash_flagged_total": 0,
+  "source_label_audit": {
+   "NO_ISSUE_DETECTED": 3589
+  },
+  "human_review_status": [
+   "NOT_REVIEWED"
+  ],
+  "n_databases": 123
+ },
+ "schema_words_tables_json_equals_atlas_manifest": "17/17 evaluation databases (tables.json's SQLite-internal sqlite_sequence table ignored)",
+ "exclusion_proof": {
+  "plan_diff_ids_primary_vs_unexcluded": {
+   "B_random_k3": [],
+   "C_hybrid_k3": [
+    "spider_dev_0383"
+   ]
+  },
+  "supplementary_arm_ids": [
+   "spider_dev_0383"
+  ],
+  "excluded_by_rule_logged": {
+   "B_random_k3": [
+    [
+     "spider_dev_0383",
+     [
+      {
+       "corpus_id": "spider_train_00650",
+       "original_rank": 616
+      }
+     ]
+    ],
+    [
+     "spider_dev_0824",
+     [
+      {
+       "corpus_id": "spider_train_00650",
+       "original_rank": 1704
+      }
+     ]
+    ]
+   ],
+   "C_hybrid_k3": [
+    [
+     "spider_dev_0383",
+     [
+      {
+       "corpus_id": "spider_train_00650",
+       "original_rank": 1
+      }
+     ]
+    ],
+    [
+     "spider_dev_0824",
+     [
+      {
+       "corpus_id": "spider_train_00650",
+       "original_rank": 10
+      }
+     ]
+    ]
+   ]
+  },
+  "selected_examples_with_jaccard_ge_threshold": 0
+ },
+ "plans": {
+  "B_random_k3": {
+   "empty_context": 0,
+   "items_with_budget_skips": 0,
+   "mean_selected": 3.0,
+   "max_context_tokens": 648,
+   "max_prompt_tokens_est": 3131
+  },
+  "C_hybrid_k3": {
+   "empty_context": 0,
+   "items_with_budget_skips": 0,
+   "mean_selected": 3.0,
+   "max_context_tokens": 997,
+   "max_prompt_tokens_est": 3228
+  }
+ },
+ "tokenizer": {
+  "dir_files": [
+   "config.json",
+   "generation_config.json",
+   "merges.txt",
+   "tokenizer.json",
+   "tokenizer_config.json",
+   "vocab.json"
+  ],
+  "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+  "transformers": "5.20.2",
+  "tokenizers": "0.23.3"
+ },
+ "gold_leak_scan": {
+  "files_scanned": 9,
+  "gold_sql_strings_found": 0,
+  "prompts_checked": 892
+ },
+ "shipped_eval_fields": [
+  "id",
+  "db_id",
+  "question"
+ ],
+ "not_shipped": [
+  "eval_records.jsonl (gold SQL)",
+  "reference.jsonl.gz (gold rows)",
+  "SQLite databases",
+  "reference_expected.json",
+  ".env / credentials",
+  "held-out 65-example partition file"
+ ]
+}

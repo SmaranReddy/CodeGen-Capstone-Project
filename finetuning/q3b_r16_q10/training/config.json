@@ -1,0 +1,78 @@
+{
+ "run_name": "q3b_r16_q10",
+ "notebook": "training/codegen_finetune_sweep.ipynb (sweep entry 1 of 4: the baseline config)",
+ "base_model_for_training": "unsloth/Qwen2.5-Coder-3B-Instruct-bnb-4bit (4-bit QLoRA via Unsloth)",
+ "base_model_for_inference": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "dtype": "bfloat16"
+ },
+ "max_seq_length": 2048,
+ "lora": {
+  "r": 16,
+  "alpha": 32,
+  "dropout": 0.0,
+  "bias": "none",
+  "target_modules": [
+   "q_proj",
+   "k_proj",
+   "v_proj",
+   "o_proj",
+   "gate_proj",
+   "up_proj",
+   "down_proj"
+  ],
+  "gradient_checkpointing": "unsloth"
+ },
+ "training": {
+  "epochs": 1,
+  "max_steps": -1,
+  "per_device_batch_size": 2,
+  "grad_accum": 4,
+  "effective_batch": 8,
+  "learning_rate": 0.0002,
+  "lr_scheduler": "cosine",
+  "warmup_ratio": 0.03,
+  "optimizer": "adamw_8bit",
+  "weight_decay": 0.01,
+  "precision": "fp16 (T4 has no native bf16)",
+  "seed": 3407,
+  "loss": "assistant answer tokens only (unsloth train_on_responses_only)",
+  "packing": false
+ },
+ "data": {
+  "train_file": "data/sft_train.prompt_completion.jsonl",
+  "train_rows": 2395,
+  "dev_file": "data/sft_dev.prompt_completion.jsonl",
+  "dev_rows": 506
+ },
+ "hardware": "Kaggle, 1x Tesla T4 (16 GB)",
+ "sweep_alternatives_tried": {
+  "q3b_r16_ep2_q10": {
+   "NUM_EPOCHS": 2,
+   "dev_loss": 0.0209
+  },
+  "q3b_r16_lr1e-4_q10": {
+   "LEARNING_RATE": 0.0001,
+   "dev_loss": 0.0231
+  },
+  "q3b_r32_q10": {
+   "LORA_R": 32,
+   "LORA_ALPHA": 64,
+   "dev_loss": 0.018
+  }
+ },
+ "selection": "lowest dev loss (0.0175, first 100 dev rows) among 4 configs; dev = MQL-0010's 15 registered dev databases",
+ "library_versions": {
+  "unsloth": "2026.11.9",
+  "unsloth_zoo": "2026.11.8",
+  "transformers": "5.17.0",
+  "trl": "1.15.0",
+  "peft": "0.21.2",
+  "torch": "2.11.0+cu130",
+  "bitsandbytes": "0.50.2",
+  "accelerate": "1.15.0",
+  "datasets": "4.8.5",
+  "full_list": "training/pip_freeze.txt"
+ }
+}

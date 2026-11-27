@@ -1,0 +1,2174 @@
+{
+ "battle_death__battle": {
+  "db_id": "battle_death",
+  "table": "battle",
+  "documents": 8,
+  "fields": {
+   "id": [
+    "int"
+   ],
+   "name": [
+    "string"
+   ],
+   "date": [
+    "string"
+   ],
+   "bulgarian_commander": [
+    "string"
+   ],
+   "latin_commander": [
+    "string"
+   ],
+   "result": [
+    "string"
+   ]
+  },
+  "declared": {
+   "id": "INT",
+   "name": "TEXT",
+   "date": "TEXT",
+   "bulgarian_commander": "TEXT",
+   "latin_commander": "TEXT",
+   "result": "TEXT"
+  }
+ },
+ "battle_death__death": {
+  "db_id": "battle_death",
+  "table": "death",
+  "documents": 13,
+  "fields": {
+   "caused_by_ship_id": [
+    "int"
+   ],
+   "id": [
+    "int"
+   ],
+   "note": [
+    "string"
+   ],
+   "killed": [
+    "int"
+   ],
+   "injured": [
+    "int"
+   ]
+  },
+  "declared": {
+   "caused_by_ship_id": "INT",
+   "id": "INT",
+   "note": "TEXT",
+   "killed": "INT",
+   "injured": "INT"
+  }
+ },
+ "battle_death__ship": {
+  "db_id": "battle_death",
+  "table": "ship",
+  "documents": 7,
+  "fields": {
+   "lost_in_battle": [
+    "int"
+   ],
+   "id": [
+    "int"
+   ],
+   "name": [
+    "string"
+   ],
+   "tonnage": [
+    "string"
+   ],
+   "ship_type": [
+    "string"
+   ],
+   "location": [
+    "string"
+   ],
+   "disposition_of_ship": [
+    "string"
+   ]
+  },
+  "declared": {
+   "lost_in_battle": "INT",
+   "id": "INT",
+   "name": "TEXT",
+   "tonnage": "TEXT",
+   "ship_type": "TEXT",
+   "location": "TEXT",
+   "disposition_of_ship": "TEXT"
+  }
+ },
+ "car_1__car_makers": {
+  "db_id": "car_1",
+  "table": "car_makers",
+  "documents": 22,
+  "fields": {
+   "Id": [
+    "int"
+   ],
+   "Maker": [
+    "string"
+   ],
+   "FullName": [
+    "string"
+   ],
+   "Country": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Id": "INTEGER",
+   "Maker": "TEXT",
+   "FullName": "TEXT",
+   "Country": "TEXT"
+  }
+ },
+ "car_1__car_names": {
+  "db_id": "car_1",
+  "table": "car_names",
+  "documents": 406,
+  "fields": {
+   "MakeId": [
+    "int"
+   ],
+   "Model": [
+    "string"
+   ],
+   "Make": [
+    "string"
+   ]
+  },
+  "declared": {
+   "MakeId": "INTEGER",
+   "Model": "TEXT",
+   "Make": "TEXT"
+  }
+ },
+ "car_1__cars_data": {
+  "db_id": "car_1",
+  "table": "cars_data",
+  "documents": 406,
+  "fields": {
+   "Id": [
+    "int"
+   ],
+   "MPG": [
+    "string"
+   ],
+   "Cylinders": [
+    "int"
+   ],
+   "Edispl": [
+    "double"
+   ],
+   "Horsepower": [
+    "string"
+   ],
+   "Weight": [
+    "int"
+   ],
+   "Accelerate": [
+    "double"
+   ],
+   "Year": [
+    "int"
+   ]
+  },
+  "declared": {
+   "Id": "INTEGER",
+   "MPG": "TEXT",
+   "Cylinders": "INTEGER",
+   "Edispl": "REAL",
+   "Horsepower": "TEXT",
+   "Weight": "INTEGER",
+   "Accelerate": "REAL",
+   "Year": "INTEGER"
+  }
+ },
+ "car_1__continents": {
+  "db_id": "car_1",
+  "table": "continents",
+  "documents": 5,
+  "fields": {
+   "ContId": [
+    "int"
+   ],
+   "Continent": [
+    "string"
+   ]
+  },
+  "declared": {
+   "ContId": "INTEGER",
+   "Continent": "TEXT"
+  }
+ },
+ "car_1__countries": {
+  "db_id": "car_1",
+  "table": "countries",
+  "documents": 15,
+  "fields": {
+   "CountryId": [
+    "int"
+   ],
+   "CountryName": [
+    "string"
+   ],
+   "Continent": [
+    "int"
+   ]
+  },
+  "declared": {
+   "CountryId": "INTEGER",
+   "CountryName": "TEXT",
+   "Continent": "INTEGER"
+  }
+ },
+ "car_1__model_list": {
+  "db_id": "car_1",
+  "table": "model_list",
+  "documents": 36,
+  "fields": {
+   "ModelId": [
+    "int"
+   ],
+   "Maker": [
+    "int"
+   ],
+   "Model": [
+    "string"
+   ]
+  },
+  "declared": {
+   "ModelId": "INTEGER",
+   "Maker": "INTEGER",
+   "Model": "TEXT"
+  }
+ },
+ "concert_singer__concert": {
+  "db_id": "concert_singer",
+  "table": "concert",
+  "documents": 6,
+  "fields": {
+   "concert_ID": [
+    "int"
+   ],
+   "concert_Name": [
+    "string"
+   ],
+   "Theme": [
+    "string"
+   ],
+   "Stadium_ID": [
+    "string"
+   ],
+   "Year": [
+    "string"
+   ]
+  },
+  "declared": {
+   "concert_ID": "INT",
+   "concert_Name": "TEXT",
+   "Theme": "TEXT",
+   "Stadium_ID": "TEXT",
+   "Year": "TEXT"
+  }
+ },
+ "concert_singer__singer": {
+  "db_id": "concert_singer",
+  "table": "singer",
+  "documents": 6,
+  "fields": {
+   "Singer_ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Country": [
+    "string"
+   ],
+   "Song_Name": [
+    "string"
+   ],
+   "Song_release_year": [
+    "string"
+   ],
+   "Age": [
+    "int"
+   ],
+   "Is_male": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Singer_ID": "INT",
+   "Name": "TEXT",
+   "Country": "TEXT",
+   "Song_Name": "TEXT",
+   "Song_release_year": "TEXT",
+   "Age": "INT",
+   "Is_male": "bool"
+  }
+ },
+ "concert_singer__singer_in_concert": {
+  "db_id": "concert_singer",
+  "table": "singer_in_concert",
+  "documents": 10,
+  "fields": {
+   "concert_ID": [
+    "int"
+   ],
+   "Singer_ID": [
+    "string"
+   ]
+  },
+  "declared": {
+   "concert_ID": "INT",
+   "Singer_ID": "TEXT"
+  }
+ },
+ "concert_singer__stadium": {
+  "db_id": "concert_singer",
+  "table": "stadium",
+  "documents": 9,
+  "fields": {
+   "Stadium_ID": [
+    "int"
+   ],
+   "Location": [
+    "string"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Capacity": [
+    "int"
+   ],
+   "Highest": [
+    "int"
+   ],
+   "Lowest": [
+    "int"
+   ],
+   "Average": [
+    "int"
+   ]
+  },
+  "declared": {
+   "Stadium_ID": "INT",
+   "Location": "TEXT",
+   "Name": "TEXT",
+   "Capacity": "INT",
+   "Highest": "INT",
+   "Lowest": "INT",
+   "Average": "INT"
+  }
+ },
+ "course_teach__course": {
+  "db_id": "course_teach",
+  "table": "course",
+  "documents": 10,
+  "fields": {
+   "Course_ID": [
+    "int"
+   ],
+   "Staring_Date": [
+    "string"
+   ],
+   "Course": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Course_ID": "INT",
+   "Staring_Date": "TEXT",
+   "Course": "TEXT"
+  }
+ },
+ "course_teach__course_arrange": {
+  "db_id": "course_teach",
+  "table": "course_arrange",
+  "documents": 6,
+  "fields": {
+   "Course_ID": [
+    "int"
+   ],
+   "Teacher_ID": [
+    "int"
+   ],
+   "Grade": [
+    "int"
+   ]
+  },
+  "declared": {
+   "Course_ID": "INT",
+   "Teacher_ID": "INT",
+   "Grade": "INT"
+  }
+ },
+ "course_teach__teacher": {
+  "db_id": "course_teach",
+  "table": "teacher",
+  "documents": 7,
+  "fields": {
+   "Teacher_ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Age": [
+    "string"
+   ],
+   "Hometown": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Teacher_ID": "INT",
+   "Name": "TEXT",
+   "Age": "TEXT",
+   "Hometown": "TEXT"
+  }
+ },
+ "cre_Doc_Template_Mgt__Documents": {
+  "db_id": "cre_Doc_Template_Mgt",
+  "table": "Documents",
+  "documents": 15,
+  "fields": {
+   "Document_ID": [
+    "int"
+   ],
+   "Template_ID": [
+    "int"
+   ],
+   "Document_Name": [
+    "string"
+   ],
+   "Document_Description": [
+    "string"
+   ],
+   "Other_Details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "Document_ID": "INTEGER",
+   "Template_ID": "INTEGER",
+   "Document_Name": "VARCHAR(255)",
+   "Document_Description": "VARCHAR(255)",
+   "Other_Details": "VARCHAR(255)"
+  }
+ },
+ "cre_Doc_Template_Mgt__Paragraphs": {
+  "db_id": "cre_Doc_Template_Mgt",
+  "table": "Paragraphs",
+  "documents": 15,
+  "fields": {
+   "Paragraph_ID": [
+    "int"
+   ],
+   "Document_ID": [
+    "int"
+   ],
+   "Paragraph_Text": [
+    "string"
+   ],
+   "Other_Details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "Paragraph_ID": "INTEGER",
+   "Document_ID": "INTEGER",
+   "Paragraph_Text": "VARCHAR(255)",
+   "Other_Details": "VARCHAR(255)"
+  }
+ },
+ "cre_Doc_Template_Mgt__Ref_Template_Types": {
+  "db_id": "cre_Doc_Template_Mgt",
+  "table": "Ref_Template_Types",
+  "documents": 5,
+  "fields": {
+   "Template_Type_Code": [
+    "string"
+   ],
+   "Template_Type_Description": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Template_Type_Code": "CHAR(15)",
+   "Template_Type_Description": "VARCHAR(255)"
+  }
+ },
+ "cre_Doc_Template_Mgt__Templates": {
+  "db_id": "cre_Doc_Template_Mgt",
+  "table": "Templates",
+  "documents": 20,
+  "fields": {
+   "Template_ID": [
+    "int"
+   ],
+   "Version_Number": [
+    "int"
+   ],
+   "Template_Type_Code": [
+    "string"
+   ],
+   "Date_Effective_From": [
+    "string"
+   ],
+   "Date_Effective_To": [
+    "string"
+   ],
+   "Template_Details": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Template_ID": "INTEGER",
+   "Version_Number": "INTEGER",
+   "Template_Type_Code": "CHAR(15)",
+   "Date_Effective_From": "DATETIME",
+   "Date_Effective_To": "DATETIME",
+   "Template_Details": "VARCHAR(255)"
+  }
+ },
+ "dog_kennels__Breeds": {
+  "db_id": "dog_kennels",
+  "table": "Breeds",
+  "documents": 3,
+  "fields": {
+   "breed_code": [
+    "string"
+   ],
+   "breed_name": [
+    "string"
+   ]
+  },
+  "declared": {
+   "breed_code": "VARCHAR(10)",
+   "breed_name": "VARCHAR(80)"
+  }
+ },
+ "dog_kennels__Charges": {
+  "db_id": "dog_kennels",
+  "table": "Charges",
+  "documents": 3,
+  "fields": {
+   "charge_id": [
+    "int"
+   ],
+   "charge_type": [
+    "string"
+   ],
+   "charge_amount": [
+    "int"
+   ]
+  },
+  "declared": {
+   "charge_id": "INTEGER",
+   "charge_type": "VARCHAR(10)",
+   "charge_amount": "DECIMAL(19,4)"
+  }
+ },
+ "dog_kennels__Dogs": {
+  "db_id": "dog_kennels",
+  "table": "Dogs",
+  "documents": 15,
+  "fields": {
+   "dog_id": [
+    "int"
+   ],
+   "owner_id": [
+    "int"
+   ],
+   "abandoned_yn": [
+    "string"
+   ],
+   "breed_code": [
+    "string"
+   ],
+   "size_code": [
+    "string"
+   ],
+   "name": [
+    "string"
+   ],
+   "age": [
+    "string"
+   ],
+   "date_of_birth": [
+    "string"
+   ],
+   "gender": [
+    "string"
+   ],
+   "weight": [
+    "string"
+   ],
+   "date_arrived": [
+    "string"
+   ],
+   "date_adopted": [
+    "string"
+   ],
+   "date_departed": [
+    "string"
+   ]
+  },
+  "declared": {
+   "dog_id": "INTEGER",
+   "owner_id": "INTEGER",
+   "abandoned_yn": "VARCHAR(1)",
+   "breed_code": "VARCHAR(10)",
+   "size_code": "VARCHAR(10)",
+   "name": "VARCHAR(50)",
+   "age": "VARCHAR(20)",
+   "date_of_birth": "DATETIME",
+   "gender": "VARCHAR(1)",
+   "weight": "VARCHAR(20)",
+   "date_arrived": "DATETIME",
+   "date_adopted": "DATETIME",
+   "date_departed": "DATETIME"
+  }
+ },
+ "dog_kennels__Owners": {
+  "db_id": "dog_kennels",
+  "table": "Owners",
+  "documents": 15,
+  "fields": {
+   "owner_id": [
+    "int"
+   ],
+   "first_name": [
+    "string"
+   ],
+   "last_name": [
+    "string"
+   ],
+   "street": [
+    "string"
+   ],
+   "city": [
+    "string"
+   ],
+   "state": [
+    "string"
+   ],
+   "zip_code": [
+    "string"
+   ],
+   "email_address": [
+    "string"
+   ],
+   "home_phone": [
+    "string"
+   ],
+   "cell_number": [
+    "string"
+   ]
+  },
+  "declared": {
+   "owner_id": "INTEGER",
+   "first_name": "VARCHAR(50)",
+   "last_name": "VARCHAR(50)",
+   "street": "VARCHAR(50)",
+   "city": "VARCHAR(50)",
+   "state": "VARCHAR(20)",
+   "zip_code": "VARCHAR(20)",
+   "email_address": "VARCHAR(50)",
+   "home_phone": "VARCHAR(20)",
+   "cell_number": "VARCHAR(20)"
+  }
+ },
+ "dog_kennels__Professionals": {
+  "db_id": "dog_kennels",
+  "table": "Professionals",
+  "documents": 15,
+  "fields": {
+   "professional_id": [
+    "int"
+   ],
+   "role_code": [
+    "string"
+   ],
+   "first_name": [
+    "string"
+   ],
+   "street": [
+    "string"
+   ],
+   "city": [
+    "string"
+   ],
+   "state": [
+    "string"
+   ],
+   "zip_code": [
+    "string"
+   ],
+   "last_name": [
+    "string"
+   ],
+   "email_address": [
+    "string"
+   ],
+   "home_phone": [
+    "string"
+   ],
+   "cell_number": [
+    "string"
+   ]
+  },
+  "declared": {
+   "professional_id": "INTEGER",
+   "role_code": "VARCHAR(10)",
+   "first_name": "VARCHAR(50)",
+   "street": "VARCHAR(50)",
+   "city": "VARCHAR(50)",
+   "state": "VARCHAR(20)",
+   "zip_code": "VARCHAR(20)",
+   "last_name": "VARCHAR(50)",
+   "email_address": "VARCHAR(50)",
+   "home_phone": "VARCHAR(20)",
+   "cell_number": "VARCHAR(20)"
+  }
+ },
+ "dog_kennels__Sizes": {
+  "db_id": "dog_kennels",
+  "table": "Sizes",
+  "documents": 3,
+  "fields": {
+   "size_code": [
+    "string"
+   ],
+   "size_description": [
+    "string"
+   ]
+  },
+  "declared": {
+   "size_code": "VARCHAR(10)",
+   "size_description": "VARCHAR(80)"
+  }
+ },
+ "dog_kennels__Treatment_Types": {
+  "db_id": "dog_kennels",
+  "table": "Treatment_Types",
+  "documents": 3,
+  "fields": {
+   "treatment_type_code": [
+    "string"
+   ],
+   "treatment_type_description": [
+    "string"
+   ]
+  },
+  "declared": {
+   "treatment_type_code": "VARCHAR(10)",
+   "treatment_type_description": "VARCHAR(80)"
+  }
+ },
+ "dog_kennels__Treatments": {
+  "db_id": "dog_kennels",
+  "table": "Treatments",
+  "documents": 15,
+  "fields": {
+   "treatment_id": [
+    "int"
+   ],
+   "dog_id": [
+    "int"
+   ],
+   "professional_id": [
+    "int"
+   ],
+   "treatment_type_code": [
+    "string"
+   ],
+   "date_of_treatment": [
+    "string"
+   ],
+   "cost_of_treatment": [
+    "int"
+   ]
+  },
+  "declared": {
+   "treatment_id": "INTEGER",
+   "dog_id": "INTEGER",
+   "professional_id": "INTEGER",
+   "treatment_type_code": "VARCHAR(10)",
+   "date_of_treatment": "DATETIME",
+   "cost_of_treatment": "DECIMAL(19,4)"
+  }
+ },
+ "flight_2__airlines": {
+  "db_id": "flight_2",
+  "table": "airlines",
+  "documents": 12,
+  "fields": {
+   "uid": [
+    "int"
+   ],
+   "Airline": [
+    "string"
+   ],
+   "Abbreviation": [
+    "string"
+   ],
+   "Country": [
+    "string"
+   ]
+  },
+  "declared": {
+   "uid": "INTEGER",
+   "Airline": "TEXT",
+   "Abbreviation": "TEXT",
+   "Country": "TEXT"
+  }
+ },
+ "flight_2__airports": {
+  "db_id": "flight_2",
+  "table": "airports",
+  "documents": 100,
+  "fields": {
+   "City": [
+    "string"
+   ],
+   "AirportCode": [
+    "string"
+   ],
+   "AirportName": [
+    "string"
+   ],
+   "Country": [
+    "string"
+   ],
+   "CountryAbbrev": [
+    "string"
+   ]
+  },
+  "declared": {
+   "City": "TEXT",
+   "AirportCode": "TEXT",
+   "AirportName": "TEXT",
+   "Country": "TEXT",
+   "CountryAbbrev": "TEXT"
+  }
+ },
+ "flight_2__flights": {
+  "db_id": "flight_2",
+  "table": "flights",
+  "documents": 1200,
+  "fields": {
+   "Airline": [
+    "int"
+   ],
+   "FlightNo": [
+    "int"
+   ],
+   "SourceAirport": [
+    "string"
+   ],
+   "DestAirport": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Airline": "INTEGER",
+   "FlightNo": "INTEGER",
+   "SourceAirport": "TEXT",
+   "DestAirport": "TEXT"
+  }
+ },
+ "museum_visit__museum": {
+  "db_id": "museum_visit",
+  "table": "museum",
+  "documents": 8,
+  "fields": {
+   "Museum_ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Num_of_Staff": [
+    "int"
+   ],
+   "Open_Year": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Museum_ID": "INT",
+   "Name": "TEXT",
+   "Num_of_Staff": "INT",
+   "Open_Year": "TEXT"
+  }
+ },
+ "museum_visit__visit": {
+  "db_id": "museum_visit",
+  "table": "visit",
+  "documents": 6,
+  "fields": {
+   "Museum_ID": [
+    "int"
+   ],
+   "visitor_ID": [
+    "string"
+   ],
+   "Num_of_Ticket": [
+    "int"
+   ],
+   "Total_spent": [
+    "double"
+   ]
+  },
+  "declared": {
+   "Museum_ID": "INT",
+   "visitor_ID": "TEXT",
+   "Num_of_Ticket": "INT",
+   "Total_spent": "REAL"
+  }
+ },
+ "museum_visit__visitor": {
+  "db_id": "museum_visit",
+  "table": "visitor",
+  "documents": 6,
+  "fields": {
+   "ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Level_of_membership": [
+    "int"
+   ],
+   "Age": [
+    "int"
+   ]
+  },
+  "declared": {
+   "ID": "INT",
+   "Name": "TEXT",
+   "Level_of_membership": "INT",
+   "Age": "INT"
+  }
+ },
+ "network_1__Friend": {
+  "db_id": "network_1",
+  "table": "Friend",
+  "documents": 20,
+  "fields": {
+   "student_id": [
+    "int"
+   ],
+   "friend_id": [
+    "int"
+   ]
+  },
+  "declared": {
+   "student_id": "INT",
+   "friend_id": "INT"
+  }
+ },
+ "network_1__Highschooler": {
+  "db_id": "network_1",
+  "table": "Highschooler",
+  "documents": 16,
+  "fields": {
+   "ID": [
+    "int"
+   ],
+   "name": [
+    "string"
+   ],
+   "grade": [
+    "int"
+   ]
+  },
+  "declared": {
+   "ID": "INT",
+   "name": "TEXT",
+   "grade": "INT"
+  }
+ },
+ "network_1__Likes": {
+  "db_id": "network_1",
+  "table": "Likes",
+  "documents": 10,
+  "fields": {
+   "student_id": [
+    "int"
+   ],
+   "liked_id": [
+    "int"
+   ]
+  },
+  "declared": {
+   "student_id": "INT",
+   "liked_id": "INT"
+  }
+ },
+ "orchestra__conductor": {
+  "db_id": "orchestra",
+  "table": "conductor",
+  "documents": 12,
+  "fields": {
+   "Conductor_ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Age": [
+    "int"
+   ],
+   "Nationality": [
+    "string"
+   ],
+   "Year_of_Work": [
+    "int"
+   ]
+  },
+  "declared": {
+   "Conductor_ID": "INT",
+   "Name": "TEXT",
+   "Age": "INT",
+   "Nationality": "TEXT",
+   "Year_of_Work": "INT"
+  }
+ },
+ "orchestra__orchestra": {
+  "db_id": "orchestra",
+  "table": "orchestra",
+  "documents": 12,
+  "fields": {
+   "Orchestra_ID": [
+    "int"
+   ],
+   "Orchestra": [
+    "string"
+   ],
+   "Conductor_ID": [
+    "int"
+   ],
+   "Record_Company": [
+    "string"
+   ],
+   "Year_of_Founded": [
+    "double"
+   ],
+   "Major_Record_Format": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Orchestra_ID": "INT",
+   "Orchestra": "TEXT",
+   "Conductor_ID": "INT",
+   "Record_Company": "TEXT",
+   "Year_of_Founded": "REAL",
+   "Major_Record_Format": "TEXT"
+  }
+ },
+ "orchestra__performance": {
+  "db_id": "orchestra",
+  "table": "performance",
+  "documents": 11,
+  "fields": {
+   "Performance_ID": [
+    "int"
+   ],
+   "Orchestra_ID": [
+    "int"
+   ],
+   "Type": [
+    "string"
+   ],
+   "Date": [
+    "string"
+   ],
+   "Official_ratings_(millions)": [
+    "double"
+   ],
+   "Weekly_rank": [
+    "string"
+   ],
+   "Share": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Performance_ID": "INT",
+   "Orchestra_ID": "INT",
+   "Type": "TEXT",
+   "Date": "TEXT",
+   "Official_ratings_(millions)": "REAL",
+   "Weekly_rank": "TEXT",
+   "Share": "TEXT"
+  }
+ },
+ "orchestra__show": {
+  "db_id": "orchestra",
+  "table": "show",
+  "documents": 5,
+  "fields": {
+   "Show_ID": [
+    "int"
+   ],
+   "Performance_ID": [
+    "int"
+   ],
+   "If_first_show": [
+    "string"
+   ],
+   "Result": [
+    "string"
+   ],
+   "Attendance": [
+    "double"
+   ]
+  },
+  "declared": {
+   "Show_ID": "INT",
+   "Performance_ID": "INT",
+   "If_first_show": "bool",
+   "Result": "TEXT",
+   "Attendance": "REAL"
+  }
+ },
+ "poker_player__people": {
+  "db_id": "poker_player",
+  "table": "people",
+  "documents": 7,
+  "fields": {
+   "People_ID": [
+    "int"
+   ],
+   "Nationality": [
+    "string"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Birth_Date": [
+    "string"
+   ],
+   "Height": [
+    "double"
+   ]
+  },
+  "declared": {
+   "People_ID": "INT",
+   "Nationality": "TEXT",
+   "Name": "TEXT",
+   "Birth_Date": "TEXT",
+   "Height": "REAL"
+  }
+ },
+ "poker_player__poker_player": {
+  "db_id": "poker_player",
+  "table": "poker_player",
+  "documents": 5,
+  "fields": {
+   "Poker_Player_ID": [
+    "int"
+   ],
+   "People_ID": [
+    "int"
+   ],
+   "Final_Table_Made": [
+    "double"
+   ],
+   "Best_Finish": [
+    "double"
+   ],
+   "Money_Rank": [
+    "double"
+   ],
+   "Earnings": [
+    "double"
+   ]
+  },
+  "declared": {
+   "Poker_Player_ID": "INT",
+   "People_ID": "INT",
+   "Final_Table_Made": "REAL",
+   "Best_Finish": "REAL",
+   "Money_Rank": "REAL",
+   "Earnings": "REAL"
+  }
+ },
+ "real_estate_properties__Other_Available_Features": {
+  "db_id": "real_estate_properties",
+  "table": "Other_Available_Features",
+  "documents": 3,
+  "fields": {
+   "feature_id": [
+    "int"
+   ],
+   "feature_type_code": [
+    "string"
+   ],
+   "feature_name": [
+    "string"
+   ],
+   "feature_description": [
+    "string"
+   ]
+  },
+  "declared": {
+   "feature_id": "INTEGER",
+   "feature_type_code": "VARCHAR(20)",
+   "feature_name": "VARCHAR(80)",
+   "feature_description": "VARCHAR(80)"
+  }
+ },
+ "real_estate_properties__Other_Property_Features": {
+  "db_id": "real_estate_properties",
+  "table": "Other_Property_Features",
+  "documents": 15,
+  "fields": {
+   "property_id": [
+    "int"
+   ],
+   "feature_id": [
+    "int"
+   ],
+   "property_feature_description": [
+    "string"
+   ]
+  },
+  "declared": {
+   "property_id": "INTEGER",
+   "feature_id": "INTEGER",
+   "property_feature_description": "VARCHAR(80)"
+  }
+ },
+ "real_estate_properties__Properties": {
+  "db_id": "real_estate_properties",
+  "table": "Properties",
+  "documents": 15,
+  "fields": {
+   "property_id": [
+    "int"
+   ],
+   "property_type_code": [
+    "string"
+   ],
+   "date_on_market": [
+    "string"
+   ],
+   "date_sold": [
+    "string"
+   ],
+   "property_name": [
+    "string"
+   ],
+   "property_address": [
+    "string"
+   ],
+   "room_count": [
+    "int"
+   ],
+   "vendor_requested_price": [
+    "double",
+    "int"
+   ],
+   "buyer_offered_price": [
+    "double",
+    "int"
+   ],
+   "agreed_selling_price": [
+    "double",
+    "int"
+   ],
+   "apt_feature_1": [
+    "string"
+   ],
+   "apt_feature_2": [
+    "string"
+   ],
+   "apt_feature_3": [
+    "null"
+   ],
+   "fld_feature_1": [
+    "null"
+   ],
+   "fld_feature_2": [
+    "null"
+   ],
+   "fld_feature_3": [
+    "null"
+   ],
+   "hse_feature_1": [
+    "null"
+   ],
+   "hse_feature_2": [
+    "null"
+   ],
+   "hse_feature_3": [
+    "null"
+   ],
+   "oth_feature_1": [
+    "null"
+   ],
+   "oth_feature_2": [
+    "null"
+   ],
+   "oth_feature_3": [
+    "null"
+   ],
+   "shp_feature_1": [
+    "null"
+   ],
+   "shp_feature_2": [
+    "null"
+   ],
+   "shp_feature_3": [
+    "null"
+   ],
+   "other_property_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "property_id": "INTEGER",
+   "property_type_code": "VARCHAR(20)",
+   "date_on_market": "DATETIME",
+   "date_sold": "DATETIME",
+   "property_name": "VARCHAR(80)",
+   "property_address": "VARCHAR(255)",
+   "room_count": "INTEGER",
+   "vendor_requested_price": "DECIMAL(19,4)",
+   "buyer_offered_price": "DECIMAL(19,4)",
+   "agreed_selling_price": "DECIMAL(19,4)",
+   "apt_feature_1": "VARCHAR(255)",
+   "apt_feature_2": "VARCHAR(255)",
+   "apt_feature_3": "VARCHAR(255)",
+   "fld_feature_1": "VARCHAR(255)",
+   "fld_feature_2": "VARCHAR(255)",
+   "fld_feature_3": "VARCHAR(255)",
+   "hse_feature_1": "VARCHAR(255)",
+   "hse_feature_2": "VARCHAR(255)",
+   "hse_feature_3": "VARCHAR(255)",
+   "oth_feature_1": "VARCHAR(255)",
+   "oth_feature_2": "VARCHAR(255)",
+   "oth_feature_3": "VARCHAR(255)",
+   "shp_feature_1": "VARCHAR(255)",
+   "shp_feature_2": "VARCHAR(255)",
+   "shp_feature_3": "VARCHAR(255)",
+   "other_property_details": "VARCHAR(255)"
+  }
+ },
+ "real_estate_properties__Ref_Feature_Types": {
+  "db_id": "real_estate_properties",
+  "table": "Ref_Feature_Types",
+  "documents": 2,
+  "fields": {
+   "feature_type_code": [
+    "string"
+   ],
+   "feature_type_name": [
+    "string"
+   ]
+  },
+  "declared": {
+   "feature_type_code": "VARCHAR(20)",
+   "feature_type_name": "VARCHAR(80)"
+  }
+ },
+ "real_estate_properties__Ref_Property_Types": {
+  "db_id": "real_estate_properties",
+  "table": "Ref_Property_Types",
+  "documents": 5,
+  "fields": {
+   "property_type_code": [
+    "string"
+   ],
+   "property_type_description": [
+    "string"
+   ]
+  },
+  "declared": {
+   "property_type_code": "VARCHAR(20)",
+   "property_type_description": "VARCHAR(80)"
+  }
+ },
+ "singer__singer": {
+  "db_id": "singer",
+  "table": "singer",
+  "documents": 8,
+  "fields": {
+   "Singer_ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Birth_Year": [
+    "double"
+   ],
+   "Net_Worth_Millions": [
+    "double"
+   ],
+   "Citizenship": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Singer_ID": "INT",
+   "Name": "TEXT",
+   "Birth_Year": "REAL",
+   "Net_Worth_Millions": "REAL",
+   "Citizenship": "TEXT"
+  }
+ },
+ "singer__song": {
+  "db_id": "singer",
+  "table": "song",
+  "documents": 8,
+  "fields": {
+   "Song_ID": [
+    "int"
+   ],
+   "Title": [
+    "string"
+   ],
+   "Singer_ID": [
+    "int"
+   ],
+   "Sales": [
+    "double"
+   ],
+   "Highest_Position": [
+    "double"
+   ]
+  },
+  "declared": {
+   "Song_ID": "INT",
+   "Title": "TEXT",
+   "Singer_ID": "INT",
+   "Sales": "REAL",
+   "Highest_Position": "REAL"
+  }
+ },
+ "student_transcripts_tracking__Addresses": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Addresses",
+  "documents": 15,
+  "fields": {
+   "address_id": [
+    "int"
+   ],
+   "line_1": [
+    "string"
+   ],
+   "line_2": [
+    "string"
+   ],
+   "line_3": [
+    "null"
+   ],
+   "city": [
+    "string"
+   ],
+   "zip_postcode": [
+    "string"
+   ],
+   "state_province_county": [
+    "string"
+   ],
+   "country": [
+    "string"
+   ],
+   "other_address_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "address_id": "INTEGER",
+   "line_1": "VARCHAR(255)",
+   "line_2": "VARCHAR(255)",
+   "line_3": "VARCHAR(255)",
+   "city": "VARCHAR(255)",
+   "zip_postcode": "VARCHAR(20)",
+   "state_province_county": "VARCHAR(255)",
+   "country": "VARCHAR(255)",
+   "other_address_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Courses": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Courses",
+  "documents": 15,
+  "fields": {
+   "course_id": [
+    "int"
+   ],
+   "course_name": [
+    "string"
+   ],
+   "course_description": [
+    "string"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "course_id": "INTEGER",
+   "course_name": "VARCHAR(255)",
+   "course_description": "VARCHAR(255)",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Degree_Programs": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Degree_Programs",
+  "documents": 15,
+  "fields": {
+   "degree_program_id": [
+    "int"
+   ],
+   "department_id": [
+    "int"
+   ],
+   "degree_summary_name": [
+    "string"
+   ],
+   "degree_summary_description": [
+    "string"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "degree_program_id": "INTEGER",
+   "department_id": "INTEGER",
+   "degree_summary_name": "VARCHAR(255)",
+   "degree_summary_description": "VARCHAR(255)",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Departments": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Departments",
+  "documents": 15,
+  "fields": {
+   "department_id": [
+    "int"
+   ],
+   "department_name": [
+    "string"
+   ],
+   "department_description": [
+    "string"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "department_id": "INTEGER",
+   "department_name": "VARCHAR(255)",
+   "department_description": "VARCHAR(255)",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Sections": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Sections",
+  "documents": 15,
+  "fields": {
+   "section_id": [
+    "int"
+   ],
+   "course_id": [
+    "int"
+   ],
+   "section_name": [
+    "string"
+   ],
+   "section_description": [
+    "string"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "section_id": "INTEGER",
+   "course_id": "INTEGER",
+   "section_name": "VARCHAR(255)",
+   "section_description": "VARCHAR(255)",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Semesters": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Semesters",
+  "documents": 15,
+  "fields": {
+   "semester_id": [
+    "int"
+   ],
+   "semester_name": [
+    "string"
+   ],
+   "semester_description": [
+    "string"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "semester_id": "INTEGER",
+   "semester_name": "VARCHAR(255)",
+   "semester_description": "VARCHAR(255)",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Student_Enrolment": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Student_Enrolment",
+  "documents": 15,
+  "fields": {
+   "student_enrolment_id": [
+    "int"
+   ],
+   "degree_program_id": [
+    "int"
+   ],
+   "semester_id": [
+    "int"
+   ],
+   "student_id": [
+    "int"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "student_enrolment_id": "INTEGER",
+   "degree_program_id": "INTEGER",
+   "semester_id": "INTEGER",
+   "student_id": "INTEGER",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Student_Enrolment_Courses": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Student_Enrolment_Courses",
+  "documents": 15,
+  "fields": {
+   "student_course_id": [
+    "int"
+   ],
+   "course_id": [
+    "int"
+   ],
+   "student_enrolment_id": [
+    "int"
+   ]
+  },
+  "declared": {
+   "student_course_id": "INTEGER",
+   "course_id": "INTEGER",
+   "student_enrolment_id": "INTEGER"
+  }
+ },
+ "student_transcripts_tracking__Students": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Students",
+  "documents": 15,
+  "fields": {
+   "student_id": [
+    "int"
+   ],
+   "current_address_id": [
+    "int"
+   ],
+   "permanent_address_id": [
+    "int"
+   ],
+   "first_name": [
+    "string"
+   ],
+   "middle_name": [
+    "string"
+   ],
+   "last_name": [
+    "string"
+   ],
+   "cell_mobile_number": [
+    "string"
+   ],
+   "email_address": [
+    "string"
+   ],
+   "ssn": [
+    "string"
+   ],
+   "date_first_registered": [
+    "string"
+   ],
+   "date_left": [
+    "string"
+   ],
+   "other_student_details": [
+    "string"
+   ]
+  },
+  "declared": {
+   "student_id": "INTEGER",
+   "current_address_id": "INTEGER",
+   "permanent_address_id": "INTEGER",
+   "first_name": "VARCHAR(80)",
+   "middle_name": "VARCHAR(40)",
+   "last_name": "VARCHAR(40)",
+   "cell_mobile_number": "VARCHAR(40)",
+   "email_address": "VARCHAR(40)",
+   "ssn": "VARCHAR(40)",
+   "date_first_registered": "DATETIME",
+   "date_left": "DATETIME",
+   "other_student_details": "VARCHAR(255)"
+  }
+ },
+ "student_transcripts_tracking__Transcript_Contents": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Transcript_Contents",
+  "documents": 15,
+  "fields": {
+   "student_course_id": [
+    "int"
+   ],
+   "transcript_id": [
+    "int"
+   ]
+  },
+  "declared": {
+   "student_course_id": "INTEGER",
+   "transcript_id": "INTEGER"
+  }
+ },
+ "student_transcripts_tracking__Transcripts": {
+  "db_id": "student_transcripts_tracking",
+  "table": "Transcripts",
+  "documents": 15,
+  "fields": {
+   "transcript_id": [
+    "int"
+   ],
+   "transcript_date": [
+    "string"
+   ],
+   "other_details": [
+    "null"
+   ]
+  },
+  "declared": {
+   "transcript_id": "INTEGER",
+   "transcript_date": "DATETIME",
+   "other_details": "VARCHAR(255)"
+  }
+ },
+ "voter_1__AREA_CODE_STATE": {
+  "db_id": "voter_1",
+  "table": "AREA_CODE_STATE",
+  "documents": 305,
+  "fields": {
+   "area_code": [
+    "int"
+   ],
+   "state": [
+    "string"
+   ]
+  },
+  "declared": {
+   "area_code": "INTEGER",
+   "state": "varchar(2)"
+  }
+ },
+ "voter_1__CONTESTANTS": {
+  "db_id": "voter_1",
+  "table": "CONTESTANTS",
+  "documents": 11,
+  "fields": {
+   "contestant_number": [
+    "int"
+   ],
+   "contestant_name": [
+    "string"
+   ]
+  },
+  "declared": {
+   "contestant_number": "INTEGER",
+   "contestant_name": "varchar(50)"
+  }
+ },
+ "voter_1__VOTES": {
+  "db_id": "voter_1",
+  "table": "VOTES",
+  "documents": 4,
+  "fields": {
+   "vote_id": [
+    "int"
+   ],
+   "phone_number": [
+    "long"
+   ],
+   "state": [
+    "string"
+   ],
+   "contestant_number": [
+    "int"
+   ],
+   "created": [
+    "string"
+   ]
+  },
+  "declared": {
+   "vote_id": "INTEGER",
+   "phone_number": "INTEGER",
+   "state": "varchar(2)",
+   "contestant_number": "INTEGER",
+   "created": "timestamp"
+  }
+ },
+ "world_1__city": {
+  "db_id": "world_1",
+  "table": "city",
+  "documents": 4079,
+  "fields": {
+   "ID": [
+    "int"
+   ],
+   "Name": [
+    "string"
+   ],
+   "CountryCode": [
+    "string"
+   ],
+   "District": [
+    "string"
+   ],
+   "Population": [
+    "int"
+   ]
+  },
+  "declared": {
+   "ID": "INTEGER",
+   "Name": "char(35)",
+   "CountryCode": "char(3)",
+   "District": "char(20)",
+   "Population": "INTEGER"
+  }
+ },
+ "world_1__country": {
+  "db_id": "world_1",
+  "table": "country",
+  "documents": 239,
+  "fields": {
+   "Code": [
+    "string"
+   ],
+   "Name": [
+    "string"
+   ],
+   "Continent": [
+    "string"
+   ],
+   "Region": [
+    "string"
+   ],
+   "SurfaceArea": [
+    "double"
+   ],
+   "IndepYear": [
+    "int",
+    "null"
+   ],
+   "Population": [
+    "int"
+   ],
+   "LifeExpectancy": [
+    "double",
+    "null"
+   ],
+   "GNP": [
+    "double"
+   ],
+   "GNPOld": [
+    "double",
+    "null"
+   ],
+   "LocalName": [
+    "string"
+   ],
+   "GovernmentForm": [
+    "string"
+   ],
+   "HeadOfState": [
+    "null",
+    "string"
+   ],
+   "Capital": [
+    "int",
+    "null"
+   ],
+   "Code2": [
+    "string"
+   ]
+  },
+  "declared": {
+   "Code": "char(3)",
+   "Name": "char(52)",
+   "Continent": "TEXT",
+   "Region": "char(26)",
+   "SurfaceArea": "float(10,2)",
+   "IndepYear": "INTEGER",
+   "Population": "INTEGER",
+   "LifeExpectancy": "float(3,1)",
+   "GNP": "float(10,2)",
+   "GNPOld": "float(10,2)",
+   "LocalName": "char(45)",
+   "GovernmentForm": "char(45)",
+   "HeadOfState": "char(60)",
+   "Capital": "INTEGER",
+   "Code2": "char(2)"
+  }
+ },
+ "world_1__countrylanguage": {
+  "db_id": "world_1",
+  "table": "countrylanguage",
+  "documents": 984,
+  "fields": {
+   "CountryCode": [
+    "string"
+   ],
+   "Language": [
+    "string"
+   ],
+   "IsOfficial": [
+    "string"
+   ],
+   "Percentage": [
+    "double"
+   ]
+  },
+  "declared": {
+   "CountryCode": "char(3)",
+   "Language": "char(30)",
+   "IsOfficial": "TEXT",
+   "Percentage": "float(4,1)"
+  }
+ },
+ "wta_1__matches": {
+  "db_id": "wta_1",
+  "table": "matches",
+  "documents": 278,
+  "fields": {
+   "best_of": [
+    "int"
+   ],
+   "draw_size": [
+    "int"
+   ],
+   "loser_age": [
+    "double"
+   ],
+   "loser_entry": [
+    "string"
+   ],
+   "loser_hand": [
+    "string"
+   ],
+   "loser_ht": [
+    "int"
+   ],
+   "loser_id": [
+    "int"
+   ],
+   "loser_ioc": [
+    "string"
+   ],
+   "loser_name": [
+    "string"
+   ],
+   "loser_rank": [
+    "int"
+   ],
+   "loser_rank_points": [
+    "int"
+   ],
+   "loser_seed": [
+    "int"
+   ],
+   "match_num": [
+    "int"
+   ],
+   "minutes": [
+    "int"
+   ],
+   "round": [
+    "string"
+   ],
+   "score": [
+    "string"
+   ],
+   "surface": [
+    "string"
+   ],
+   "tourney_date": [
+    "int"
+   ],
+   "tourney_id": [
+    "string"
+   ],
+   "tourney_level": [
+    "string"
+   ],
+   "tourney_name": [
+    "string"
+   ],
+   "winner_age": [
+    "double"
+   ],
+   "winner_entry": [
+    "string"
+   ],
+   "winner_hand": [
+    "string"
+   ],
+   "winner_ht": [
+    "int"
+   ],
+   "winner_id": [
+    "int"
+   ],
+   "winner_ioc": [
+    "string"
+   ],
+   "winner_name": [
+    "string"
+   ],
+   "winner_rank": [
+    "int"
+   ],
+   "winner_rank_points": [
+    "int"
+   ],
+   "winner_seed": [
+    "int"
+   ],
+   "year": [
+    "int"
+   ]
+  },
+  "declared": {
+   "best_of": "INT",
+   "draw_size": "INT",
+   "loser_age": "FLOAT",
+   "loser_entry": "TEXT",
+   "loser_hand": "TEXT",
+   "loser_ht": "INT",
+   "loser_id": "INT",
+   "loser_ioc": "TEXT",
+   "loser_name": "TEXT",
+   "loser_rank": "INT",
+   "loser_rank_points": "INT",
+   "loser_seed": "INT",
+   "match_num": "INT",
+   "minutes": "INT",
+   "round": "TEXT",
+   "score": "TEXT",
+   "surface": "TEXT",
+   "tourney_date": "DATE",
+   "tourney_id": "TEXT",
+   "tourney_level": "TEXT",
+   "tourney_name": "TEXT",
+   "winner_age": "FLOAT",
+   "winner_entry": "TEXT",
+   "winner_hand": "TEXT",
+   "winner_ht": "INT",
+   "winner_id": "INT",
+   "winner_ioc": "TEXT",
+   "winner_name": "TEXT",
+   "winner_rank": "INT",
+   "winner_rank_points": "INT",
+   "winner_seed": "INT",
+   "year": "INT"
+  }
+ },
+ "wta_1__players": {
+  "db_id": "wta_1",
+  "table": "players",
+  "documents": 20662,
+  "fields": {
+   "player_id": [
+    "int"
+   ],
+   "first_name": [
+    "string"
+   ],
+   "last_name": [
+    "string"
+   ],
+   "hand": [
+    "string"
+   ],
+   "birth_date": [
+    "int",
+    "string"
+   ],
+   "country_code": [
+    "string"
+   ]
+  },
+  "declared": {
+   "player_id": "INT",
+   "first_name": "TEXT",
+   "last_name": "TEXT",
+   "hand": "TEXT",
+   "birth_date": "DATE",
+   "country_code": "TEXT"
+  }
+ },
+ "wta_1__rankings": {
+  "db_id": "wta_1",
+  "table": "rankings",
+  "documents": 510437,
+  "fields": {
+   "ranking_date": [
+    "int"
+   ],
+   "ranking": [
+    "int"
+   ],
+   "player_id": [
+    "int",
+    "string"
+   ],
+   "ranking_points": [
+    "int"
+   ],
+   "tours": [
+    "int"
+   ]
+  },
+  "declared": {
+   "ranking_date": "DATE",
+   "ranking": "INT",
+   "player_id": "INT",
+   "ranking_points": "INT",
+   "tours": "INT"
+  }
+ }
+}

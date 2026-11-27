@@ -1,0 +1,71 @@
+{
+ "experiment": "MQL-0008",
+ "arm": "arm_b_hybrid_rag",
+ "generated_by": "scripts/nl2mql/build_mql0008_package.py",
+ "corpus_sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+ "plan_file": "data/plans/retrieval_plan_arm_b_hybrid_rag.jsonl",
+ "plan_sha256": "4065b7859e052de9cab15d043cfa05cd3c2de763242d5135feea90b2353c9167",
+ "retrieval_config_fingerprint": "79d941afbc8bbb18",
+ "items": 892,
+ "selected_per_item": {
+  "0": 0,
+  "1": 0,
+  "2": 0,
+  "3": 892
+ },
+ "empty_context_items": 0,
+ "items_with_over_budget_skips": 0,
+ "max_context_tokens": 997,
+ "context_token_cap": 1500,
+ "max_prompt_tokens_est": 3228,
+ "selected_from_target_database": 0,
+ "selected_ids_outside_the_approved_corpus": 0,
+ "selected_examples_with_jaccard_ge_threshold": 0,
+ "deterministic_rebuild_identical": true,
+ "distinct_corpus_examples_used": 1273,
+ "exclusions_applied": [
+  {
+   "eval_id": "spider_dev_0383",
+   "excluded": [
+    {
+     "corpus_id": "spider_train_00650",
+     "original_rank": 1
+    }
+   ],
+   "selected_ids": [
+    "spider_train_01720",
+    "spider_train_04000",
+    "spider_train_04862"
+   ]
+  },
+  {
+   "eval_id": "spider_dev_0824",
+   "excluded": [
+    {
+     "corpus_id": "spider_train_00650",
+     "original_rank": 10
+    }
+   ],
+   "selected_ids": [
+    "spider_train_04386",
+    "spider_train_04811",
+    "spider_train_06161"
+   ]
+  }
+ ],
+ "items_whose_selection_the_exclusion_changes": [
+  "spider_dev_0383"
+ ],
+ "comparison_with_mql0007_arm_C_plan_corpus_v1": {
+  "note": "descriptive only; shows how much the corpus change moves retrieval. Not an accuracy result.",
+  "items_with_identical_selected_ids": 760,
+  "items_with_different_selected_ids": 132,
+  "mql0007_items_that_used_an_example_not_in_the_approved_corpus": 107
+ },
+ "tokenizer": {
+  "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+  "transformers": "5.20.2",
+  "tokenizers": "0.23.3",
+  "same_tokenizer_json_as_mql0007_build": true
+ }
+}

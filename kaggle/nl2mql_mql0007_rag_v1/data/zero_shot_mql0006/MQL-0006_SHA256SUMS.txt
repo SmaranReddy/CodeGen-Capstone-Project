@@ -1,0 +1,5 @@
+a5e0500a3cb723ae86253abf8b24c37969c608ceaedc93b1c8f24ea44a5c0bf5  PREDICTIONS_STATUS.json
+73ae4f0fa3e326635523c5be7a2f57320ad9d99c776a6575c8e2cc963e040214  models/qwen2.5-coder-3b-instruct/checkpoints/predictions.partial.jsonl
+b4fc3c51ab847341eeeb1cbe0d779d7073e382d14219583ec8dc71288990ba1c  models/qwen2.5-coder-3b-instruct/predictions.jsonl
+86538bb5241dbeafc6d59094bc26d06297841b7d7727b4ca04d3be8530662c3c  models/qwen2.5-coder-3b-instruct/run_config.json
+7721efb8a1f29b35009733ac844a35810f8f3f8b5fc00ff93db840004349a737  preflight/kaggle_preflight.json

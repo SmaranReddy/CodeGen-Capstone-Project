@@ -1,0 +1,103 @@
+{
+ "package": "nl2mql_mql0008_approved_corpus_v2_1",
+ "experiment": "MQL-0008",
+ "status": "PACKAGE BUILT - NOT YET EXECUTED",
+ "built_at": "2026-11-16T16:39:48+00:00",
+ "arms": [
+  "arm_a_zero_shot",
+  "arm_b_hybrid_rag"
+ ],
+ "retrieval_corpus": {
+  "source_path": "outputs/sql2mql_v2_1/approved_corpus_v2_1/corpus.jsonl",
+  "package_path": "data/corpus/approved_corpus_v2_1.jsonl",
+  "records": 3445,
+  "sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf"
+ },
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5"
+ },
+ "evaluation": {
+  "n_items": 892,
+  "ids_sha256": "21d1478b04d6c7939409311c3615c904b95394b10a2d0d85ff1b68e96b860197"
+ },
+ "retrieval_config_fingerprint": "79d941afbc8bbb18",
+ "files": {
+  "configs/experiment.json": {
+   "bytes": 6674,
+   "sha256": "c5295b3858ef4ef82a4ae6f8ac310c26abe0b0e3c004082ac176f8facf54c13f"
+  },
+  "data/context/atlas_collections.json": {
+   "bytes": 35505,
+   "sha256": "bded35a105574db2a4da097d3dee1268d8387d605fec0a6566d1480608d94d7a"
+  },
+  "data/context/tables_subset.json": {
+   "bytes": 408790,
+   "sha256": "509f9ddae0fdd5cc359993e25c605cfc313a85605699637ad40f2d23e0311ccc"
+  },
+  "data/corpus/approved_corpus_v2_1.jsonl": {
+   "bytes": 5913369,
+   "sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf"
+  },
+  "data/corpus/corpus_features.jsonl": {
+   "bytes": 2263000,
+   "sha256": "b5b983c03e13beb4dee57bb42aa9eac9c2bbf78eb17db7262fd4cf1681a7639d"
+  },
+  "data/eval/eval_inputs.jsonl": {
+   "bytes": 119846,
+   "sha256": "f647d6901601892ed9f2dbeea4ccfc6ed824e0bc62c0ea1f690308af12939afc"
+  },
+  "data/eval/prompts.jsonl": {
+   "bytes": 4215168,
+   "sha256": "7e1151cd4c4cb0cbf8dfd55eff6b38f764a903e067227734ba0c7afa70532bec"
+  },
+  "data/leakage_report.json": {
+   "bytes": 5486,
+   "sha256": "e30bafde68aff077151022a891b47a681fc151d47386df8ff1c2bcd0bf8a957a"
+  },
+  "data/plans/retrieval_plan_arm_b_hybrid_rag.jsonl": {
+   "bytes": 849822,
+   "sha256": "4065b7859e052de9cab15d043cfa05cd3c2de763242d5135feea90b2353c9167"
+  },
+  "data/retrieval_audit.json": {
+   "bytes": 1986,
+   "sha256": "c7fadb4e847a84ef902b53ba8933769f9a323b7f6c97e97febecbf16074edb2d"
+  },
+  "nl2mql_mql0008_approved_corpus_v2_1.ipynb": {
+   "bytes": 31306,
+   "sha256": "4f682a0bea33880d947aab4bda499bc1665967a4970512aa0ae47814721bac37"
+  },
+  "provenance/build_mql0008_package.py": {
+   "bytes": 24933,
+   "sha256": "5cb1d5ba845780c19f1b4b7b91a98ca442c6b7e3e497d4ae7ae5091883d12063"
+  },
+  "provenance/make_mql0008_notebook.py": {
+   "bytes": 26388,
+   "sha256": "95c6846c620f30cfe043cdf94fabc06714ca6b304bee8cdde8e4a8ac9c44cdd8"
+  },
+  "README.md": {
+   "bytes": 8611,
+   "sha256": "3e6917ce052fe9de032551fde47975419048901217a7fc6469d07705d3fa47dd"
+  },
+  "src/mql0008_core.py": {
+   "bytes": 27329,
+   "sha256": "16c15a5b3393ed96a8def93770c76733d287634bd39e4e236b3b59d9f283d24f"
+  },
+  "src/patterns.py": {
+   "bytes": 7263,
+   "sha256": "59de553454cc2c2720d083be9ecbd52707a87673e66fb60b8f806e05c8b4748d"
+  },
+  "src/rag_block.py": {
+   "bytes": 2231,
+   "sha256": "72b4f45601d2c4e1e5c71ce3a9f4a5a19252344347f25131bb23598cf963330e"
+  },
+  "src/retrieval.py": {
+   "bytes": 6858,
+   "sha256": "9d487c5bb72db18676d79ca5ebadc546060768b096d94b665db3522939ee1494"
+  },
+  "tests/test_mql0008_package.py": {
+   "bytes": 36123,
+   "sha256": "dd5b6c6f15d246ceb8b02df0ccc31736a1a9c02798bc76860b7377a57d4ef7ff"
+  }
+ }
+}

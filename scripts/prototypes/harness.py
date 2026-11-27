@@ -10,12 +10,10 @@ import json
 import math
 import os
 import sqlite3
+import sys
 from pathlib import Path
 
-import certifi
 import pandas as pd
-from dotenv import load_dotenv
-from pymongo import MongoClient
 
 ROOT = Path(__file__).resolve().parents[2]
 PILOT_DB = "codegen_capstone_pilot"
@@ -46,8 +44,11 @@ compare_pandas_table = _official_compare()
 
 
 def mongo_db():
-    load_dotenv(ROOT / ".env")
-    cl = MongoClient(os.environ["MONGODB_URI"], serverSelectionTimeoutMS=30000, tlsCAFile=certifi.where())
+    if str(ROOT / "scripts") not in sys.path:
+        sys.path.append(str(ROOT / "scripts"))
+    from mongo_conn import connect
+
+    cl = connect(ROOT / ".env", 30000)
     return cl[PILOT_DB]
 
 

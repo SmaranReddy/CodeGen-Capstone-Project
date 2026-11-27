@@ -1,0 +1,119 @@
+{
+ "experiment_id": "MQL-0007",
+ "package": "nl2mql_mql0007_rag_v1",
+ "status": "PREPARED - NOT RUN (v1.1: exclusion + supplementary arm + auto zero-shot)",
+ "question": "Does retrieving verified NL->MQL examples (provisional_corpus_v1) improve Qwen2.5-Coder-3B-Instruct cross-engine execution accuracy on the 892 MQL-0006 items, versus zero-shot and versus random examples?",
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "label": "qwen2.5-coder-3b-instruct",
+  "dtype": "bfloat16",
+  "dtype_note": "MQL-0006 ran bfloat16 on a Tesla T4 (emulated bf16). Required, never substituted: the notebook fails if unsupported.",
+  "runtime": "transformers GPU, one card (CUDA_VISIBLE_DEVICES=0)",
+  "decoding": "greedy (do_sample=False)",
+  "max_new_tokens": 1024,
+  "batch_size": 8,
+  "seed": 42,
+  "oom_policy": "a batch that hits CUDA OOM is retried one prompt at a time (same prompt/dtype/decoding) and the record says so"
+ },
+ "prompt": {
+  "zero_shot_version": "nl-mql-spider1-v1",
+  "zero_shot_template_sha256": "7401bf140dd1b8a9dac057edd9f729a8624823604fa2bd6ae9cfaf1c1890c1be",
+  "zero_shot_prompts_sha256": "7e1151cd4c4cb0cbf8dfd55eff6b38f764a903e067227734ba0c7afa70532bec",
+  "rag_version": "nl-mql-spider1-rag-v1",
+  "rag_rule": "RAG prompt = zero-shot prompt with one reference block inserted before the final 'Question:' line; empty context => byte-identical to zero-shot"
+ },
+ "evaluation": {
+  "n_items": 892,
+  "n_databases": 17,
+  "ids_sha256": "21d1478b04d6c7939409311c3615c904b95394b10a2d0d85ff1b68e96b860197",
+  "source": "MQL-0006 bundle nl2mql_spider_dev_1034_bundle_v2 (gold SQL, gold rows and SQLite files are NOT shipped)"
+ },
+ "corpus": {
+  "name": "provisional_corpus_v1",
+  "n_entries": 3589,
+  "status": "PROVISIONAL (human_review_status NOT_REVIEWED)",
+  "source_sha256": "61553d03fe4244d7d14a82c434482ef73f5e74b59f95e0cf983dd07806c7fc3d"
+ },
+ "retrieval": {
+  "bm25_k1": 1.5,
+  "bm25_b": 0.75,
+  "hybrid_weight": 1.0,
+  "method_relevant": "hybrid_masked",
+  "tie_break": "score desc, then doc_id (retrieval.py)",
+  "index": "per target database, target-db documents excluded",
+  "guides": 0,
+  "dedup": "same doc_id, same MQL, or same normalised question: higher-ranked copy kept"
+ },
+ "context": {
+  "k": 3,
+  "max_context_tokens": 1500,
+  "margin_tokens": 64,
+  "n_ctx": 8192,
+  "max_new_tokens": 1024,
+  "token_budgeting": "Qwen2.5 tokenizer at the pinned revision (HF AutoTokenizer, add_special_tokens=False) over system+user text and the block; over-budget documents are skipped (dropped_budget), never truncated"
+ },
+ "arms": {
+  "A_zero_shot": {
+   "retrieval": "none",
+   "k": 0,
+   "label": "A. zero-shot",
+   "reuse_mql0006_if_identical": true
+  },
+  "B_random_k3": {
+   "retrieval": "random",
+   "k": 3,
+   "seed": 20261020,
+   "label": "B. random 3 training examples (frozen seed, as MQL-0005 random_k3)"
+  },
+  "C_hybrid_k3": {
+   "retrieval": "hybrid_masked",
+   "k": 3,
+   "label": "C. relevant hybrid RAG, k=3, no guide cards"
+  },
+  "D_supp_allow_near_dup": {
+   "retrieval": "hybrid_masked",
+   "k": 3,
+   "label": "D. SUPPLEMENTARY sensitivity: arm C without the near-duplicate exclusion, only on the items the exclusion changes",
+   "supplementary": true,
+   "base_arm": "C_hybrid_k3"
+  }
+ },
+ "leakage_gates": {
+  "decided_before_running": "2026-11-06, before any gate was executed",
+  "near_duplicate_token_jaccard": 0.8,
+  "exact": "normalised (lowercase alphanumeric tokens) eval question == corpus question or question_raw",
+  "near": "token Jaccard >= 0.8 on raw (unmasked) questions",
+  "on_any_hit": "STOP; do not filter (would break exactly-3,589 and corpus-v1 immutability); ask the user",
+  "acknowledged_near_duplicates": {
+   "decision": "user 2026-11-06: keep corpus unmodified (3,589). v1.1 (2026-11-06, user): deterministic evaluation-specific retrieval exclusion in arms B and C + supplementary sensitivity arm D",
+   "corpus_id": "spider_train_00650",
+   "token_jaccard": 0.8,
+   "eval_ids": [
+    "spider_dev_0383",
+    "spider_dev_0824"
+   ],
+   "reason": "same question template differing in one entity word ('editors'/'teachers'/'conductors'); different databases and schemas; no shared answer"
+  }
+ },
+ "stated_deviations_from_MQL-0005": [
+  "corpus pattern labels come from train SQL via scripts/rag/patterns.sql_patterns (same function), but the corpus is provisional_corpus_v1 (sql2mql-v2, Verifier-3), not the 280 Spider-dev saved predictions",
+  "masked_question for corpus databases uses schema words from official Spider tables.json (validated equal to the Atlas-manifest words on the 17 evaluation databases)",
+  "the 'text_number' pattern flag for a corpus database is derived from the columns its corpus rows touched (observed text + numeric declared type), not from the whole-database Atlas manifest",
+  "token budgeting uses the Hugging Face tokenizer (MQL-0005 used the llama.cpp GGUF tokenizer); MQL-0005 ran GGUF q4_k_m, this runs HF bf16",
+  "arm A may reuse MQL-0006 predictions (same model revision, prompt, decoding, dtype, batch size); library versions may differ"
+ ],
+ "retrieval_exclusions": [
+  {
+   "eval_id": "spider_dev_0383",
+   "corpus_id": "spider_train_00650"
+  },
+  {
+   "eval_id": "spider_dev_0824",
+   "corpus_id": "spider_train_00650"
+  }
+ ],
+ "retrieval_exclusions_note": "Evaluation-specific, deterministic, applied to arms B and C after ranking (index/IDF/dedup untouched). Corpus file unchanged. Supplementary arm D re-runs only the items whose selection the exclusion changes, with the exclusion off (sensitivity analysis).",
+ "zero_shot_mode_default": "auto",
+ "zero_shot_mode_rule": "auto: reuse MQL-0006 only if torch, transformers, accelerate, tokenizers and the GPU name equal the MQL-0006 run's, plus the static checks; otherwise generate a fresh arm A in the same environment as B and C"
+}

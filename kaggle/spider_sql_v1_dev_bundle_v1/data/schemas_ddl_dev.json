@@ -1,0 +1,123 @@
+{
+ "battle_death": [
+  "CREATE TABLE \"battle\" (\n\"id\" int,\n\"name\" text,\n\"date\" text,\n\"bulgarian_commander\" text,\n\"latin_commander\" text,\n\"result\" text,\nprimary key(\"id\")\n)",
+  "CREATE TABLE \"ship\" (\n\"lost_in_battle\" int,\n\"id\" int,\n\"name\" text,\n\"tonnage\" text,\n\"ship_type\" text,\n\"location\" text,\n\"disposition_of_ship\" text,\nprimary key(\"id\"),\nforeign key (`lost_in_battle`) references `battle`(\"id\") \n)",
+  "CREATE TABLE \"death\" (\n\"caused_by_ship_id\" int,\n\"id\" int,\n\"note\" text,\n\"killed\" int,\n\"injured\" int,\nprimary key(\"id\"),\nforeign key (\"caused_by_ship_id\") references `ship`(\"id\") \n)"
+ ],
+ "car_1": [
+  "CREATE TABLE \"continents\" ( \n\t\"ContId\" INTEGER PRIMARY KEY, \n\t\"Continent\" TEXT \n)",
+  "CREATE TABLE \"countries\" (\n\t\"CountryId\" INTEGER PRIMARY KEY, \n\t\"CountryName\" TEXT, \n\t\"Continent\" INTEGER,\n\tFOREIGN KEY (Continent) REFERENCES continents(ContId)\n)",
+  "CREATE TABLE \"car_makers\" ( \n\t\"Id\" INTEGER PRIMARY KEY, \n\t\"Maker\" TEXT, \n\t\"FullName\" TEXT, \n\t\"Country\" TEXT,\n\tFOREIGN KEY (Country) REFERENCES countries(CountryId)\n)",
+  "CREATE TABLE \"model_list\" ( \n\t\"ModelId\" INTEGER PRIMARY KEY, \n\t\"Maker\" INTEGER, \n\t\"Model\" TEXT UNIQUE,\n\tFOREIGN KEY (Maker) REFERENCES car_makers (Id)\n\n)",
+  "CREATE TABLE \"car_names\" ( \n\t\"MakeId\" INTEGER PRIMARY KEY, \n\t\"Model\" TEXT, \n\t\"Make\" TEXT,\n\tFOREIGN KEY (Model) REFERENCES model_list (Model)\n)",
+  "CREATE TABLE \"cars_data\" (\n\t\"Id\" INTEGER PRIMARY KEY, \n\t\"MPG\" TEXT, \n\t\"Cylinders\" INTEGER, \n\t\"Edispl\" REAL, \n\t\"Horsepower\" TEXT, \n\t\"Weight\" INTEGER, \n\t\"Accelerate\" REAL, \n\t\"Year\" INTEGER,\n\tFOREIGN KEY (Id) REFERENCES car_names (MakeId)\n)"
+ ],
+ "concert_singer": [
+  "CREATE TABLE \"stadium\" (\n\"Stadium_ID\" int,\n\"Location\" text,\n\"Name\" text,\n\"Capacity\" int,\n\"Highest\" int,\n\"Lowest\" int,\n\"Average\" int,\nPRIMARY KEY (\"Stadium_ID\")\n)",
+  "CREATE TABLE \"singer\" (\n\"Singer_ID\" int,\n\"Name\" text,\n\"Country\" text,\n\"Song_Name\" text,\n\"Song_release_year\" text,\n\"Age\" int,\n\"Is_male\" bool,\nPRIMARY KEY (\"Singer_ID\")\n)",
+  "CREATE TABLE \"concert\" (\n\"concert_ID\" int,\n\"concert_Name\" text,\n\"Theme\" text,\n\"Stadium_ID\" text,\n\"Year\" text,\nPRIMARY KEY (\"concert_ID\"),\nFOREIGN KEY (\"Stadium_ID\") REFERENCES \"stadium\"(\"Stadium_ID\")\n)",
+  "CREATE TABLE \"singer_in_concert\" (\n\"concert_ID\" int,\n\"Singer_ID\" text,\nPRIMARY KEY (\"concert_ID\",\"Singer_ID\"),\nFOREIGN KEY (\"concert_ID\") REFERENCES \"concert\"(\"concert_ID\"),\nFOREIGN KEY (\"Singer_ID\") REFERENCES \"singer\"(\"Singer_ID\")\n)"
+ ],
+ "course_teach": [
+  "CREATE TABLE \"course\" (\n\"Course_ID\" int,\n\"Staring_Date\" text,\n\"Course\" text,\nPRIMARY KEY (\"Course_ID\")\n)",
+  "CREATE TABLE \"teacher\" (\n\"Teacher_ID\" int,\n\"Name\" text,\n\"Age\" text,\n\"Hometown\" text,\nPRIMARY KEY (\"Teacher_ID\")\n)",
+  "CREATE TABLE \"course_arrange\" (\n\"Course_ID\" int,\n\"Teacher_ID\" int,\n\"Grade\" int,\nPRIMARY KEY (\"Course_ID\",\"Teacher_ID\",\"Grade\"),\nFOREIGN KEY (\"Course_ID\") REFERENCES `course`(\"Course_ID\"),\nFOREIGN KEY (\"Teacher_ID\") REFERENCES `teacher`(\"Teacher_ID\")\n)"
+ ],
+ "cre_Doc_Template_Mgt": [
+  "CREATE TABLE Ref_Template_Types (\nTemplate_Type_Code CHAR(15) NOT NULL,\nTemplate_Type_Description VARCHAR(255) NOT NULL,\nPRIMARY KEY (Template_Type_Code)\n)",
+  "CREATE TABLE Templates (\nTemplate_ID INTEGER NOT NULL,\nVersion_Number INTEGER NOT NULL,\nTemplate_Type_Code CHAR(15) NOT NULL,\nDate_Effective_From DATETIME,\nDate_Effective_To DATETIME,\nTemplate_Details VARCHAR(255) NOT NULL,\nPRIMARY KEY (Template_ID),\nFOREIGN KEY (Template_Type_Code) REFERENCES Ref_Template_Types (Template_Type_Code)\n)",
+  "CREATE TABLE Documents (\nDocument_ID INTEGER NOT NULL,\nTemplate_ID INTEGER,\nDocument_Name VARCHAR(255),\nDocument_Description VARCHAR(255),\nOther_Details VARCHAR(255),\nPRIMARY KEY (Document_ID),\nFOREIGN KEY (Template_ID) REFERENCES Templates (Template_ID)\n)",
+  "CREATE TABLE Paragraphs (\nParagraph_ID INTEGER NOT NULL,\nDocument_ID INTEGER NOT NULL,\nParagraph_Text VARCHAR(255),\nOther_Details VARCHAR(255),\nPRIMARY KEY (Paragraph_ID),\nFOREIGN KEY (Document_ID) REFERENCES Documents (Document_ID)\n)"
+ ],
+ "dog_kennels": [
+  "CREATE TABLE `Breeds` (\n`breed_code` VARCHAR(10) PRIMARY KEY ,\n`breed_name` VARCHAR(80)\n)",
+  "CREATE TABLE `Charges` (\n`charge_id` INTEGER PRIMARY KEY ,\n`charge_type` VARCHAR(10),\n`charge_amount` DECIMAL(19,4)\n)",
+  "CREATE TABLE `Sizes` (\n`size_code` VARCHAR(10) PRIMARY KEY ,\n`size_description` VARCHAR(80)\n)",
+  "CREATE TABLE `Treatment_Types` (\n`treatment_type_code` VARCHAR(10) PRIMARY KEY ,\n`treatment_type_description` VARCHAR(80)\n)",
+  "CREATE TABLE `Owners` (\n`owner_id` INTEGER PRIMARY KEY ,\n`first_name` VARCHAR(50),\n`last_name` VARCHAR(50),\n`street` VARCHAR(50),\n`city` VARCHAR(50),\n`state` VARCHAR(20),\n`zip_code` VARCHAR(20),\n`email_address` VARCHAR(50),\n`home_phone` VARCHAR(20),\n`cell_number` VARCHAR(20)\n)",
+  "CREATE TABLE `Dogs` (\n`dog_id` INTEGER PRIMARY KEY ,\n`owner_id` INTEGER NOT NULL,\n`abandoned_yn` VARCHAR(1),\n`breed_code` VARCHAR(10) NOT NULL,\n`size_code` VARCHAR(10) NOT NULL,\n`name` VARCHAR(50),\n`age` VARCHAR(20),\n`date_of_birth` DATETIME,\n`gender` VARCHAR(1),\n`weight` VARCHAR(20),\n`date_arrived` DATETIME,\n`date_adopted` DATETIME,\n`date_departed` DATETIME,\nFOREIGN KEY (`breed_code` ) REFERENCES `Breeds`(`breed_code` ),\nFOREIGN KEY (`size_code` ) REFERENCES `Sizes`(`size_code` ),\nFOREIGN KEY (`owner_id` ) REFERENCES `Owners`(`owner_id` ),\nFOREIGN KEY (`owner_id` ) REFERENCES `Owners`(`owner_id` )\n)",
+  "CREATE TABLE `Professionals` (\n`professional_id` INTEGER PRIMARY KEY ,\n`role_code` VARCHAR(10) NOT NULL,\n`first_name` VARCHAR(50),\n`street` VARCHAR(50),\n`city` VARCHAR(50),\n`state` VARCHAR(20),\n`zip_code` VARCHAR(20),\n`last_name` VARCHAR(50),\n`email_address` VARCHAR(50),\n`home_phone` VARCHAR(20),\n`cell_number` VARCHAR(20)\n)",
+  "CREATE TABLE `Treatments` (\n`treatment_id` INTEGER PRIMARY KEY ,\n`dog_id` INTEGER NOT NULL,\n`professional_id` INTEGER NOT NULL,\n`treatment_type_code` VARCHAR(10) NOT NULL,\n`date_of_treatment` DATETIME,\n`cost_of_treatment` DECIMAL(19,4),\nFOREIGN KEY (`treatment_type_code` ) REFERENCES `Treatment_Types`(`treatment_type_code` ),\nFOREIGN KEY (`professional_id` ) REFERENCES `Professionals`(`professional_id` ),\nFOREIGN KEY (`dog_id` ) REFERENCES `Dogs`(`dog_id` )\n)"
+ ],
+ "employee_hire_evaluation": [
+  "CREATE TABLE \"employee\" (\n\"Employee_ID\" int,\n\"Name\" text,\n\"Age\" int,\n\"City\" text,\nPRIMARY KEY (\"Employee_ID\")\n)",
+  "CREATE TABLE \"shop\" (\n\"Shop_ID\" int,\n\"Name\" text,\n\"Location\" text,\n\"District\" text,\n\"Number_products\" int,\n\"Manager_name\" text,\nPRIMARY KEY (\"Shop_ID\")\n)",
+  "CREATE TABLE \"hiring\" (\n\"Shop_ID\" int,\n\"Employee_ID\" int,\n\"Start_from\" text,\n\"Is_full_time\" bool,\nPRIMARY KEY (\"Employee_ID\"),\nFOREIGN KEY (`Shop_ID`) REFERENCES `shop`(`Shop_ID`),\nFOREIGN KEY (`Employee_ID`) REFERENCES `employee`(`Employee_ID`)\n)",
+  "CREATE TABLE \"evaluation\" (\n\"Employee_ID\" text,\n\"Year_awarded\" text,\n\"Bonus\" real,\nPRIMARY KEY (\"Employee_ID\",\"Year_awarded\"),\nFOREIGN KEY (`Employee_ID`) REFERENCES `employee`(`Employee_ID`)\n)"
+ ],
+ "flight_2": [
+  "CREATE TABLE 'airlines' (\n\tuid INTEGER PRIMARY KEY, \n\tAirline TEXT, \n\tAbbreviation TEXT, \n\tCountry TEXT\n)",
+  "CREATE TABLE 'airports' (\n\tCity TEXT, \n\tAirportCode TEXT PRIMARY KEY, \n\tAirportName TEXT, \n\tCountry TEXT, \n\tCountryAbbrev TEXT\n)",
+  "CREATE TABLE 'flights' (\n\tAirline INTEGER, \n\tFlightNo INTEGER, \n\tSourceAirport TEXT, \n\tDestAirport TEXT, \n\tPRIMARY KEY(Airline, FlightNo),\n\tFOREIGN KEY (SourceAirport) REFERENCES airports(AirportCode),\n\tFOREIGN KEY (DestAirport) REFERENCES airports(AirportCode)\n)"
+ ],
+ "museum_visit": [
+  "CREATE TABLE \"museum\" (\n\"Museum_ID\" int,\n\"Name\" text,\n\"Num_of_Staff\" int,\n\"Open_Year\" text,\nPRIMARY KEY (\"Museum_ID\")\n)",
+  "CREATE TABLE \"visitor\" (\n\"ID\" int,\n\"Name\" text,\n\"Level_of_membership\" int,\n\"Age\" int,\nPRIMARY KEY (\"ID\")\n)",
+  "CREATE TABLE \"visit\" (\n\"Museum_ID\" int,\n\"visitor_ID\" text,\n\"Num_of_Ticket\" int,\n\"Total_spent\" real,\nPRIMARY KEY (\"Museum_ID\",\"visitor_ID\"),\nFOREIGN KEY (\"Museum_ID\") REFERENCES `museum`(\"Museum_ID\"),\nFOREIGN KEY (\"visitor_ID\") REFERENCES `visitor`(\"ID\")\n)"
+ ],
+ "network_1": [
+  "CREATE TABLE Highschooler(\n\tID int primary key, \n\tname text, \n\tgrade int)",
+  "CREATE TABLE Friend(\n\tstudent_id int, \n\tfriend_id int,\n\tprimary key (student_id,friend_id),\n\tforeign key(student_id) references Highschooler(ID),\n\tforeign key (friend_id) references Highschooler(ID)\n)",
+  "CREATE TABLE Likes(\n\tstudent_id int, \n\tliked_id int,\n\tprimary key (student_id, liked_id),\n        foreign key (liked_id) references Highschooler(ID),\n        foreign key (student_id) references Highschooler(ID)\n)"
+ ],
+ "orchestra": [
+  "CREATE TABLE \"conductor\" (\n\"Conductor_ID\" int,\n\"Name\" text,\n\"Age\" int,\n\"Nationality\" text,\n\"Year_of_Work\" int,\nPRIMARY KEY (\"Conductor_ID\")\n)",
+  "CREATE TABLE \"orchestra\" (\n\"Orchestra_ID\" int,\n\"Orchestra\" text,\n\"Conductor_ID\" int,\n\"Record_Company\" text,\n\"Year_of_Founded\" real,\n\"Major_Record_Format\" text,\nPRIMARY KEY (\"Orchestra_ID\"),\nFOREIGN KEY (`Conductor_ID`) REFERENCES `conductor`(`Conductor_ID`)\n)",
+  "CREATE TABLE \"performance\" (\n\"Performance_ID\" int,\n\"Orchestra_ID\" int,\n\"Type\" text,\n\"Date\" text,\n\"Official_ratings_(millions)\" real,\n\"Weekly_rank\" text,\n\"Share\" text,\nPRIMARY KEY (\"Performance_ID\"),\nFOREIGN KEY (`Orchestra_ID`) REFERENCES `orchestra`(`Orchestra_ID`)\n)",
+  "CREATE TABLE \"show\" (\n\"Show_ID\" int,\n\"Performance_ID\" int,\n\"If_first_show\" bool,\n\"Result\" text,\n\"Attendance\" real,\nFOREIGN KEY (`Performance_ID`) REFERENCES `performance`(`Performance_ID`)\n)"
+ ],
+ "pets_1": [
+  "CREATE TABLE Student (\n       StuID    \tINTEGER PRIMARY KEY,\n       LName\t\tVARCHAR(12),\n       Fname\t\tVARCHAR(12),\n       Age\t\tINTEGER,\n       Sex\t\tVARCHAR(1),\n       Major\t\tINTEGER,\n       Advisor\t\tINTEGER,\n       city_code\tVARCHAR(3)\n)",
+  "CREATE TABLE Has_Pet (\n       StuID\t\tINTEGER,\n       PetID\t\tINTEGER,\n       FOREIGN KEY(PetID) REFERENCES Pets(PetID),\n       FOREIGN KEY(StuID) REFERENCES Student(StuID)\n)",
+  "CREATE TABLE Pets (\n       PetID\t\tINTEGER PRIMARY KEY,\n       PetType\t\tVARCHAR(20),\n       pet_age INTEGER,\n       weight REAL\n)"
+ ],
+ "poker_player": [
+  "CREATE TABLE \"poker_player\" (\n\"Poker_Player_ID\" int,\n\"People_ID\" int,\n\"Final_Table_Made\" real,\n\"Best_Finish\" real,\n\"Money_Rank\" real,\n\"Earnings\" real,\nPRIMARY KEY (\"Poker_Player_ID\"),\nFOREIGN KEY (\"People_ID\") REFERENCES `people`(\"People_ID\")\n)",
+  "CREATE TABLE \"people\" (\n\"People_ID\" int,\n\"Nationality\" text,\n\"Name\" text,\n\"Birth_Date\" text,\n\"Height\" real,\nPRIMARY KEY (\"People_ID\")\n)"
+ ],
+ "real_estate_properties": [
+  "CREATE TABLE `Ref_Feature_Types` (\n`feature_type_code` VARCHAR(20) PRIMARY KEY,\n`feature_type_name` VARCHAR(80)\n)",
+  "CREATE TABLE `Ref_Property_Types` (\n`property_type_code` VARCHAR(20) PRIMARY KEY,\n`property_type_description` VARCHAR(80)\n)",
+  "CREATE TABLE `Other_Available_Features` (\n`feature_id` INTEGER PRIMARY KEY,\n`feature_type_code` VARCHAR(20) NOT NULL,\n`feature_name` VARCHAR(80),\n`feature_description` VARCHAR(80),\nFOREIGN KEY (`feature_type_code` ) REFERENCES `Ref_Feature_Types`(`feature_type_code` )\n)",
+  "CREATE TABLE `Properties` (\n`property_id` INTEGER PRIMARY KEY,\n`property_type_code` VARCHAR(20) NOT NULL,\n`date_on_market` DATETIME,\n`date_sold` DATETIME,\n`property_name` VARCHAR(80),\n`property_address` VARCHAR(255),\n`room_count` INTEGER,\n`vendor_requested_price` DECIMAL(19,4),\n`buyer_offered_price` DECIMAL(19,4),\n`agreed_selling_price` DECIMAL(19,4),\n`apt_feature_1` VARCHAR(255),\n`apt_feature_2` VARCHAR(255),\n`apt_feature_3` VARCHAR(255),\n`fld_feature_1` VARCHAR(255),\n`fld_feature_2` VARCHAR(255),\n`fld_feature_3` VARCHAR(255),\n`hse_feature_1` VARCHAR(255),\n`hse_feature_2` VARCHAR(255),\n`hse_feature_3` VARCHAR(255),\n`oth_feature_1` VARCHAR(255),\n`oth_feature_2` VARCHAR(255),\n`oth_feature_3` VARCHAR(255),\n`shp_feature_1` VARCHAR(255),\n`shp_feature_2` VARCHAR(255),\n`shp_feature_3` VARCHAR(255),\n`other_property_details` VARCHAR(255),\nFOREIGN KEY (`property_type_code` ) REFERENCES `Ref_Property_Types`(`property_type_code` )\n)",
+  "CREATE TABLE `Other_Property_Features` (\n`property_id` INTEGER NOT NULL,\n`feature_id` INTEGER NOT NULL,\n`property_feature_description` VARCHAR(80),\nFOREIGN KEY (`feature_id` ) REFERENCES `Other_Available_Features`(`feature_id` ),\nFOREIGN KEY (`property_id` ) REFERENCES `Properties`(`property_id` )\n)"
+ ],
+ "singer": [
+  "CREATE TABLE \"singer\" (\n\"Singer_ID\" int,\n\"Name\" text,\n\"Birth_Year\" real,\n\"Net_Worth_Millions\" real,\n\"Citizenship\" text,\nPRIMARY KEY (\"Singer_ID\")\n)",
+  "CREATE TABLE \"song\" (\n\"Song_ID\" int,\n\"Title\" text,\n\"Singer_ID\" int,\n\"Sales\" real,\n\"Highest_Position\" real,\nPRIMARY KEY (\"Song_ID\"),\nFOREIGN KEY (\"Singer_ID\") REFERENCES `singer`(\"Singer_ID\")\n)"
+ ],
+ "student_transcripts_tracking": [
+  "CREATE TABLE `Addresses` (\n`address_id` INTEGER PRIMARY KEY,\n`line_1` VARCHAR(255),\n`line_2` VARCHAR(255),\n`line_3` VARCHAR(255),\n`city` VARCHAR(255),\n`zip_postcode` VARCHAR(20),\n`state_province_county` VARCHAR(255),\n`country` VARCHAR(255),\n`other_address_details` VARCHAR(255)\n)",
+  "CREATE TABLE `Courses` (\n`course_id` INTEGER PRIMARY KEY,\n`course_name` VARCHAR(255),\n`course_description` VARCHAR(255),\n`other_details` VARCHAR(255)\n)",
+  "CREATE TABLE `Departments` (\n`department_id` INTEGER PRIMARY KEY,\n`department_name` VARCHAR(255),\n`department_description` VARCHAR(255),\n`other_details` VARCHAR(255)\n)",
+  "CREATE TABLE `Degree_Programs` (\n`degree_program_id` INTEGER PRIMARY KEY,\n`department_id` INTEGER NOT NULL,\n`degree_summary_name` VARCHAR(255),\n`degree_summary_description` VARCHAR(255),\n`other_details` VARCHAR(255),\nFOREIGN KEY (`department_id` ) REFERENCES `Departments`(`department_id` )\n)",
+  "CREATE TABLE `Sections` (\n`section_id` INTEGER PRIMARY KEY,\n`course_id` INTEGER NOT NULL,\n`section_name` VARCHAR(255),\n`section_description` VARCHAR(255),\n`other_details` VARCHAR(255),\nFOREIGN KEY (`course_id` ) REFERENCES `Courses`(`course_id` )\n)",
+  "CREATE TABLE `Semesters` (\n`semester_id` INTEGER PRIMARY KEY,\n`semester_name` VARCHAR(255),\n`semester_description` VARCHAR(255),\n`other_details` VARCHAR(255)\n)",
+  "CREATE TABLE `Students` (\n`student_id` INTEGER PRIMARY KEY,\n`current_address_id` INTEGER NOT NULL,\n`permanent_address_id` INTEGER NOT NULL,\n`first_name` VARCHAR(80),\n`middle_name` VARCHAR(40),\n`last_name` VARCHAR(40),\n`cell_mobile_number` VARCHAR(40),\n`email_address` VARCHAR(40),\n`ssn` VARCHAR(40),\n`date_first_registered` DATETIME,\n`date_left` DATETIME,\n`other_student_details` VARCHAR(255),\nFOREIGN KEY (`current_address_id` ) REFERENCES `Addresses`(`address_id` ),\nFOREIGN KEY (`permanent_address_id` ) REFERENCES `Addresses`(`address_id` )\n)",
+  "CREATE TABLE `Student_Enrolment` (\n`student_enrolment_id` INTEGER PRIMARY KEY,\n`degree_program_id` INTEGER NOT NULL,\n`semester_id` INTEGER NOT NULL,\n`student_id` INTEGER NOT NULL,\n`other_details` VARCHAR(255),\nFOREIGN KEY (`degree_program_id` ) REFERENCES `Degree_Programs`(`degree_program_id` ),\nFOREIGN KEY (`semester_id` ) REFERENCES `Semesters`(`semester_id` ),\nFOREIGN KEY (`student_id` ) REFERENCES `Students`(`student_id` )\n)",
+  "CREATE TABLE `Student_Enrolment_Courses` (\n`student_course_id` INTEGER PRIMARY KEY,\n`course_id` INTEGER NOT NULL,\n`student_enrolment_id` INTEGER NOT NULL,\nFOREIGN KEY (`course_id` ) REFERENCES `Courses`(`course_id` ),\nFOREIGN KEY (`student_enrolment_id` ) REFERENCES `Student_Enrolment`(`student_enrolment_id` )\n)",
+  "CREATE TABLE `Transcripts` (\n`transcript_id` INTEGER PRIMARY KEY,\n`transcript_date` DATETIME,\n`other_details` VARCHAR(255)\n)",
+  "CREATE TABLE `Transcript_Contents` (\n`student_course_id` INTEGER NOT NULL,\n`transcript_id` INTEGER NOT NULL,\nFOREIGN KEY (`student_course_id` ) REFERENCES `Student_Enrolment_Courses`(`student_course_id` ),\nFOREIGN KEY (`transcript_id` ) REFERENCES `Transcripts`(`transcript_id` )\n)"
+ ],
+ "tvshow": [
+  "CREATE TABLE \"TV_Channel\" (\n\"id\" text,\n\"series_name\" text,\n\"Country\" text,\n\"Language\" text,\n\"Content\" text,\n\"Pixel_aspect_ratio_PAR\" text,\n\"Hight_definition_TV\" text,\n\"Pay_per_view_PPV\" text,\n\"Package_Option\" text,\nPRIMARY KEY (\"id\")\n)",
+  "CREATE TABLE \"TV_series\" (\n\"id\" real,\n\"Episode\" text,\n\"Air_Date\" text,\n\"Rating\" text,\n\"Share\" real,\n\"18_49_Rating_Share\" text,\n\"Viewers_m\" text,\n\"Weekly_Rank\" real,\n\"Channel\" text,\nPRIMARY KEY (\"id\"),\nFOREIGN KEY (`Channel`) REFERENCES `TV_Channel`(`id`)\n)",
+  "CREATE TABLE \"Cartoon\" (\n\"id\" real,\n\"Title\" text,\n\"Directed_by\" text,\n\"Written_by\" text,\n\"Original_air_date\" text,\n\"Production_code\" real,\n\"Channel\" text,\nPRIMARY KEY (\"id\"),\nFOREIGN KEY (`Channel`) REFERENCES `TV_Channel`(`id`)\n)"
+ ],
+ "voter_1": [
+  "CREATE TABLE `AREA_CODE_STATE` (\n  `area_code` integer NOT NULL\n,  `state` varchar(2) NOT NULL\n,  PRIMARY KEY (`area_code`)\n)",
+  "CREATE TABLE `CONTESTANTS` (\n  `contestant_number` integer\n,  `contestant_name` varchar(50) NOT NULL\n,  PRIMARY KEY (`contestant_number`)\n)",
+  "CREATE TABLE `VOTES` (\n  `vote_id` integer NOT NULL PRIMARY KEY\n,  `phone_number` integer NOT NULL\n,  `state` varchar(2) NOT NULL\n,  `contestant_number` integer NOT NULL\n,  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP\n, \tFOREIGN KEY (`state`) REFERENCES `AREA_CODE_STATE`(`state`)\n, \tFOREIGN KEY (`contestant_number`) REFERENCES `CONTESTANTS`(`contestant_number`)\n)"
+ ],
+ "world_1": [
+  "CREATE TABLE `city` (\n  `ID` integer NOT NULL PRIMARY KEY AUTOINCREMENT\n,  `Name` char(35) NOT NULL DEFAULT ''\n,  `CountryCode` char(3) NOT NULL DEFAULT ''\n,  `District` char(20) NOT NULL DEFAULT ''\n,  `Population` integer NOT NULL DEFAULT '0'\n,  CONSTRAINT `city_ibfk_1` FOREIGN KEY (`CountryCode`) REFERENCES `country` (`Code`)\n)",
+  "CREATE TABLE sqlite_sequence(name,seq)",
+  "CREATE TABLE `country` (\n  `Code` char(3) NOT NULL DEFAULT ''\n,  `Name` char(52) NOT NULL DEFAULT ''\n,  `Continent` text  NOT NULL DEFAULT 'Asia'\n,  `Region` char(26) NOT NULL DEFAULT ''\n,  `SurfaceArea` float(10,2) NOT NULL DEFAULT '0.00'\n,  `IndepYear` integer DEFAULT NULL\n,  `Population` integer NOT NULL DEFAULT '0'\n,  `LifeExpectancy` float(3,1) DEFAULT NULL\n,  `GNP` float(10,2) DEFAULT NULL\n,  `GNPOld` float(10,2) DEFAULT NULL\n,  `LocalName` char(45) NOT NULL DEFAULT ''\n,  `GovernmentForm` char(45) NOT NULL DEFAULT ''\n,  `HeadOfState` char(60) DEFAULT NULL\n,  `Capital` integer DEFAULT NULL\n,  `Code2` char(2) NOT NULL DEFAULT ''\n,  PRIMARY KEY (`Code`)\n)",
+  "CREATE TABLE `countrylanguage` (\n  `CountryCode` char(3) NOT NULL DEFAULT ''\n,  `Language` char(30) NOT NULL DEFAULT ''\n,  `IsOfficial` text  NOT NULL DEFAULT 'F'\n,  `Percentage` float(4,1) NOT NULL DEFAULT '0.0'\n,  PRIMARY KEY (`CountryCode`,`Language`)\n,  CONSTRAINT `countryLanguage_ibfk_1` FOREIGN KEY (`CountryCode`) REFERENCES `country` (`Code`)\n)"
+ ],
+ "wta_1": [
+  "CREATE TABLE players(\n    \"player_id\" INT PRIMARY KEY,\n    \"first_name\" TEXT,\n    \"last_name\" TEXT,\n    \"hand\" TEXT,\n    \"birth_date\" DATE,\n    \"country_code\" TEXT\n)",
+  "CREATE TABLE matches(\n  \"best_of\" INT,\n  \"draw_size\" INT,\n  \"loser_age\" FLOAT,\n  \"loser_entry\" TEXT,\n  \"loser_hand\" TEXT,\n  \"loser_ht\" INT,\n  \"loser_id\" INT,\n  \"loser_ioc\" TEXT,\n  \"loser_name\" TEXT,\n  \"loser_rank\" INT,\n  \"loser_rank_points\" INT,\n  \"loser_seed\" INT,\n  \"match_num\" INT,\n  \"minutes\" INT,\n  \"round\" TEXT,\n  \"score\" TEXT,\n  \"surface\" TEXT,\n  \"tourney_date\" DATE,\n  \"tourney_id\" TEXT,\n  \"tourney_level\" TEXT,\n  \"tourney_name\" TEXT,\n  \"winner_age\" FLOAT,\n  \"winner_entry\" TEXT,\n  \"winner_hand\" TEXT,\n  \"winner_ht\" INT,\n  \"winner_id\" INT,\n  \"winner_ioc\" TEXT,\n  \"winner_name\" TEXT,\n  \"winner_rank\" INT,\n  \"winner_rank_points\" INT,\n  \"winner_seed\" INT,\n  \"year\" INT,\n  FOREIGN KEY(loser_id) REFERENCES players(player_id),\n  FOREIGN KEY(winner_id) REFERENCES players(player_id)\n)",
+  "CREATE TABLE rankings(\"ranking_date\" DATE,\"ranking\" INT,\"player_id\" INT,\"ranking_points\" INT,\"tours\" INT,FOREIGN KEY(player_id) REFERENCES players(player_id))"
+ ]
+}

@@ -15,10 +15,9 @@ import os
 import sqlite3
 from pathlib import Path
 
-import certifi
 import pandas as pd
-from dotenv import load_dotenv
-from pymongo import MongoClient
+
+from mongo_conn import connect
 
 ROOT = Path(__file__).resolve().parents[1]
 PILOT_DB = "codegen_capstone_pilot"
@@ -138,8 +137,7 @@ def matched_reason(verdicts, ok):
 
 # ---------------------------------------------------------------- Mongo + registry
 def mongo_client():
-    load_dotenv(ROOT / ".env")
-    return MongoClient(os.environ["MONGODB_URI"], serverSelectionTimeoutMS=30000, tlsCAFile=certifi.where())
+    return connect(ROOT / ".env", 30000)
 
 
 class Registry:

@@ -11,10 +11,9 @@ import sqlite3
 import sys
 from pathlib import Path
 
-import certifi
 import pandas as pd
-from dotenv import load_dotenv
-from pymongo import MongoClient
+
+from mongo_conn import connect
 
 ROOT = Path(__file__).resolve().parent.parent
 IID = "local041"
@@ -44,8 +43,7 @@ docs = [{"tree_id": t, "boroname": b, "health": h} for t, b, h in rows]  # NULL 
 print("sqlite rows:", len(docs), "| reference SQL result:", sql_result)
 
 # ---- 2. import into the dedicated pilot namespace ------------------------
-load_dotenv(ROOT / ".env")
-client = MongoClient(os.environ["MONGODB_URI"], serverSelectionTimeoutMS=20000, tlsCAFile=certifi.where())
+client = connect(ROOT / ".env", 20000)
 coll = client[PILOT_DB][COLL]
 if coll.count_documents({}) != 0:
     sys.exit(f"{PILOT_DB}.{COLL} not empty; refusing to touch it")

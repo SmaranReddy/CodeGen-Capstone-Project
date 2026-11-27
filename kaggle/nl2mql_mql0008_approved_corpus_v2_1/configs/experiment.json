@@ -1,0 +1,114 @@
+{
+ "experiment_id": "MQL-0008",
+ "title": "MQL-0008 - Approved Corpus v2.1 Hybrid RAG",
+ "package": "nl2mql_mql0008_approved_corpus_v2_1",
+ "status": "PACKAGE BUILT - NOT YET EXECUTED",
+ "question": "Does hybrid retrieval of examples from the approved corpus v2.1 (3,445 records, sql2mql-v2.1 / verifier 3.1) improve Qwen2.5-Coder-3B-Instruct cross-engine execution accuracy on the 892 MQL-0006 items, versus zero-shot?",
+ "model": {
+  "id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+  "revision": "488639f1ff808d1d3d0ba301aef8c11461451ec5",
+  "label": "qwen2.5-coder-3b-instruct",
+  "dtype": "bfloat16",
+  "dtype_note": "MQL-0006 and MQL-0007 ran bfloat16 on a Tesla T4 (emulated bf16). Required, never substituted: the notebook fails if unsupported.",
+  "runtime": "transformers GPU, one card (CUDA_VISIBLE_DEVICES=0)",
+  "decoding": "greedy (do_sample=False)",
+  "max_new_tokens": 1024,
+  "batch_size": 8,
+  "seed": 42,
+  "oom_policy": "a batch that hits CUDA OOM is retried one prompt at a time (same prompt/dtype/decoding) and the record says so"
+ },
+ "prompt": {
+  "zero_shot_version": "nl-mql-spider1-v1",
+  "zero_shot_template_sha256": "7401bf140dd1b8a9dac057edd9f729a8624823604fa2bd6ae9cfaf1c1890c1be",
+  "zero_shot_prompts_sha256": "7e1151cd4c4cb0cbf8dfd55eff6b38f764a903e067227734ba0c7afa70532bec",
+  "rag_version": "nl-mql-spider1-rag-v1",
+  "rag_rule": "RAG prompt = zero-shot prompt with one reference block inserted before the final 'Question:' line; empty context => byte-identical to zero-shot"
+ },
+ "evaluation": {
+  "n_items": 892,
+  "n_databases": 17,
+  "ids_sha256": "21d1478b04d6c7939409311c3615c904b95394b10a2d0d85ff1b68e96b860197",
+  "source": "MQL-0006 bundle nl2mql_spider_dev_1034_bundle_v2 (gold SQL, gold rows and SQLite files are NOT shipped); the same 892 ids as MQL-0006 and MQL-0007"
+ },
+ "corpus": {
+  "name": "approved_corpus_v2_1",
+  "source_path": "outputs/sql2mql_v2_1/approved_corpus_v2_1/corpus.jsonl",
+  "package_path": "data/corpus/approved_corpus_v2_1.jsonl",
+  "n_entries": 3445,
+  "source_sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "status": "CONDITIONAL GO - APPROVED FOR TRAINING UNDER LOCAL VALIDATION POLICY (2026-11-16)",
+  "review_label": "AI-reviewed (G-AIR, AI-only protocol); never human-reviewed. Labels validated on local MongoDB 8.0.34 with verifier 3.1; never executed on Atlas."
+ },
+ "retrieval": {
+  "bm25_k1": 1.5,
+  "bm25_b": 0.75,
+  "hybrid_weight": 1.0,
+  "method_relevant": "hybrid_masked",
+  "tie_break": "score desc, then doc_id (retrieval.py)",
+  "index": "per target database, target-db documents excluded",
+  "guides": 0,
+  "dedup": "same doc_id, same MQL, or same normalised question: higher-ranked copy kept"
+ },
+ "context": {
+  "k": 3,
+  "max_context_tokens": 1500,
+  "margin_tokens": 64,
+  "n_ctx": 8192,
+  "max_new_tokens": 1024,
+  "token_budgeting": "Qwen2.5 tokenizer at the pinned revision (HF AutoTokenizer, add_special_tokens=False) over system+user text and the block; over-budget documents are skipped (dropped_budget), never truncated"
+ },
+ "arms": {
+  "arm_a_zero_shot": {
+   "retrieval": "none",
+   "k": 0,
+   "label": "A. zero-shot (always generated in this run; MQL-0006 predictions are not reused)"
+  },
+  "arm_b_hybrid_rag": {
+   "retrieval": "hybrid_masked",
+   "k": 3,
+   "label": "B. hybrid RAG, k=3, no guide cards, approved corpus v2.1 (the MQL-0007 arm C_hybrid_k3 with the corpus replaced)"
+  }
+ },
+ "leakage_gates": {
+  "decided_before_running": "thresholds and rule are the MQL-0007 ones (fixed 2026-11-06); re-applied to the approved corpus v2.1 on 2026-11-16 before any plan was built",
+  "near_duplicate_token_jaccard": 0.8,
+  "exact": "normalised (lowercase alphanumeric tokens) eval question == corpus question or question_raw; raw string equality is checked as well",
+  "near": "token Jaccard >= 0.8 on raw (unmasked) questions",
+  "on_any_hit": "STOP beyond the acknowledged pairs; the corpus is never filtered or modified",
+  "acknowledged_near_duplicates": {
+   "decision": "MQL-0007 rule (user, 2026-11-06), re-applied unchanged: corpus unmodified; deterministic evaluation-specific retrieval exclusion in the RAG arm",
+   "corpus_id": "spider_train_00650",
+   "token_jaccard": 0.8,
+   "eval_ids": [
+    "spider_dev_0383",
+    "spider_dev_0824"
+   ],
+   "reason": "same question template differing in one entity word ('editors'/'teachers'/'conductors'); different databases and schemas; no shared answer"
+  }
+ },
+ "retrieval_exclusions": [
+  {
+   "eval_id": "spider_dev_0383",
+   "corpus_id": "spider_train_00650"
+  },
+  {
+   "eval_id": "spider_dev_0824",
+   "corpus_id": "spider_train_00650"
+  }
+ ],
+ "retrieval_exclusions_note": "Evaluation-specific, deterministic, applied to the RAG arm after ranking (index/IDF/dedup untouched). Corpus file unchanged; both evaluation items stay in the 892-item set.",
+ "frozen_reference": {
+  "experiment": "MQL-0007",
+  "config": "kaggle/nl2mql_mql0007_rag_v1/configs/experiment.json",
+  "must_equal": ["model", "prompt", "retrieval", "context", "leakage_gates.near_duplicate_token_jaccard", "retrieval_exclusions", "arms.C_hybrid_k3.retrieval", "arms.C_hybrid_k3.k"]
+ },
+ "stated_differences_from_MQL-0007": [
+  "retrieval corpus: approved corpus v2.1 (3,445 records, sha256 96552f06...dd199bf) instead of provisional corpus v1 (3,589 records). This is the intended change.",
+  "two arms only: no random arm (B_random_k3) and no supplementary sensitivity arm (D_supp_allow_near_dup)",
+  "arm A is always generated in this run; MQL-0006 predictions are neither bundled nor reused",
+  "corpus record layout: v2.1 records have no schema.touched, source.split or verification.status. The database-level 'text_number' pattern flag, derived from schema.touched in MQL-0007, is therefore empty; it was also empty for all 123 databases of corpus v1, so the features are computed identically. Eligibility is checked on verification.outcome == ACCEPTED, verifier 3.1, converter sql2mql-v2.1 and spider_train ids.",
+  "plan rows additionally store selected_ranks; prediction records additionally store model id/revision, generation settings and (RAG arm) the retrieved ids, ranks, scores, budget decisions and the retrieval configuration fingerprint",
+  "output layout: predictions/<arm>/ instead of models/<arm>/; arm names arm_a_zero_shot and arm_b_hybrid_rag",
+  "protected-set membership (Spider dev incl. the 65 held-out items, Spider test) is NOT re-read: every approved record has the same id, question, question_raw, SQL and database as its corpus v1 record, whose membership checks were zero in MQL-0007, so the result carries over to this subset; held-out database names are checked directly"
+ ]
+}

@@ -287,13 +287,11 @@ def exec_match(pred_rows, gold_rows, blocks=None, ordered=False):
 
 # ---------------------------------------------------------------- Atlas
 def mongo_client():
-    import certifi
-    from dotenv import load_dotenv
-    from pymongo import MongoClient
+    if str(ROOT / "scripts") not in sys.path:
+        sys.path.append(str(ROOT / "scripts"))
+    from mongo_conn import connect
 
-    load_dotenv(ROOT / ".env")
-    return MongoClient(os.environ["MONGODB_URI"], serverSelectionTimeoutMS=30000,
-                       tlsCAFile=certifi.where())
+    return connect(ROOT / ".env", 30000)
 
 
 def collection_name(db_id, table):

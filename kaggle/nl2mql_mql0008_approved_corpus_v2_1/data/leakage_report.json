@@ -1,0 +1,165 @@
+{
+ "experiment": "MQL-0008",
+ "generated_by": "scripts/nl2mql/build_mql0008_package.py",
+ "generated_at": "2026-11-16T16:36:44+00:00",
+ "audited_corpus": {
+  "path": "outputs/sql2mql_v2_1/approved_corpus_v2_1/corpus.jsonl",
+  "records": 3445,
+  "sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "approval_status": "CONDITIONAL GO - APPROVED FOR TRAINING UNDER LOCAL VALIDATION POLICY",
+  "approval_manifest_sha256": "1c5e01ba391d1989f8786268d2d3d70786924534cc415e3f9841a10d94711049",
+  "review_label": "AI-reviewed (G-AIR, AI-only protocol); NEVER human-reviewed. Human P2 of run01: NOT PASSED.",
+  "databases": 123
+ },
+ "verdict": "PASS: no leakage beyond the two documented template near-duplicates, which are excluded from retrieval for their two evaluation items",
+ "corpus": {
+  "path": "outputs/sql2mql_v2_1/approved_corpus_v2_1/corpus.jsonl",
+  "records": 3445,
+  "sha256": "96552f061afba13792d75240c18001e87e70f4aebf9d0934dfe27c0a7dd199bf",
+  "approval_status": "CONDITIONAL GO - APPROVED FOR TRAINING UNDER LOCAL VALIDATION POLICY",
+  "approval_manifest_sha256": "1c5e01ba391d1989f8786268d2d3d70786924534cc415e3f9841a10d94711049",
+  "review_label": "AI-reviewed (G-AIR, AI-only protocol); NEVER human-reviewed. Human P2 of run01: NOT PASSED.",
+  "databases": 123
+ },
+ "frozen_configuration": {
+  "reference": "kaggle/nl2mql_mql0007_rag_v1/configs/experiment.json",
+  "reference_sha256": "5e06f078958336336ae45a0e4fb265bb396061376734ed54ef70ebdaf16921d2",
+  "equal": [
+   "model (id, revision, dtype, decoding, max_new_tokens, batch size, seed, OOM policy)",
+   "prompt",
+   "retrieval (BM25 k1 1.5, b 0.75, hybrid weight 1.0, hybrid_masked, ties, dedup, no guides)",
+   "context (k 3, 1,500-token cap, margin 64, n_ctx 8192)",
+   "near-duplicate threshold 0.8",
+   "retrieval exclusions",
+   "RAG arm retrieval method and k"
+  ],
+  "retrieval_code_identical_to_mql0007": [
+   "src/patterns.py",
+   "src/retrieval.py",
+   "src/rag_block.py"
+  ]
+ },
+ "leakage_eval": {
+  "checks": {
+   "1_exact_question_string": 0,
+   "2_normalised_question": 0,
+   "3_near_duplicate_token_jaccard_ge_threshold": 2,
+   "4_database_overlap": [],
+   "5_corpus_sql_equal_to_an_evaluation_gold_sql": 0
+  },
+  "threshold": 0.8,
+  "max_token_jaccard": 0.8,
+  "near_hits": [
+   {
+    "eval_id": "spider_dev_0383",
+    "corpus_id": "spider_train_00650",
+    "token_jaccard": 0.8,
+    "eval_question": "List the names of teachers in ascending order of age.",
+    "corpus_question": "List the names of editors in ascending order of age.",
+    "eval_db": "course_teach",
+    "corpus_db": "journal_committee"
+   },
+   {
+    "eval_id": "spider_dev_0824",
+    "corpus_id": "spider_train_00650",
+    "token_jaccard": 0.8,
+    "eval_question": "List the names of conductors in ascending order of age.",
+    "corpus_question": "List the names of editors in ascending order of age.",
+    "eval_db": "orchestra",
+    "corpus_db": "journal_committee"
+   }
+  ],
+  "rule_applied": "MQL-0007 rule (user, 2026-11-06), re-applied unchanged: corpus unmodified; deterministic evaluation-specific retrieval exclusion in the RAG arm",
+  "exclusions": [
+   {
+    "eval_id": "spider_dev_0383",
+    "corpus_id": "spider_train_00650"
+   },
+   {
+    "eval_id": "spider_dev_0824",
+    "corpus_id": "spider_train_00650"
+   }
+  ],
+  "evaluation_items_removed": 0
+ },
+ "protected_sets": {
+  "files_opened": "none (Spider dev/test and the 65-item held-out partition were not read)",
+  "method": "subset carry-over from the MQL-0007 audit of corpus v1",
+  "approved_records_identical_to_corpus_v1_record": "3445/3445 (id, question, question_raw, SQL, database)",
+  "corpus_v1_membership_audit_mql0007": {
+   "spider_dev_1034": {
+    "n": 1034,
+    "question_exact_hits": 0,
+    "sql_exact_hits": 0,
+    "near_dup_hits": 0,
+    "db_overlap": []
+   },
+   "spider_test_2147": {
+    "n": 2147,
+    "question_exact_hits": 0,
+    "sql_exact_hits": 0,
+    "near_dup_hits": 16,
+    "db_overlap": []
+   }
+  },
+  "conclusion": "exact-question, exact-SQL and database membership are zero for Spider dev (incl. the 65 held-out items) and Spider test; template near-duplicates with Spider test are at most the 16 reported for corpus v1 (reported, not gated, as in MQL-0007)",
+  "held_out_mql_test_dbs_absent_from_corpus": [
+   "employee_hire_evaluation",
+   "pets_1",
+   "tvshow"
+  ]
+ },
+ "eligibility": {
+  "ids_all_spider_train": true,
+  "source_files": [
+   "data/processed/spider_pool_v3/train.jsonl"
+  ],
+  "verification_outcomes": [
+   "ACCEPTED"
+  ],
+  "verifiers": [
+   "sql2mql-v2-verifier-3.1"
+  ],
+  "converters": [
+   "sql2mql-v2.1"
+  ],
+  "corpus_versions": [
+   "provisional_corpus_v2"
+  ],
+  "in_approval_exclusions": 0,
+  "approval_exclusions": [
+   "spider_train_00145",
+   "spider_train_00146"
+  ],
+  "n_databases": 123
+ },
+ "text_number_flag": {
+  "corpus_v1_databases_flagged": 0,
+  "approved_corpus_databases_flagged": 0
+ },
+ "schema_words_tables_json_equals_atlas_manifest": "17/17 evaluation databases",
+ "gold_leak_scan": {
+  "files_scanned": 5,
+  "gold_sql_strings_found": 0,
+  "prompts_checked": {
+   "zero_shot": 892,
+   "rag": 892
+  }
+ },
+ "shipped_eval_fields": [
+  "id",
+  "db_id",
+  "question"
+ ],
+ "not_shipped": [
+  "eval_records.jsonl (gold SQL)",
+  "reference.jsonl.gz (gold rows)",
+  "SQLite databases",
+  "credentials of any kind",
+  "held-out 65-example partition",
+  "corpus v1",
+  "provisional corpus v2",
+  "spider-pool-v3",
+  "MQL-0006 / MQL-0007 predictions and scores"
+ ]
+}

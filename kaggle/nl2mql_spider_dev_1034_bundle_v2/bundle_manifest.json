@@ -1,0 +1,287 @@
+{
+ "bundle": "nl2mql_spider_dev_1034_bundle_v2",
+ "version": "v2",
+ "experiment": "MQL-0006",
+ "purpose": "zero-shot NL->MQL, Qwen2.5-Coder-3B-Instruct vs Groq-hosted open-weight openai/gpt-oss-120b, cross-engine execution accuracy on 892 Spider dev items (held-out test databases excluded); evaluation only, private",
+ "built_at": "2026-10-30T01:24:34",
+ "builder": "scripts/nl2mql/prepare_spider_dev_1034_bundle.py",
+ "builder_sha256": "8444f566fea1e24a0b7be5260f507887197970803983e2327b66a320cefd9a69",
+ "code_sha256": {
+  "code/dev1034_core.py": "81b86f0b08bb5221925e23ef80fe4caa4b8ce06b41f1f21c20826b735b71b65e",
+  "code/spider1_kit.py": "f4433c8386aa3839acd30b2fe2e9dc6bd759dfd647e89b89341751193923b565",
+  "code/prompt_spider1.py": "e699083b369c2b56ff26c23dbec834f641cbec5015b8a9895a9420c187b03dc2",
+  "code/mongo_conn.py": "75f6c0bd2958be77f05fe2e1b3d8869dc39358952bffa41d0365723a2a4245e2"
+ },
+ "prompt": {
+  "version": "nl-mql-spider1-v1",
+  "template_sha256": "7401bf140dd1b8a9dac057edd9f729a8624823604fa2bd6ae9cfaf1c1890c1be",
+  "prompts_sha256": "7e1151cd4c4cb0cbf8dfd55eff6b38f764a903e067227734ba0c7afa70532bec"
+ },
+ "evaluation_set": {
+  "records": 892,
+  "databases": 17,
+  "collections": 70,
+  "ids_sha256": "21d1478b04d6c7939409311c3615c904b95394b10a2d0d85ff1b68e96b860197",
+  "source_records": 1034,
+  "rule": "exclude every Spider dev record on a database assigned to the held-out MQL test partition",
+  "excluded_db_ids": [
+   "employee_hire_evaluation",
+   "pets_1",
+   "tvshow"
+  ],
+  "excluded_records": 142,
+  "overlap_with_heldout_questions": 65,
+  "excluded_beyond_overlap": 77,
+  "source": "ID-only split manifest (database_assignments, partition ids); the partition file was not opened",
+  "split_manifest_sha256": "a6bd1ca9efb2e4009049d4aaaccd80e6c3853c8edc02359e08c3af891352fc67"
+ },
+ "counts": {
+  "records": 892,
+  "databases": 17,
+  "collections": 70,
+  "files": 31,
+  "records_per_db": {
+   "battle_death": 16,
+   "car_1": 92,
+   "concert_singer": 45,
+   "course_teach": 30,
+   "cre_Doc_Template_Mgt": 84,
+   "dog_kennels": 82,
+   "flight_2": 80,
+   "museum_visit": 18,
+   "network_1": 56,
+   "orchestra": 40,
+   "poker_player": 40,
+   "real_estate_properties": 4,
+   "singer": 30,
+   "student_transcripts_tracking": 78,
+   "voter_1": 15,
+   "world_1": 120,
+   "wta_1": 62
+  },
+  "hardness": {
+   "easy": 214,
+   "medium": 380,
+   "hard": 148,
+   "extra": 150
+  },
+  "reference_status": {
+   "ok": 846,
+   "order_ties_unverified": 2,
+   "tie_at_limit": 44
+  },
+  "prior_audit": {
+   "included": 390,
+   "excluded": 34,
+   "not_audited": 468
+  }
+ },
+ "db_ids": [
+  "battle_death",
+  "car_1",
+  "concert_singer",
+  "course_teach",
+  "cre_Doc_Template_Mgt",
+  "dog_kennels",
+  "flight_2",
+  "museum_visit",
+  "network_1",
+  "orchestra",
+  "poker_player",
+  "real_estate_properties",
+  "singer",
+  "student_transcripts_tracking",
+  "voter_1",
+  "world_1",
+  "wta_1"
+ ],
+ "provenance": {
+  "dataset": "spider-sql-v1 dev_full (subset)",
+  "dataset_manifest_built_at": "2026-10-27T13:03:02",
+  "dev_full_sha256": "1a9bacf37d656fdabe7d7c1d760ed4d26ff5519d2e609f9e482105ed69e0fc91",
+  "spider_inputs_sha256": {
+   "dev.json": "30d64a3fccde493226df79687aed9e4a1c0129525baf44f29c0573d914d758a4",
+   "tables.json": "61bb20aa401f03164e2d7f3b16509b7b5f79cc9c943ca7bd159046df1159e2ed"
+  },
+  "databases_from": "data/raw/spider1/spider_data/database/<db>/<db>.sqlite (byte copies)",
+  "prompt_context_from": "data/interim/spider1/{atlas_collections,prompt_samples}.json (hashes in expanded/parity.json, checked_at 2026-10-20T12:48:19), restricted to the evaluation databases",
+  "data_license": {
+   "name": "CC BY-SA 4.0",
+   "source": "https://yale-lily.github.io/spider (per docs/dataset_research_report.md §6; no licence file in spider_data.zip)"
+  },
+  "reference_built_with_sqlite": "3.40.1"
+ },
+ "excluded_by_design": [
+  "every record, SQLite file, schema and sample of the held-out test databases",
+  "spider-sql-v1 train/val_internal/dev_clean/test_full/test_clean/rejected",
+  "data/splits*/ files",
+  "test.json",
+  "test_tables.json",
+  "test_database/",
+  "test-suite variant DBs",
+  "non-dev databases",
+  "gold MQL",
+  "RAG corpus",
+  "fine-tuning data",
+  "model files",
+  ".env and any credential",
+  "caches"
+ ],
+ "files": {
+  "ATTRIBUTION.md": {
+   "sha256": "8ad6c89617761e6730547edcd9d8230919a8b2268962d678360aeeabb7c4a48c",
+   "bytes": 697,
+   "source": "derived"
+  },
+  "code/dev1034_core.py": {
+   "sha256": "81b86f0b08bb5221925e23ef80fe4caa4b8ce06b41f1f21c20826b735b71b65e",
+   "bytes": 71984,
+   "source": "scripts/nl2mql/dev1034_core.py"
+  },
+  "code/mongo_conn.py": {
+   "sha256": "75f6c0bd2958be77f05fe2e1b3d8869dc39358952bffa41d0365723a2a4245e2",
+   "bytes": 3024,
+   "source": "scripts/mongo_conn.py"
+  },
+  "code/prompt_spider1.py": {
+   "sha256": "e699083b369c2b56ff26c23dbec834f641cbec5015b8a9895a9420c187b03dc2",
+   "bytes": 4172,
+   "source": "scripts/spider1/prompt_spider1.py"
+  },
+  "code/spider1_kit.py": {
+   "sha256": "f4433c8386aa3839acd30b2fe2e9dc6bd759dfd647e89b89341751193923b565",
+   "bytes": 11503,
+   "source": "scripts/spider1/spider1_kit.py"
+  },
+  "context/atlas_collections.json": {
+   "sha256": "bded35a105574db2a4da097d3dee1268d8387d605fec0a6566d1480608d94d7a",
+   "bytes": 35505,
+   "source": "derived"
+  },
+  "context/prompt_samples.json": {
+   "sha256": "443406f188995ee19cabec7ac1319ce5e237c3a445b4f4d6eca7b1e119346edc",
+   "bytes": 24154,
+   "source": "derived"
+  },
+  "context/tables.json": {
+   "sha256": "6240336e9b76d0628809339581639e9741e24b6fd4b6d13c151c87866b9901bb",
+   "bytes": 41024,
+   "source": "derived"
+  },
+  "data/atlas_mapping.json": {
+   "sha256": "5e6e9ed6b404f4fcc321327c434f6f3fc7e55b92af36b3a4b59abb275f669c2e",
+   "bytes": 70334,
+   "source": "derived"
+  },
+  "data/eval_records.jsonl": {
+   "sha256": "bce89fa7d7e09fc1bcf2db138282f2f78a851a36b00444e62c94b5b0f109b407",
+   "bytes": 586780,
+   "source": "data/processed/spider_sql_v1/dev_full.jsonl (byte-identical lines, original order, held-out databases removed)"
+  },
+  "data/prior_audit.json": {
+   "sha256": "d2cf0a5be621e6e1d062097ccfb646bcc85206c88da16f9f9a760fb528a227e9",
+   "bytes": 68235,
+   "source": "derived"
+  },
+  "data/prompts.jsonl": {
+   "sha256": "7e1151cd4c4cb0cbf8dfd55eff6b38f764a903e067227734ba0c7afa70532bec",
+   "bytes": 4215168,
+   "source": "derived"
+  },
+  "data/reference.jsonl.gz": {
+   "sha256": "df3282e62c1ea91710b4ec2950cd7a4c4a6d2d5c991fe09309730f5532a837ea",
+   "bytes": 564264,
+   "source": "derived"
+  },
+  "data/reference_expected.json": {
+   "sha256": "c10cdef172b12729257202fccb9c8f28ea3e45a16ee759fc6508f1d1ffd9dd0f",
+   "bytes": 398864,
+   "source": "derived"
+  },
+  "database/battle_death/battle_death.sqlite": {
+   "sha256": "12569f4493a9655639c4ea86ba4bd8a4ea6411e1b8ae0e1fdf3d6a995344265d",
+   "bytes": 28672,
+   "source": "data/raw/spider1/spider_data/database/battle_death/battle_death.sqlite"
+  },
+  "database/car_1/car_1.sqlite": {
+   "sha256": "9d851e396e02997a1de073ae982fe1e4b1769fdffce2fac6e325857a3a938709",
+   "bytes": 65536,
+   "source": "data/raw/spider1/spider_data/database/car_1/car_1.sqlite"
+  },
+  "database/concert_singer/concert_singer.sqlite": {
+   "sha256": "4fa1ba5ab4577e895271088b1dc44aa94be88e25a54293317a67584112ef059d",
+   "bytes": 36864,
+   "source": "data/raw/spider1/spider_data/database/concert_singer/concert_singer.sqlite"
+  },
+  "database/course_teach/course_teach.sqlite": {
+   "sha256": "da45fcdde64ac2b9330146506b7653ad4417489d8e496e509045e1b02245d793",
+   "bytes": 28672,
+   "source": "data/raw/spider1/spider_data/database/course_teach/course_teach.sqlite"
+  },
+  "database/cre_Doc_Template_Mgt/cre_Doc_Template_Mgt.sqlite": {
+   "sha256": "9c3fdd03d8795ecde60aae782ce50c4fb1d6c03de1401fcdd6dc177342a53df5",
+   "bytes": 24576,
+   "source": "data/raw/spider1/spider_data/database/cre_Doc_Template_Mgt/cre_Doc_Template_Mgt.sqlite"
+  },
+  "database/dog_kennels/dog_kennels.sqlite": {
+   "sha256": "ea5fbc6cf6aaf500371c5c121c339d9802ba6f5fbecd948a5274c0b487a9f486",
+   "bytes": 49152,
+   "source": "data/raw/spider1/spider_data/database/dog_kennels/dog_kennels.sqlite"
+  },
+  "database/flight_2/flight_2.sqlite": {
+   "sha256": "db777ba6488ae2b515cb138d71ff23c4533e5fd0355854648a1102faff3fb7af",
+   "bytes": 77824,
+   "source": "data/raw/spider1/spider_data/database/flight_2/flight_2.sqlite"
+  },
+  "database/museum_visit/museum_visit.sqlite": {
+   "sha256": "3217aee38d8e3661d374bf025591b7164a1179c568ef5d20f3c338035fc6e1dd",
+   "bytes": 28672,
+   "source": "data/raw/spider1/spider_data/database/museum_visit/museum_visit.sqlite"
+  },
+  "database/network_1/network_1.sqlite": {
+   "sha256": "bec92cd9a68d6f23469a0df246429299f44caaf75eab12275784e0bb7d0aa9ca",
+   "bytes": 28672,
+   "source": "data/raw/spider1/spider_data/database/network_1/network_1.sqlite"
+  },
+  "database/orchestra/orchestra.sqlite": {
+   "sha256": "13b64af1cf6fcbd34953a44f951b2bf79bedc000b344549212dac1a9345e2f86",
+   "bytes": 32768,
+   "source": "data/raw/spider1/spider_data/database/orchestra/orchestra.sqlite"
+  },
+  "database/poker_player/poker_player.sqlite": {
+   "sha256": "63fffd7b68524f07a742a74b74b95a4ba178e6419f3574b9ee78b8dda1df46ba",
+   "bytes": 20480,
+   "source": "data/raw/spider1/spider_data/database/poker_player/poker_player.sqlite"
+  },
+  "database/real_estate_properties/real_estate_properties.sqlite": {
+   "sha256": "5d0bd83afa93a843e68f892d8430fe625d7ed2508aae00a341926b0b5b478a29",
+   "bytes": 32768,
+   "source": "data/raw/spider1/spider_data/database/real_estate_properties/real_estate_properties.sqlite"
+  },
+  "database/singer/singer.sqlite": {
+   "sha256": "5c1b72755d148c294b26d7b479307e8799b93485ac918720f953e2ab84d59a0a",
+   "bytes": 20480,
+   "source": "data/raw/spider1/spider_data/database/singer/singer.sqlite"
+  },
+  "database/student_transcripts_tracking/student_transcripts_tracking.sqlite": {
+   "sha256": "5a1f4928a1fd36f6edb31c4f054203b2e2fab6b18e5951c4f5633628f82a8e56",
+   "bytes": 49152,
+   "source": "data/raw/spider1/spider_data/database/student_transcripts_tracking/student_transcripts_tracking.sqlite"
+  },
+  "database/voter_1/voter_1.sqlite": {
+   "sha256": "815bf1611b8a32f649d292a6138562f1761a0c10cb256e20f6561199cff31531",
+   "bytes": 20480,
+   "source": "data/raw/spider1/spider_data/database/voter_1/voter_1.sqlite"
+  },
+  "database/world_1/world_1.sqlite": {
+   "sha256": "17b986695f16786d58d66f85e49dba87bdfe72953207ab9b1b49da9d2301ef65",
+   "bytes": 319488,
+   "source": "data/raw/spider1/spider_data/database/world_1/world_1.sqlite"
+  },
+  "database/wta_1/wta_1.sqlite": {
+   "sha256": "8f20747456d7748674b4f05432f3de96446ced95b8bd5a6fd01284f6c28f727c",
+   "bytes": 104738816,
+   "source": "data/raw/spider1/spider_data/database/wta_1/wta_1.sqlite"
+  }
+ }
+}

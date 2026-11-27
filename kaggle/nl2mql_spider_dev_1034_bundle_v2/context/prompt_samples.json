@@ -1,0 +1,1188 @@
+{
+ "battle_death__battle": [
+  {
+   "id": 1,
+   "name": "Battle of Adrianople",
+   "date": "14 April 1205",
+   "bulgarian_commander": "Kaloyan",
+   "latin_commander": "Baldwin I",
+   "result": "Bulgarian victory"
+  },
+  {
+   "id": 2,
+   "name": "Battle of Serres",
+   "date": "June 1205",
+   "bulgarian_commander": "Kaloyan",
+   "latin_commander": "Unknown",
+   "result": "Bulgarian victory"
+  }
+ ],
+ "battle_death__death": [
+  {
+   "caused_by_ship_id": 1,
+   "id": 1,
+   "note": "Dantewada, Chhattisgarh",
+   "killed": 8,
+   "injured": 0
+  },
+  {
+   "caused_by_ship_id": 2,
+   "id": 2,
+   "note": "Dantewada, Chhattisgarh",
+   "killed": 3,
+   "injured": 0
+  }
+ ],
+ "battle_death__ship": [
+  {
+   "lost_in_battle": 8,
+   "id": 1,
+   "name": "Lettice",
+   "tonnage": "t",
+   "ship_type": "Brig",
+   "location": "English Channel",
+   "disposition_of_ship": "Captured"
+  },
+  {
+   "lost_in_battle": 7,
+   "id": 2,
+   "name": "Bon Accord",
+   "tonnage": "t",
+   "ship_type": "Brig",
+   "location": "English Channel",
+   "disposition_of_ship": "Captured"
+  }
+ ],
+ "car_1__car_makers": [
+  {
+   "Id": 1,
+   "Maker": "amc",
+   "FullName": "American Motor Company",
+   "Country": "1"
+  },
+  {
+   "Id": 2,
+   "Maker": "volkswagen",
+   "FullName": "Volkswagen",
+   "Country": "2"
+  }
+ ],
+ "car_1__car_names": [
+  {
+   "MakeId": 1,
+   "Model": "chevrolet",
+   "Make": "chevrolet chevelle malibu"
+  },
+  {
+   "MakeId": 2,
+   "Model": "buick",
+   "Make": "buick skylark 320"
+  }
+ ],
+ "car_1__cars_data": [
+  {
+   "Id": 1,
+   "MPG": "18",
+   "Cylinders": 8,
+   "Edispl": 307.0,
+   "Horsepower": "130",
+   "Weight": 3504,
+   "Accelerate": 12.0,
+   "Year": 1970
+  },
+  {
+   "Id": 2,
+   "MPG": "15",
+   "Cylinders": 8,
+   "Edispl": 350.0,
+   "Horsepower": "165",
+   "Weight": 3693,
+   "Accelerate": 11.5,
+   "Year": 1970
+  }
+ ],
+ "car_1__continents": [
+  {
+   "ContId": 1,
+   "Continent": "america"
+  },
+  {
+   "ContId": 2,
+   "Continent": "europe"
+  }
+ ],
+ "car_1__countries": [
+  {
+   "CountryId": 1,
+   "CountryName": "usa",
+   "Continent": 1
+  },
+  {
+   "CountryId": 2,
+   "CountryName": "germany",
+   "Continent": 2
+  }
+ ],
+ "car_1__model_list": [
+  {
+   "ModelId": 1,
+   "Maker": 1,
+   "Model": "amc"
+  },
+  {
+   "ModelId": 2,
+   "Maker": 2,
+   "Model": "audi"
+  }
+ ],
+ "concert_singer__concert": [
+  {
+   "concert_ID": 1,
+   "concert_Name": "Auditions",
+   "Theme": "Free choice",
+   "Stadium_ID": "1",
+   "Year": "2014"
+  },
+  {
+   "concert_ID": 2,
+   "concert_Name": "Super bootcamp",
+   "Theme": "Free choice 2",
+   "Stadium_ID": "2",
+   "Year": "2014"
+  }
+ ],
+ "concert_singer__singer": [
+  {
+   "Singer_ID": 1,
+   "Name": "Joe Sharp",
+   "Country": "Netherlands",
+   "Song_Name": "You",
+   "Song_release_year": "1992",
+   "Age": 52,
+   "Is_male": "F"
+  },
+  {
+   "Singer_ID": 2,
+   "Name": "Timbaland",
+   "Country": "United States",
+   "Song_Name": "Dangerous",
+   "Song_release_year": "2008",
+   "Age": 32,
+   "Is_male": "T"
+  }
+ ],
+ "concert_singer__singer_in_concert": [
+  {
+   "concert_ID": 1,
+   "Singer_ID": "2"
+  },
+  {
+   "concert_ID": 1,
+   "Singer_ID": "3"
+  }
+ ],
+ "concert_singer__stadium": [
+  {
+   "Stadium_ID": 1,
+   "Location": "Raith Rovers",
+   "Name": "Stark's Park",
+   "Capacity": 10104,
+   "Highest": 4812,
+   "Lowest": 1294,
+   "Average": 2106
+  },
+  {
+   "Stadium_ID": 2,
+   "Location": "Ayr United",
+   "Name": "Somerset Park",
+   "Capacity": 11998,
+   "Highest": 2363,
+   "Lowest": 1057,
+   "Average": 1477
+  }
+ ],
+ "course_teach__course": [
+  {
+   "Course_ID": 1,
+   "Staring_Date": "5 May",
+   "Course": "Language Arts"
+  },
+  {
+   "Course_ID": 2,
+   "Staring_Date": "6 May",
+   "Course": "Math"
+  }
+ ],
+ "course_teach__course_arrange": [
+  {
+   "Course_ID": 2,
+   "Teacher_ID": 5,
+   "Grade": 1
+  },
+  {
+   "Course_ID": 2,
+   "Teacher_ID": 3,
+   "Grade": 3
+  }
+ ],
+ "course_teach__teacher": [
+  {
+   "Teacher_ID": 1,
+   "Name": "Joseph Huts",
+   "Age": "32",
+   "Hometown": "Blackrod Urban District"
+  },
+  {
+   "Teacher_ID": 2,
+   "Name": "Gustaaf Deloor",
+   "Age": "29",
+   "Hometown": "Bolton County Borough"
+  }
+ ],
+ "cre_Doc_Template_Mgt__Documents": [
+  {
+   "Document_ID": 0,
+   "Template_ID": 7,
+   "Document_Name": "Introduction of OS",
+   "Document_Description": "n",
+   "Other_Details": null
+  },
+  {
+   "Document_ID": 1,
+   "Template_ID": 25,
+   "Document_Name": "Understanding DB",
+   "Document_Description": "y",
+   "Other_Details": null
+  }
+ ],
+ "cre_Doc_Template_Mgt__Paragraphs": [
+  {
+   "Paragraph_ID": 7,
+   "Document_ID": 2394,
+   "Paragraph_Text": "Korea",
+   "Other_Details": null
+  },
+  {
+   "Paragraph_ID": 9,
+   "Document_ID": 3,
+   "Paragraph_Text": "Somalia",
+   "Other_Details": null
+  }
+ ],
+ "cre_Doc_Template_Mgt__Ref_Template_Types": [
+  {
+   "Template_Type_Code": "PPT",
+   "Template_Type_Description": "Presentation"
+  },
+  {
+   "Template_Type_Code": "CV",
+   "Template_Type_Description": "CV"
+  }
+ ],
+ "cre_Doc_Template_Mgt__Templates": [
+  {
+   "Template_ID": 0,
+   "Version_Number": 5,
+   "Template_Type_Code": "PP",
+   "Date_Effective_From": "2005-11-12 07:09:48",
+   "Date_Effective_To": "2008-01-05 14:19:28",
+   "Template_Details": ""
+  },
+  {
+   "Template_ID": 1,
+   "Version_Number": 9,
+   "Template_Type_Code": "PP",
+   "Date_Effective_From": "2010-09-24 01:15:11",
+   "Date_Effective_To": "1999-07-08 03:31:04",
+   "Template_Details": ""
+  }
+ ],
+ "dog_kennels__Breeds": [
+  {
+   "breed_code": "ESK",
+   "breed_name": "Eskimo"
+  },
+  {
+   "breed_code": "HUS",
+   "breed_name": "Husky"
+  }
+ ],
+ "dog_kennels__Charges": [
+  {
+   "charge_id": 1,
+   "charge_type": "Daily Accommodation",
+   "charge_amount": 98
+  },
+  {
+   "charge_id": 2,
+   "charge_type": "Drugs",
+   "charge_amount": 322
+  }
+ ],
+ "dog_kennels__Dogs": [
+  {
+   "dog_id": 1,
+   "owner_id": 3,
+   "abandoned_yn": "1",
+   "breed_code": "ESK",
+   "size_code": "LGE",
+   "name": "Kacey",
+   "age": "6",
+   "date_of_birth": "2012-01-27 05:11:53",
+   "gender": "1",
+   "weight": "7.57",
+   "date_arrived": "2017-09-08 20:10:13",
+   "date_adopted": "2018-03-06 16:32:11",
+   "date_departed": "2018-03-25 06:58:44"
+  },
+  {
+   "dog_id": 2,
+   "owner_id": 11,
+   "abandoned_yn": "0",
+   "breed_code": "BUL",
+   "size_code": "LGE",
+   "name": "Hipolito",
+   "age": "9",
+   "date_of_birth": "2013-02-13 05:15:21",
+   "gender": "0",
+   "weight": "1.72",
+   "date_arrived": "2017-12-22 05:02:02",
+   "date_adopted": "2018-03-25 08:12:51",
+   "date_departed": "2018-03-25 02:11:32"
+  }
+ ],
+ "dog_kennels__Owners": [
+  {
+   "owner_id": 1,
+   "first_name": "Nora",
+   "last_name": "Haley",
+   "street": "0647 Hintz Village Apt. 024",
+   "city": "Lake Tia",
+   "state": "Wisconsin",
+   "zip_code": "93165",
+   "email_address": "lynn81@example.org",
+   "home_phone": "1-682-845-0116x63235",
+   "cell_number": "478.978.0729"
+  },
+  {
+   "owner_id": 2,
+   "first_name": "Melisa",
+   "last_name": "DuBuque",
+   "street": "1204 Mae Highway Apt. 107",
+   "city": "Port Reannamouth",
+   "state": "Virginia",
+   "zip_code": "45244",
+   "email_address": "ykris@example.com",
+   "home_phone": "(799)563-0260x454",
+   "cell_number": "(722)768-5439x484"
+  }
+ ],
+ "dog_kennels__Professionals": [
+  {
+   "professional_id": 1,
+   "role_code": "Employee",
+   "first_name": "Taryn",
+   "street": "6915 Oberbrunner Point Suite 491\nGleasonville, LA ",
+   "city": "West Heidi",
+   "state": "Indiana",
+   "zip_code": "06646",
+   "last_name": "Braun",
+   "email_address": "deanna.schuster@example.com",
+   "home_phone": "+71(6)2898266914",
+   "cell_number": "(275)939-2435x80863"
+  },
+  {
+   "professional_id": 2,
+   "role_code": "Employee",
+   "first_name": "Jayson",
+   "street": "88665 Terence Lodge Apt. 904\nCorneliusfort, NC 194",
+   "city": "North Odellfurt",
+   "state": "Connecticut",
+   "zip_code": "43129",
+   "last_name": "Ullrich",
+   "email_address": "lucile.shanahan@example.org",
+   "home_phone": "+02(1)0259033559",
+   "cell_number": "889-940-2676"
+  }
+ ],
+ "dog_kennels__Sizes": [
+  {
+   "size_code": "SML",
+   "size_description": "Small"
+  },
+  {
+   "size_code": "MED",
+   "size_description": "Medium"
+  }
+ ],
+ "dog_kennels__Treatment_Types": [
+  {
+   "treatment_type_code": "EXAM",
+   "treatment_type_description": "Physical examination"
+  },
+  {
+   "treatment_type_code": "VAC",
+   "treatment_type_description": "Vaccination"
+  }
+ ],
+ "dog_kennels__Treatments": [
+  {
+   "treatment_id": 1,
+   "dog_id": 14,
+   "professional_id": 9,
+   "treatment_type_code": "WALK",
+   "date_of_treatment": "2018-03-19 04:39:54",
+   "cost_of_treatment": 567
+  },
+  {
+   "treatment_id": 2,
+   "dog_id": 4,
+   "professional_id": 10,
+   "treatment_type_code": "VAC",
+   "date_of_treatment": "2018-03-15 20:25:34",
+   "cost_of_treatment": 147
+  }
+ ],
+ "flight_2__airlines": [
+  {
+   "uid": 1,
+   "Airline": "United Airlines",
+   "Abbreviation": "UAL",
+   "Country": "USA"
+  },
+  {
+   "uid": 2,
+   "Airline": "US Airways",
+   "Abbreviation": "USAir",
+   "Country": "USA"
+  }
+ ],
+ "flight_2__airports": [
+  {
+   "City": "Aberdeen ",
+   "AirportCode": "APG",
+   "AirportName": "Phillips AAF ",
+   "Country": "United States ",
+   "CountryAbbrev": "US "
+  },
+  {
+   "City": "Aberdeen ",
+   "AirportCode": "ABR",
+   "AirportName": "Municipal ",
+   "Country": "United States ",
+   "CountryAbbrev": "US"
+  }
+ ],
+ "flight_2__flights": [
+  {
+   "Airline": 1,
+   "FlightNo": 28,
+   "SourceAirport": " APG",
+   "DestAirport": " ASY"
+  },
+  {
+   "Airline": 1,
+   "FlightNo": 29,
+   "SourceAirport": " ASY",
+   "DestAirport": " APG"
+  }
+ ],
+ "museum_visit__museum": [
+  {
+   "Museum_ID": 1,
+   "Name": "Plaza Museum",
+   "Num_of_Staff": 62,
+   "Open_Year": "2000"
+  },
+  {
+   "Museum_ID": 2,
+   "Name": "Capital Plaza Museum",
+   "Num_of_Staff": 25,
+   "Open_Year": "2012"
+  }
+ ],
+ "museum_visit__visit": [
+  {
+   "Museum_ID": 1,
+   "visitor_ID": "5",
+   "Num_of_Ticket": 20,
+   "Total_spent": 320.14
+  },
+  {
+   "Museum_ID": 2,
+   "visitor_ID": "5",
+   "Num_of_Ticket": 4,
+   "Total_spent": 89.98
+  }
+ ],
+ "museum_visit__visitor": [
+  {
+   "ID": 1,
+   "Name": "Gonzalo Higuaín ",
+   "Level_of_membership": 8,
+   "Age": 35
+  },
+  {
+   "ID": 2,
+   "Name": "Guti Midfielder",
+   "Level_of_membership": 5,
+   "Age": 28
+  }
+ ],
+ "network_1__Friend": [
+  {
+   "student_id": 1510,
+   "friend_id": 1381
+  },
+  {
+   "student_id": 1510,
+   "friend_id": 1689
+  }
+ ],
+ "network_1__Highschooler": [
+  {
+   "ID": 1510,
+   "name": "Jordan",
+   "grade": 9
+  },
+  {
+   "ID": 1689,
+   "name": "Gabriel",
+   "grade": 9
+  }
+ ],
+ "network_1__Likes": [
+  {
+   "student_id": 1689,
+   "liked_id": 1709
+  },
+  {
+   "student_id": 1709,
+   "liked_id": 1689
+  }
+ ],
+ "orchestra__conductor": [
+  {
+   "Conductor_ID": 1,
+   "Name": "Antal Doráti",
+   "Age": 40,
+   "Nationality": "USA",
+   "Year_of_Work": 10
+  },
+  {
+   "Conductor_ID": 2,
+   "Name": "Igor Stravinsky",
+   "Age": 41,
+   "Nationality": "UK",
+   "Year_of_Work": 11
+  }
+ ],
+ "orchestra__orchestra": [
+  {
+   "Orchestra_ID": 1,
+   "Orchestra": "London Symphony Orchestra",
+   "Conductor_ID": 1,
+   "Record_Company": "Mercury Records",
+   "Year_of_Founded": 2003.0,
+   "Major_Record_Format": "CD"
+  },
+  {
+   "Orchestra_ID": 2,
+   "Orchestra": "Columbia Symphony Orchestra",
+   "Conductor_ID": 2,
+   "Record_Company": "Columbia Masterworks",
+   "Year_of_Founded": 2009.0,
+   "Major_Record_Format": "CD / LP"
+  }
+ ],
+ "orchestra__performance": [
+  {
+   "Performance_ID": 1,
+   "Orchestra_ID": 1,
+   "Type": "Auditions 1",
+   "Date": "9 June",
+   "Official_ratings_(millions)": 5.2,
+   "Weekly_rank": "12",
+   "Share": "22.7%"
+  },
+  {
+   "Performance_ID": 2,
+   "Orchestra_ID": 2,
+   "Type": "Auditions 2",
+   "Date": "10 June",
+   "Official_ratings_(millions)": 6.73,
+   "Weekly_rank": "8",
+   "Share": "28.0%"
+  }
+ ],
+ "orchestra__show": [
+  {
+   "Show_ID": 1,
+   "Performance_ID": 1,
+   "If_first_show": "Glebe Park",
+   "Result": "T",
+   "Attendance": 1026.0
+  },
+  {
+   "Show_ID": 2,
+   "Performance_ID": 2,
+   "If_first_show": "Fir Park",
+   "Result": "T",
+   "Attendance": 695.0
+  }
+ ],
+ "poker_player__people": [
+  {
+   "People_ID": 1,
+   "Nationality": "Russia",
+   "Name": "Aleksey Ostapenko",
+   "Birth_Date": "May 26, 1986",
+   "Height": 207.0
+  },
+  {
+   "People_ID": 2,
+   "Nationality": "Bulgaria",
+   "Name": "Teodor Salparov",
+   "Birth_Date": "August 16, 1982",
+   "Height": 182.0
+  }
+ ],
+ "poker_player__poker_player": [
+  {
+   "Poker_Player_ID": 1,
+   "People_ID": 1,
+   "Final_Table_Made": 42.0,
+   "Best_Finish": 1.0,
+   "Money_Rank": 68.0,
+   "Earnings": 476090.0
+  },
+  {
+   "Poker_Player_ID": 2,
+   "People_ID": 2,
+   "Final_Table_Made": 10.0,
+   "Best_Finish": 2.0,
+   "Money_Rank": 141.0,
+   "Earnings": 189233.0
+  }
+ ],
+ "real_estate_properties__Other_Available_Features": [
+  {
+   "feature_id": 2,
+   "feature_type_code": "Amenity",
+   "feature_name": "AirCon",
+   "feature_description": "Air Conditioning."
+  },
+  {
+   "feature_id": 3,
+   "feature_type_code": "Amenity",
+   "feature_name": "Pool",
+   "feature_description": "Swimming Pool."
+  }
+ ],
+ "real_estate_properties__Other_Property_Features": [
+  {
+   "property_id": 15,
+   "feature_id": 3,
+   "property_feature_description": "dolorem"
+  },
+  {
+   "property_id": 12,
+   "feature_id": 4,
+   "property_feature_description": "earum"
+  }
+ ],
+ "real_estate_properties__Properties": [
+  {
+   "property_id": 1,
+   "property_type_code": "House",
+   "date_on_market": "1991-06-21 23:52:10",
+   "date_sold": "1979-05-13 16:58:06",
+   "property_name": "park",
+   "property_address": "4745 Emerson Stravenue Suite 829\nSouth Garret, IN 16772-5682",
+   "room_count": 7,
+   "vendor_requested_price": 372652.2909,
+   "buyer_offered_price": 1.68,
+   "agreed_selling_price": 4201.8,
+   "apt_feature_1": "aut",
+   "apt_feature_2": "suscipit",
+   "apt_feature_3": null,
+   "fld_feature_1": null,
+   "fld_feature_2": null,
+   "fld_feature_3": null,
+   "hse_feature_1": null,
+   "hse_feature_2": null,
+   "hse_feature_3": null,
+   "oth_feature_1": null,
+   "oth_feature_2": null,
+   "oth_feature_3": null,
+   "shp_feature_1": null,
+   "shp_feature_2": null,
+   "shp_feature_3": null,
+   "other_property_details": null
+  },
+  {
+   "property_id": 2,
+   "property_type_code": "House",
+   "date_on_market": "1990-05-25 23:01:51",
+   "date_sold": "1990-11-14 19:16:38",
+   "property_name": "the cole",
+   "property_address": "098 Tremaine Highway Suite 569\nSouth Wilford, NJ 46587-3537",
+   "room_count": 1,
+   "vendor_requested_price": 661536468.4429,
+   "buyer_offered_price": 8.7122,
+   "agreed_selling_price": 21769471.8328,
+   "apt_feature_1": "est",
+   "apt_feature_2": "est",
+   "apt_feature_3": null,
+   "fld_feature_1": null,
+   "fld_feature_2": null,
+   "fld_feature_3": null,
+   "hse_feature_1": null,
+   "hse_feature_2": null,
+   "hse_feature_3": null,
+   "oth_feature_1": null,
+   "oth_feature_2": null,
+   "oth_feature_3": null,
+   "shp_feature_1": null,
+   "shp_feature_2": null,
+   "shp_feature_3": null,
+   "other_property_details": null
+  }
+ ],
+ "real_estate_properties__Ref_Feature_Types": [
+  {
+   "feature_type_code": "Amenity",
+   "feature_type_name": "Amenity, eg Pool."
+  },
+  {
+   "feature_type_code": "Security",
+   "feature_type_name": "Securiyt, eg Burglar Alarm."
+  }
+ ],
+ "real_estate_properties__Ref_Property_Types": [
+  {
+   "property_type_code": "House",
+   "property_type_description": "House, Bungalow, etc."
+  },
+  {
+   "property_type_code": "Apartment",
+   "property_type_description": "Apartment, Flat, Condo, etc."
+  }
+ ],
+ "singer__singer": [
+  {
+   "Singer_ID": 1,
+   "Name": "Liliane Bettencourt",
+   "Birth_Year": 1944.0,
+   "Net_Worth_Millions": 30.0,
+   "Citizenship": "France"
+  },
+  {
+   "Singer_ID": 2,
+   "Name": "Christy Walton",
+   "Birth_Year": 1948.0,
+   "Net_Worth_Millions": 28.8,
+   "Citizenship": "United States"
+  }
+ ],
+ "singer__song": [
+  {
+   "Song_ID": 1,
+   "Title": "Do They Know It's Christmas",
+   "Singer_ID": 1,
+   "Sales": 1094000.0,
+   "Highest_Position": 1.0
+  },
+  {
+   "Song_ID": 2,
+   "Title": "F**k It (I Don't Want You Back)",
+   "Singer_ID": 1,
+   "Sales": 552407.0,
+   "Highest_Position": 1.0
+  }
+ ],
+ "student_transcripts_tracking__Addresses": [
+  {
+   "address_id": 1,
+   "line_1": "2294 Grant Square Apt. 235",
+   "line_2": "Apt. 370",
+   "line_3": null,
+   "city": "Port Chelsea",
+   "zip_postcode": "148",
+   "state_province_county": "Virginia",
+   "country": "Iceland",
+   "other_address_details": null
+  },
+  {
+   "address_id": 2,
+   "line_1": "3999 Aufderhar Ways Suite 593",
+   "line_2": "Apt. 388",
+   "line_3": null,
+   "city": "Lake Laishafurt",
+   "zip_postcode": "943",
+   "state_province_county": "Kentucky",
+   "country": "Burundi",
+   "other_address_details": null
+  }
+ ],
+ "student_transcripts_tracking__Courses": [
+  {
+   "course_id": 1,
+   "course_name": "ds",
+   "course_description": "p",
+   "other_details": null
+  },
+  {
+   "course_id": 2,
+   "course_name": "math",
+   "course_description": "q",
+   "other_details": null
+  }
+ ],
+ "student_transcripts_tracking__Degree_Programs": [
+  {
+   "degree_program_id": 1,
+   "department_id": 13,
+   "degree_summary_name": "Master",
+   "degree_summary_description": "architecto",
+   "other_details": null
+  },
+  {
+   "degree_program_id": 2,
+   "department_id": 2,
+   "degree_summary_name": "Master",
+   "degree_summary_description": "cumque",
+   "other_details": null
+  }
+ ],
+ "student_transcripts_tracking__Departments": [
+  {
+   "department_id": 1,
+   "department_name": "computer science",
+   "department_description": "error",
+   "other_details": null
+  },
+  {
+   "department_id": 2,
+   "department_name": "history",
+   "department_description": "nostrum",
+   "other_details": null
+  }
+ ],
+ "student_transcripts_tracking__Sections": [
+  {
+   "section_id": 1,
+   "course_id": 9,
+   "section_name": "a",
+   "section_description": "non",
+   "other_details": null
+  },
+  {
+   "section_id": 2,
+   "course_id": 2,
+   "section_name": "b",
+   "section_description": "voluptatem",
+   "other_details": null
+  }
+ ],
+ "student_transcripts_tracking__Semesters": [
+  {
+   "semester_id": 1,
+   "semester_name": "spring 2010",
+   "semester_description": "x",
+   "other_details": null
+  },
+  {
+   "semester_id": 2,
+   "semester_name": "summer 2010",
+   "semester_description": "g",
+   "other_details": null
+  }
+ ],
+ "student_transcripts_tracking__Student_Enrolment": [
+  {
+   "student_enrolment_id": 1,
+   "degree_program_id": 12,
+   "semester_id": 13,
+   "student_id": 14,
+   "other_details": null
+  },
+  {
+   "student_enrolment_id": 2,
+   "degree_program_id": 4,
+   "semester_id": 2,
+   "student_id": 9,
+   "other_details": null
+  }
+ ],
+ "student_transcripts_tracking__Student_Enrolment_Courses": [
+  {
+   "student_course_id": 0,
+   "course_id": 6,
+   "student_enrolment_id": 2
+  },
+  {
+   "student_course_id": 1,
+   "course_id": 6,
+   "student_enrolment_id": 8
+  }
+ ],
+ "student_transcripts_tracking__Students": [
+  {
+   "student_id": 1,
+   "current_address_id": 10,
+   "permanent_address_id": 15,
+   "first_name": "Timmothy",
+   "middle_name": "Anna",
+   "last_name": "Ward",
+   "cell_mobile_number": "(096)889-8954x524",
+   "email_address": "erwin.zboncak@example.com",
+   "ssn": "965",
+   "date_first_registered": "1971-02-05 07:28:23",
+   "date_left": "1971-05-17 19:28:49",
+   "other_student_details": "quia"
+  },
+  {
+   "student_id": 2,
+   "current_address_id": 12,
+   "permanent_address_id": 5,
+   "first_name": "Hobart",
+   "middle_name": "Lorenz",
+   "last_name": "Balistreri",
+   "cell_mobile_number": "1-009-710-5151",
+   "email_address": "swift.kolby@example.com",
+   "ssn": "304246",
+   "date_first_registered": "1976-10-26 02:33:06",
+   "date_left": "2013-10-05 17:41:28",
+   "other_student_details": "autem"
+  }
+ ],
+ "student_transcripts_tracking__Transcript_Contents": [
+  {
+   "student_course_id": 0,
+   "transcript_id": 2
+  },
+  {
+   "student_course_id": 96,
+   "transcript_id": 8
+  }
+ ],
+ "student_transcripts_tracking__Transcripts": [
+  {
+   "transcript_id": 1,
+   "transcript_date": "1988-04-30 01:19:47",
+   "other_details": null
+  },
+  {
+   "transcript_id": 2,
+   "transcript_date": "1975-10-28 15:16:51",
+   "other_details": null
+  }
+ ],
+ "voter_1__AREA_CODE_STATE": [
+  {
+   "area_code": 201,
+   "state": "NJ"
+  },
+  {
+   "area_code": 202,
+   "state": "DC"
+  }
+ ],
+ "voter_1__CONTESTANTS": [
+  {
+   "contestant_number": 1,
+   "contestant_name": "Edwina Burnam"
+  },
+  {
+   "contestant_number": 2,
+   "contestant_name": "Tabatha Gehling"
+  }
+ ],
+ "voter_1__VOTES": [
+  {
+   "vote_id": 1,
+   "phone_number": 7182887233,
+   "state": "NY",
+   "contestant_number": 2,
+   "created": "2018-03-09 19:03:21"
+  },
+  {
+   "vote_id": 2,
+   "phone_number": 7148407040,
+   "state": "NY",
+   "contestant_number": 3,
+   "created": "2018-03-09 19:03:36"
+  }
+ ],
+ "world_1__city": [
+  {
+   "ID": 1,
+   "Name": "Kabul",
+   "CountryCode": "AFG",
+   "District": "Kabol",
+   "Population": 1780000
+  },
+  {
+   "ID": 2,
+   "Name": "Qandahar",
+   "CountryCode": "AFG",
+   "District": "Qandahar",
+   "Population": 237500
+  }
+ ],
+ "world_1__country": [
+  {
+   "Code": "ABW",
+   "Name": "Aruba",
+   "Continent": "North America",
+   "Region": "Caribbean",
+   "SurfaceArea": 193.0,
+   "IndepYear": null,
+   "Population": 103000,
+   "LifeExpectancy": 78.4,
+   "GNP": 828.0,
+   "GNPOld": 793.0,
+   "LocalName": "Aruba",
+   "GovernmentForm": "Nonmetropolitan Territory of The Netherlands",
+   "HeadOfState": "Beatrix",
+   "Capital": 129,
+   "Code2": "AW"
+  },
+  {
+   "Code": "AFG",
+   "Name": "Afghanistan",
+   "Continent": "Asia",
+   "Region": "Southern and Central Asia",
+   "SurfaceArea": 652090.0,
+   "IndepYear": 1919,
+   "Population": 22720000,
+   "LifeExpectancy": 45.9,
+   "GNP": 5976.0,
+   "GNPOld": null,
+   "LocalName": "Afganistan/Afqanestan",
+   "GovernmentForm": "Islamic Emirate",
+   "HeadOfState": "Mohammad Omar",
+   "Capital": 1,
+   "Code2": "AF"
+  }
+ ],
+ "world_1__countrylanguage": [
+  {
+   "CountryCode": "ABW",
+   "Language": "Dutch",
+   "IsOfficial": "T",
+   "Percentage": 5.3
+  },
+  {
+   "CountryCode": "ABW",
+   "Language": "English",
+   "IsOfficial": "F",
+   "Percentage": 9.5
+  }
+ ],
+ "wta_1__matches": [
+  {
+   "best_of": 3,
+   "draw_size": 4,
+   "loser_age": 24.626967830300003,
+   "loser_entry": "",
+   "loser_hand": "R",
+   "loser_ht": 170,
+   "loser_id": 201474,
+   "loser_ioc": "POL",
+   "loser_name": "Agnieszka Radwanska",
+   "loser_rank": 4,
+   "loser_rank_points": 5890,
+   "loser_seed": 3,
+   "match_num": 297,
+   "minutes": 82,
+   "round": "RR",
+   "score": "6-2 6-4",
+   "surface": "Hard",
+   "tourney_date": 20131021,
+   "tourney_id": "2013-W-WT-TUR-01A-2013",
+   "tourney_level": "W",
+   "tourney_name": "WTA Championships",
+   "winner_age": 32.0684462697,
+   "winner_entry": "",
+   "winner_hand": "R",
+   "winner_ht": 175,
+   "winner_id": 200033,
+   "winner_ioc": "USA",
+   "winner_name": "Serena Williams",
+   "winner_rank": 1,
+   "winner_rank_points": 12040,
+   "winner_seed": 1,
+   "year": 2013
+  },
+  {
+   "best_of": 3,
+   "draw_size": 4,
+   "loser_age": 23.6221765914,
+   "loser_entry": "",
+   "loser_hand": "L",
+   "loser_ht": 183,
+   "loser_id": 201520,
+   "loser_ioc": "CZE",
+   "loser_name": "Petra Kvitova",
+   "loser_rank": 6,
+   "loser_rank_points": 4370,
+   "loser_seed": 5,
+   "match_num": 296,
+   "minutes": 72,
+   "round": "RR",
+   "score": "6-2 6-3",
+   "surface": "Hard",
+   "tourney_date": 20131021,
+   "tourney_id": "2013-W-WT-TUR-01A-2013",
+   "tourney_level": "W",
+   "tourney_name": "WTA Championships",
+   "winner_age": 32.0684462697,
+   "winner_entry": "",
+   "winner_hand": "R",
+   "winner_ht": 175,
+   "winner_id": 200033,
+   "winner_ioc": "USA",
+   "winner_name": "Serena Williams",
+   "winner_rank": 1,
+   "winner_rank_points": 12040,
+   "winner_seed": 1,
+   "year": 2013
+  }
+ ],
+ "wta_1__players": [
+  {
+   "player_id": 200001,
+   "first_name": "Martina",
+   "last_name": "Hingis",
+   "hand": "R",
+   "birth_date": 19800930,
+   "country_code": "SUI"
+  },
+  {
+   "player_id": 200002,
+   "first_name": "Mirjana",
+   "last_name": "Lucic",
+   "hand": "R",
+   "birth_date": 19820309,
+   "country_code": "CRO"
+  }
+ ],
+ "wta_1__rankings": [
+  {
+   "ranking_date": 20000101,
+   "ranking": 3,
+   "player_id": 200748,
+   "ranking_points": 4378,
+   "tours": 13
+  },
+  {
+   "ranking_date": 20000101,
+   "ranking": 4,
+   "player_id": 200033,
+   "ranking_points": 3021,
+   "tours": 15
+  }
+ ]
+}

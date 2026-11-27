@@ -1,8 +1,98 @@
 # CodeGen: Open Source LLMs for Code Generation, SQL Handling, and RAG
 
-College capstone project exploring open-source LLMs for code generation, with an initial focus on translating natural language into MongoDB queries (MQL).
+College capstone project exploring open-source LLMs for code generation.
 
-## Mentor deliverable: Spider → MQL dataset + model comparison (current)
+## Milestone on this branch: MQL-0015, FT-R3V = 59.8 % execution accuracy
+
+Branch `research/mql0015-embedding-ft-r3v` is a source snapshot of the NL→MQL system at the completed **MQL-0015** experiment: 1,000 questions from Spider 1.0 `test_full`, Qwen2.5-Coder-3B-Instruct, one registered run.
+
+| System | Accuracy |
+|---|---:|
+| A0: zero-shot | 471 / 1000 = 47.1 % |
+| A0V: + schema validator with one retry | 497 / 1000 = 49.7 % |
+| R3V: + hybrid RAG (BM25 + BGE-small/Qdrant, RRF, structural rerank, top-3) | 544 / 1000 = 54.4 % |
+| **FT-R3V: + LoRA fine-tuned model** | **598 / 1000 = 59.8 %** |
+
+**Metric.** Each generated MongoDB aggregation pipeline is executed on MongoDB Atlas. Its result is compared with the result of the reference **Spider SQL executed on SQLite**. There are no hand-written gold MQL pipelines.
+
+**Workflow:**
+
+```
+question -> schema/context -> hybrid retrieval -> prompt -> Qwen generation -> MQL validation -> retry if needed
+         -> MongoDB execution -> result comparison
+```
+
+**Where to look:**
+- architecture, file map, setup, and everything that must be supplied separately (datasets, model and adapter weights, Qdrant index, Atlas): **[`docs/MQL0015_MILESTONE.md`](docs/MQL0015_MILESTONE.md)**;
+- the full results report: [`reports/mql0015/results_report.md`](reports/mql0015/results_report.md);
+- fine-tuning: [`finetuning/q3b_r16_q10/`](finetuning/q3b_r16_q10/README.md).
+
+Datasets, test questions, gold SQL, prediction archives, model and adapter weights, and credentials are **not** in the repository, so the experiment cannot be re-run from this repository alone. Later work after MQL-0015 is not part of this branch.
+
+
+## Project objective (confirmed 2026-10-29)
+
+**Primary task: natural language → MongoDB query (NL→MQL).** Given a question and a MongoDB
+schema, the model generates a read-only MQL query (`aggregate` pipeline or `find`). The query is
+executed on **MongoDB Atlas**, and it is correct only if its executed result matches the gold
+result. MQL text is never compared with SQL text.
+
+The plan requires:
+
+1. a zero-shot Qwen2.5-Coder-3B baseline;
+2. a RAG baseline;
+3. fine-tuning Qwen on MQL, a query language it was not specialised for;
+4. a comparison against a frontier LLM;
+5. error analysis and ablations;
+6. a final integrated demonstration.
+
+The NL→SQL work (spider-sql-v1, SQL-0001) is a **separate auxiliary experiment**. Its numbers are
+SQL-only and are never MQL performance (see "Auxiliary SQL track" below).
+
+Every quantitative result is recorded in `docs/experiment_accuracy_ledger.md` (NL→MQL results are
+in section B as `MQL-xxxx`). The prioritised roadmap and its gates are in
+`docs/nl2mql_next_steps.md`.
+
+## Eight-week plan and status
+
+Weeks 1–3 are done. Weeks 4–8 below are the **proposed** sequence from
+`docs/nl2mql_next_steps.md`, not a completed record.
+
+Earlier schedule, kept for reference: the original roadmap was (1) task definition and dataset,
+(2) zero-shot Qwen baseline, (3) RAG, (4) fine-tuning, (5) evaluation and ablations,
+(6) deployment. `docs/week3_rag_report.md` §11 placed fine-tuning and the one-time test run in
+Week 4. The 2026-10-25 converter audit found known-wrong labels in the fine-tuning set, so a
+data-readiness gate now comes first. That moves fine-tuning to Week 6 and the final test run to
+Week 8.
+
+| Week | Focus | Status (2026-10-29) | Evidence |
+|---|---|---|---|
+| 1 | Task definition, schemas, query types, first validated NL→MQL set | Done | `docs/dataset_task_definition.md`; Spider 2.0-Lite 68; Spider 1.0 v1 279 |
+| 2 | Zero-shot Qwen 3B (and 7B) vs a large model, Atlas execution | Done | Ledger MQL-0001 (279), MQL-0002 (455) |
+| 3 | RAG baseline | Done (pilot; gain not significant after Holm) | Ledger MQL-0003, MQL-0004, MQL-0005 |
+| 4 | Data-readiness gate: local MongoDB, `sql2mql-v2`, 300-item conversion pilot, native-set re-execution, licence answers | **Proposed. Not started** | `docs/nl2mql_next_steps.md` P1–P4 |
+| 5 | Build the versioned MQL training corpus (`ft-v2`); freeze the evaluation protocol | Proposed | P5–P6 |
+| 6 | QLoRA fine-tuning (3B pilot, then 7B) + fine-tuned RAG; selection on validation (72) only | Proposed | P7–P8 |
+| 7 | Frontier comparison on the same protocol, error analysis, ablations | Proposed | P7, P9 |
+| 8 | One-time test-partition (65) evaluation, integrated demo, final report | Proposed | P9 |
+
+### Current NL→MQL results (all Atlas execution; from the ledger)
+
+| Benchmark | Qwen2.5-Coder-3B | Qwen2.5-Coder-7B | gpt-oss-120b |
+|---|---|---|---|
+| v1, 279 items (authored gold MQL) — MQL-0001 | 132/279 (47.3%) | 181/279 (64.9%) | 232/279 (83.2%) |
+| Expanded, 455 items (MQL result vs gold-SQL result) — MQL-0002 | 217/455 (47.7%) | 287/455 (63.1%) | 385/455 (84.6%) |
+
+- Both benchmarks are derived from Spider **dev**; the 455 includes the 279.
+- The Qwen runs used CPU llama.cpp GGUF q4_k_m; gpt-oss-120b ran through Groq.
+- **gpt-oss-120b is a large open-weight model, not a closed frontier model.** Whether it satisfies
+  the plan's "frontier LLM" comparison is an open question for the mentor.
+- RAG (Qwen-3B, clean Kaggle GPU control, 318 train-partition items): zero-shot 160, random-k3 155,
+  hybrid-k3 172. The primary contrast, hybrid vs random, is +5.3 points, McNemar p = 0.021, Holm
+  0.064: **not significant**. See ledger MQL-0005.
+- No fine-tuned MQL model exists yet.
+
+## Mentor deliverable: Spider → MQL dataset + model comparison (Week 2)
 
 - **Dataset**: `data/processed/spider1_nl_mql.jsonl`, 279 validated, unique Spider 1.0 (dev)
   NL → MQL examples. Each gold MQL is executed on MongoDB Atlas (`codegen_spider1`) and
@@ -50,28 +140,34 @@ python scripts/rag/rag_report.py --partition train     # outputs/rag_week3/repor
 python -m pytest -q
 ```
 
-## Baseline Model
+## Fine-tuning status (not started)
 
-- **Qwen-2.5-Coder-Instruct** (zero-shot baseline initially; fine-tuning later)
+- `docs/fine_tuning_plan.md` (ft-v1) and `scripts/finetune_v1/train_qlora.py` exist, but **no
+  training has been run**.
+- **Do not run ft-v1 as written.** `data/finetune/ft_v1/` still contains the 88 converter labels
+  the 2026-10-25 audit found wrong (86 in `train.jsonl`, 2 in `dev_internal.jsonl`;
+  `docs/sql2mql_independent_audit.md`), plus 51 labels with SQL-level date-equality errors (45 in
+  train, 6 in dev_internal). The data-readiness gate in `docs/nl2mql_next_steps.md` comes first.
+- Native NL→MQL datasets (AptMQL-Bench, SM3, TEND-v1) have been researched
+  (`docs/native_nl2mql_dataset_research.md`) but **none is on disk or re-executed**.
 
-## Current Status: Week 1
+## Auxiliary SQL track (SQL-only; not MQL performance)
 
-Week 1 goal: define an **NL → MongoDB/MQL** task derived from **Spider 2.0-Lite**, including:
+- Dataset: spider-sql-v1 (`docs/spider_sql_v1_dataset.md`), train 7,773 / val_internal 797 /
+  dev_full 1,034 / test_full 2,147.
+- SQL-0001: zero-shot Qwen2.5-Coder-3B on `dev_full`, official EX 446/1,034 (43.1%), EM 378/1,034
+  (36.6%), test-suite EX 630/1,034 (60.9%). Ledger section A.
+- These numbers measure SQL generation, use a different metric and runtime, and must never be
+  shown next to an MQL number as a comparison.
 
-- Schema and query-type definitions
-- Conversion of Spider examples into MongoDB/MQL format
-- Creation and validation of an initial dataset
+## Week 1 history
+
+Week 1 defined the **NL → MongoDB/MQL** task on **Spider 2.0-Lite** (schema and query-type
+definitions, conversion of examples to MQL, a validated set of 68). The 135 offline-runnable
+Spider 2.0-Lite ids could not support 200–300 examples, so the mentor deliverable moved to
+Spider 1.0. Only gold-replay harness checks have run on the 68 (no model baseline).
 
 Raw Spider 2.0-Lite files live in `data/raw/spider2/` and are **never modified**.
-
-## Planned Roadmap
-
-1. Week 1 — Task definition, schema/query types, initial dataset creation and validation
-2. Zero-shot baseline with Qwen-2.5-Coder-Instruct
-3. RAG augmentation (schema/docs retrieval)
-4. Fine-tuning
-5. Evaluation and ablations
-6. Deployment
 
 ## Project Structure
 
@@ -81,6 +177,8 @@ Raw Spider 2.0-Lite files live in `data/raw/spider2/` and are **never modified**
 | `data/interim/` | Intermediate converted/transformed data |
 | `data/processed/` | Final validated NL → MongoDB/MQL dataset |
 | `data/splits/` | Database-disjoint train/validation/test split of the 279 Spider 1.0 examples (retrospective; see `docs/week2_report.md` §9.2) |
+| `data/splits_expanded/` | Database-disjoint 318/72/65 train/validation/test split of the 455 expanded benchmark. The 65-item test partition is used once, at the final evaluation |
+| `data/finetune/ft_v1/` | ft-v1 MQL SFT candidate (not training-ready; see "Fine-tuning status") |
 | `src/data/` | Dataset loading and preparation utilities |
 | `src/conversion/` | Logic for adapting Spider examples to MongoDB/MQL |
 | `src/validation/` | Logic for validating/executing MQL against MongoDB |
