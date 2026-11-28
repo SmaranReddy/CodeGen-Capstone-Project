@@ -1,0 +1,2 @@
+gradio>=5,<7
+llama-cpp-python>=0.3.37,<0.4
